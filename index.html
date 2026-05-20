@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Turnia | Agenda de citas</title>
+    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Sora:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <section class="entry-screen" id="entry-screen">
+      <div class="entry-card">
+        <div class="brand entry-brand">
+          <img class="brand-logo" src="./assets/logo-turnia.svg" alt="" />
+          <div>
+            <strong>Turnia</strong>
+            <span>Agenda y reservas para salones</span>
+          </div>
+        </div>
+        <div>
+          <span class="eyebrow">Demo presentable</span>
+          <h1>Gestiona turnos y deja que tus clientes reserven desde un link.</h1>
+          <p>
+            Entra como negocio para administrar agenda, servicios y clientes, o mira la experiencia publica que veria un cliente.
+          </p>
+        </div>
+        <div class="entry-highlights">
+          <span>Agenda sincronizada</span>
+          <span>WhatsApp preparado</span>
+          <span>Reportes y exportacion</span>
+        </div>
+        <form class="login-box" id="login-form">
+          <label>
+            Email del negocio
+            <input name="email" type="email" value="salon@demo.com" />
+          </label>
+          <label>
+            Contrasena
+            <input name="password" type="password" value="turnia-demo" />
+          </label>
+          <button class="primary-btn" type="submit">Entrar como negocio</button>
+        </form>
+        <div class="entry-actions">
+          <button class="ghost-btn" type="button" id="google-login">Entrar con Google</button>
+          <button class="ghost-btn" type="button" id="enter-client">Ver link del cliente</button>
+        </div>
+        <div class="auth-message hidden" id="auth-message" role="status"></div>
+      </div>
+    </section>
+
+    <div class="app-shell hidden" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <img class="brand-logo" src="./assets/logo-turnia.svg" alt="" />
+          <div>
+            <strong>Turnia</strong>
+            <span>Agenda simple</span>
+          </div>
+        </div>
+
+        <nav class="nav-list" aria-label="Secciones principales">
+          <button class="nav-item active" type="button" data-view="agenda">Agenda</button>
+          <button class="nav-item" type="button" data-view="semana">Semana</button>
+          <button class="nav-item" type="button" data-view="clientes">Clientes</button>
+          <button class="nav-item" type="button" data-view="servicios">Servicios</button>
+          <button class="nav-item" type="button" data-view="equipo">Equipo</button>
+          <button class="nav-item" type="button" data-view="reportes">Reportes</button>
+          <button class="nav-item" type="button" data-view="reserva">Link cliente</button>
+          <button class="nav-item" type="button" data-view="configuracion">Configuracion</button>
+        </nav>
+
+        <div class="sidebar-note">
+          <span>Link publico</span>
+          <strong data-business-link>turnia.app/salon-demo</strong>
+          <p>El cliente reserva desde ahi y la cita entra sincronizada en esta agenda.</p>
+          <button class="ghost-btn" type="button" id="reset-demo">Restaurar demo</button>
+          <button class="ghost-btn" type="button" id="exit-demo">Salir</button>
+        </div>
+      </aside>
+
+      <main class="main-app">
+        <header class="topbar">
+          <div>
+            <span class="eyebrow" data-business-name>Salon Demo</span>
+            <h1>Agenda de hoy</h1>
+          </div>
+          <div class="topbar-actions">
+            <button class="ghost-btn" type="button" data-view="reserva">Vista cliente</button>
+            <button class="ghost-btn" type="button" id="back-entry">Inicio</button>
+            <button class="primary-btn" type="button" id="open-booking">Nueva cita</button>
+          </div>
+        </header>
+
+        <section class="stats-grid" aria-label="Resumen del dia">
+          <article class="stat-card">
+            <span>Citas hoy</span>
+            <strong id="stat-appointments">0</strong>
+          </article>
+          <article class="stat-card">
+            <span>Confirmadas</span>
+            <strong id="stat-confirmed">0</strong>
+          </article>
+          <article class="stat-card">
+            <span>Por confirmar</span>
+            <strong id="stat-pending">0</strong>
+          </article>
+          <article class="stat-card">
+            <span>Huecos libres</span>
+            <strong id="stat-openings">0</strong>
+          </article>
+        </section>
+
+        <section class="view-panel active" id="view-agenda">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow" id="agenda-date-label">Dia seleccionado</span>
+              <h2>Dia en curso</h2>
+            </div>
+            <div class="agenda-controls">
+              <input class="compact-select" id="agenda-date" type="date" />
+              <div class="segmented-control" aria-label="Filtro de profesionales">
+                <button class="segment active" type="button" data-filter="Todos">Todos</button>
+                <button class="segment" type="button" data-filter="Mara">Mara</button>
+                <button class="segment" type="button" data-filter="Noe">Noe</button>
+                <button class="segment" type="button" data-filter="Eva">Eva</button>
+              </div>
+            </div>
+          </div>
+          <div class="agenda-layout">
+            <div class="timeline" id="agenda-list"></div>
+            <aside class="day-aside">
+              <h3>Huecos recomendados</h3>
+              <div class="opening-list" id="opening-list"></div>
+              <h3>Bloqueos</h3>
+              <div class="opening-list" id="block-list"></div>
+              <button class="ghost-btn" type="button" id="open-block">Bloquear horario</button>
+              <h3>Mensaje al cliente</h3>
+              <div class="message-preview" id="message-preview">
+                <p>Cuando confirmes o canceles una cita, Turnia preparara el WhatsApp para enviar.</p>
+              </div>
+              <h3>Acciones rapidas</h3>
+              <div class="quick-actions">
+                <button type="button">Enviar recordatorios</button>
+                <button type="button">Copiar enlace de reserva</button>
+                <button type="button">Ver pendientes</button>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="view-panel" id="view-semana">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Vista semanal</span>
+              <h2>Semana por profesional</h2>
+            </div>
+            <select class="compact-select" id="week-professional"></select>
+          </div>
+          <div class="week-grid" id="week-grid"></div>
+        </section>
+
+        <section class="view-panel" id="view-clientes">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">CRM simple</span>
+              <h2>Clientes</h2>
+            </div>
+            <button class="ghost-btn" type="button" id="open-client">Nuevo cliente</button>
+          </div>
+          <div class="clients-layout">
+            <div class="card-grid" id="client-list"></div>
+            <aside class="client-detail" id="client-detail">
+              <p>Selecciona un cliente para ver historial, notas y contacto.</p>
+            </aside>
+          </div>
+        </section>
+
+        <section class="view-panel" id="view-servicios">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Catalogo</span>
+              <h2>Servicios</h2>
+            </div>
+            <button class="ghost-btn" type="button" id="open-service">Nuevo servicio</button>
+          </div>
+          <div class="card-grid" id="service-list"></div>
+        </section>
+
+        <section class="view-panel" id="view-equipo">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Profesionales</span>
+              <h2>Equipo</h2>
+            </div>
+            <button class="ghost-btn" type="button" id="open-professional">Nuevo profesional</button>
+          </div>
+          <div class="card-grid" id="team-list"></div>
+        </section>
+
+        <section class="view-panel" id="view-reportes">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Valor del mes</span>
+              <h2>Reportes</h2>
+            </div>
+            <button class="ghost-btn" type="button" id="print-report">Guardar PDF</button>
+          </div>
+          <div class="report-sheet" id="report-sheet">
+            <div class="report-cover">
+              <div>
+                <span class="eyebrow" data-business-name>Salon Demo</span>
+                <h3>Resumen mensual</h3>
+                <p>Turnos, ingresos estimados, servicios mas pedidos y pendientes de confirmar.</p>
+              </div>
+              <strong>Mayo 2026</strong>
+            </div>
+            <div class="report-grid" id="report-grid"></div>
+            <div class="report-columns">
+              <section>
+                <h3>Servicios destacados</h3>
+                <div class="report-list" id="top-services"></div>
+              </section>
+              <section>
+                <h3>Agenda por profesional</h3>
+                <div class="report-list" id="professional-report"></div>
+              </section>
+            </div>
+            <div class="report-note">
+              <strong>Lectura rapida</strong>
+              <p id="report-insight"></p>
+            </div>
+          </div>
+        </section>
+
+        <section class="view-panel public-booking-panel" id="view-reserva">
+          <div class="public-actions">
+            <button class="ghost-btn" type="button" id="public-back-business">Volver al panel</button>
+            <button class="ghost-btn" type="button" id="public-back-entry">Inicio</button>
+          </div>
+          <div class="public-hero">
+            <div>
+              <span class="eyebrow">Link publico</span>
+              <h2 data-business-name>Salon Demo</h2>
+              <p>Elige servicio, profesional y horario disponible. Tu solicitud queda sincronizada con la agenda del salon.</p>
+            </div>
+            <strong data-business-link>turnia.app/salon-demo</strong>
+          </div>
+
+          <div class="public-layout">
+            <form class="client-booking" id="client-booking-form">
+              <label>
+                Fecha
+                <input name="date" type="date" required />
+              </label>
+              <label>
+                Servicio
+                <select name="service" id="client-service-select"></select>
+              </label>
+              <label>
+                Profesional
+                <select name="professional" id="client-professional-select">
+                  <option value="Cualquiera">Cualquiera disponible</option>
+                </select>
+              </label>
+              <div class="service-summary" id="service-summary"></div>
+              <div class="slot-section full-field">
+                <h3>Horarios disponibles</h3>
+                <div class="slot-grid" id="slot-list"></div>
+              </div>
+              <label>
+                Nombre
+                <input name="client" type="text" placeholder="Tu nombre" required />
+              </label>
+              <label>
+                Telefono
+                <input name="phone" type="tel" placeholder="+34 600 000 000" required />
+              </label>
+              <label class="full-field">
+                Nota opcional
+                <textarea name="note" rows="3" placeholder="Contanos si tenes alguna preferencia"></textarea>
+              </label>
+              <button class="primary-btn full-field" type="submit">Reservar turno</button>
+            </form>
+
+            <aside class="client-explain">
+              <h3>Reserva simple</h3>
+              <p>Solo aparecen horarios que realmente estan libres para el servicio elegido.</p>
+              <div class="sync-list" id="sync-list"></div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="view-panel" id="view-configuracion">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Setup inicial</span>
+              <h2>Configuracion del negocio</h2>
+            </div>
+            <button class="primary-btn" type="button" id="save-settings">Guardar setup</button>
+          </div>
+
+          <div class="settings-layout">
+            <form class="settings-form" id="settings-form">
+              <section class="settings-card">
+                <h3>Datos del negocio</h3>
+                <div class="settings-grid">
+                  <label>
+                    Nombre comercial
+                    <input name="businessName" type="text" value="Salon Demo" />
+                  </label>
+                  <label>
+                    Slug del link
+                    <input name="slug" type="text" value="salon-demo" />
+                  </label>
+                  <label>
+                    Ciudad
+                    <input name="city" type="text" value="Madrid" />
+                  </label>
+                  <label>
+                    Telefono del negocio
+                    <input name="businessPhone" type="tel" value="+34 600 000 000" />
+                  </label>
+                </div>
+              </section>
+
+              <section class="settings-card">
+                <h3>Horarios y reglas</h3>
+                <div class="settings-grid">
+                  <label>
+                    Apertura
+                    <input name="start" type="time" value="09:00" />
+                  </label>
+                  <label>
+                    Cierre
+                    <input name="end" type="time" value="19:00" />
+                  </label>
+                  <label>
+                    Intervalo de turnos
+                    <select name="step">
+                      <option value="15">15 minutos</option>
+                      <option value="30" selected>30 minutos</option>
+                      <option value="60">60 minutos</option>
+                    </select>
+                  </label>
+                  <label>
+                    Anticipacion minima
+                    <select name="minNotice">
+                      <option value="2">2 horas</option>
+                      <option value="12" selected>12 horas</option>
+                      <option value="24">24 horas</option>
+                    </select>
+                  </label>
+                  <label class="toggle-row">
+                    <input name="autoConfirm" type="checkbox" />
+                    Confirmar reservas online automaticamente
+                  </label>
+                  <label class="toggle-row">
+                    <input name="allowClientCancel" type="checkbox" checked />
+                    Permitir que el cliente solicite cambios
+                  </label>
+                </div>
+              </section>
+
+              <section class="settings-card">
+                <h3>Plantillas de WhatsApp</h3>
+                <label>
+                  Confirmacion
+                  <textarea name="confirmTemplate" rows="5"></textarea>
+                </label>
+                <label>
+                  Cancelacion
+                  <textarea name="cancelTemplate" rows="5"></textarea>
+                </label>
+              </section>
+
+              <section class="settings-card">
+                <h3>Exportar datos</h3>
+                <p class="export-help">
+                  Usa Excel para revisar o enviar informacion. El backup JSON guarda la demo completa y sirve como respaldo tecnico.
+                </p>
+                <div class="export-actions">
+                  <button class="ghost-btn" type="button" id="export-clients">Clientes Excel</button>
+                  <button class="ghost-btn" type="button" id="export-appointments">Citas Excel</button>
+                  <button class="ghost-btn" type="button" id="export-backup">Backup JSON</button>
+                </div>
+              </section>
+            </form>
+
+            <aside class="setup-summary">
+              <h3>Resumen de entrega</h3>
+              <div id="setup-summary"></div>
+              <h3>Checklist</h3>
+              <div class="sync-list">
+                <span>Servicios con duracion y precio</span>
+                <span>Profesionales con horarios</span>
+                <span>Link publico revisado</span>
+                <span>Plantillas de WhatsApp listas</span>
+                <span>Politica de privacidad pendiente de adaptar</span>
+              </div>
+            </aside>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal-backdrop" id="booking-modal" aria-hidden="true">
+      <section class="booking-modal" role="dialog" aria-modal="true" aria-labelledby="booking-title">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Carga rapida</span>
+            <h2 id="booking-title">Nueva cita</h2>
+          </div>
+          <button class="icon-btn" type="button" id="close-booking" aria-label="Cerrar nueva cita">x</button>
+        </div>
+        <form class="booking-form" id="booking-form">
+          <label>
+            Cliente
+            <input name="client" type="text" placeholder="Nombre del cliente" required />
+          </label>
+          <label>
+            Telefono
+            <input name="phone" type="tel" placeholder="+34 600 000 000" />
+          </label>
+          <label>
+            Fecha
+            <input name="date" type="date" required />
+          </label>
+          <label>
+            Servicio
+            <select name="service" required id="service-select"></select>
+          </label>
+          <label>
+            Profesional
+            <select name="professional" required id="professional-select"></select>
+          </label>
+          <label>
+            Hora
+            <input name="time" type="time" required />
+          </label>
+          <label>
+            Estado
+            <select name="status">
+              <option>Pendiente</option>
+              <option>Confirmada</option>
+            </select>
+          </label>
+          <label class="full-field">
+            Nota
+            <textarea name="note" rows="3" placeholder="Color habitual, alergias, pedido especial..."></textarea>
+          </label>
+          <button class="primary-btn full-field" type="submit">Guardar cita</button>
+        </form>
+      </section>
+    </div>
+
+    <div class="modal-backdrop" id="service-modal" aria-hidden="true">
+      <section class="booking-modal" role="dialog" aria-modal="true" aria-labelledby="service-title">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Catalogo</span>
+            <h2 id="service-title">Nuevo servicio</h2>
+          </div>
+          <button class="icon-btn" type="button" data-close-modal="service-modal" aria-label="Cerrar servicio">x</button>
+        </div>
+        <form class="booking-form" id="service-form">
+          <input name="originalName" type="hidden" />
+          <label>
+            Nombre
+            <input name="name" type="text" placeholder="Corte express" required />
+          </label>
+          <label>
+            Categoria
+            <input name="category" type="text" placeholder="Peluqueria" required />
+          </label>
+          <label>
+            Duracion
+            <input name="duration" type="number" min="15" step="5" value="30" required />
+          </label>
+          <label>
+            Precio
+            <input name="price" type="number" min="0" step="1" value="25" required />
+          </label>
+          <label class="full-field">
+            Profesionales
+            <select name="professionals" id="service-professionals" multiple required></select>
+          </label>
+          <label class="toggle-row full-field">
+            <input name="online" type="checkbox" checked />
+            Disponible en el link publico
+          </label>
+          <button class="primary-btn full-field" type="submit">Guardar servicio</button>
+        </form>
+      </section>
+    </div>
+
+    <div class="modal-backdrop" id="client-modal" aria-hidden="true">
+      <section class="booking-modal" role="dialog" aria-modal="true" aria-labelledby="client-title">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Clientes</span>
+            <h2 id="client-title">Nuevo cliente</h2>
+          </div>
+          <button class="icon-btn" type="button" data-close-modal="client-modal" aria-label="Cerrar cliente">x</button>
+        </div>
+        <form class="booking-form" id="client-form">
+          <input name="originalPhone" type="hidden" />
+          <label>
+            Nombre
+            <input name="name" type="text" placeholder="Lucia Gomez" required />
+          </label>
+          <label>
+            Telefono
+            <input name="phone" type="tel" placeholder="+34 600 000 000" required />
+          </label>
+          <label class="full-field">
+            Nota interna
+            <textarea name="note" rows="4" placeholder="Preferencias, frecuencia, observaciones utiles..."></textarea>
+          </label>
+          <button class="primary-btn full-field" type="submit">Guardar cliente</button>
+        </form>
+      </section>
+    </div>
+
+    <div class="modal-backdrop" id="block-modal" aria-hidden="true">
+      <section class="booking-modal" role="dialog" aria-modal="true" aria-labelledby="block-title">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Agenda</span>
+            <h2 id="block-title">Bloquear horario</h2>
+          </div>
+          <button class="icon-btn" type="button" data-close-modal="block-modal" aria-label="Cerrar bloqueo">x</button>
+        </div>
+        <form class="booking-form" id="block-form">
+          <label>
+            Profesional
+            <select name="professional" id="block-professional-select" required></select>
+          </label>
+          <label>
+            Fecha
+            <input name="date" type="date" required />
+          </label>
+          <label>
+            Motivo
+            <input name="reason" type="text" placeholder="Comida, descanso, ausencia..." required />
+          </label>
+          <label>
+            Inicio
+            <input name="start" type="time" required />
+          </label>
+          <label>
+            Fin
+            <input name="end" type="time" required />
+          </label>
+          <button class="primary-btn full-field" type="submit">Guardar bloqueo</button>
+        </form>
+      </section>
+    </div>
+
+    <div class="modal-backdrop" id="reschedule-modal" aria-hidden="true">
+      <section class="booking-modal" role="dialog" aria-modal="true" aria-labelledby="reschedule-title">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Agenda</span>
+            <h2 id="reschedule-title">Reprogramar cita</h2>
+          </div>
+          <button class="icon-btn" type="button" data-close-modal="reschedule-modal" aria-label="Cerrar reprogramacion">x</button>
+        </div>
+        <div class="reschedule-summary" id="reschedule-summary"></div>
+        <form class="booking-form" id="reschedule-form">
+          <input name="appointmentId" type="hidden" />
+          <label>
+            Fecha
+            <input name="date" id="reschedule-date" type="date" required />
+          </label>
+          <label>
+            Profesional
+            <select name="professional" id="reschedule-professional" required></select>
+          </label>
+          <label>
+            Nuevo horario
+            <select name="time" id="reschedule-time" required></select>
+          </label>
+          <label class="full-field">
+            Nota para el cliente
+            <textarea name="note" rows="3" placeholder="Te proponemos este nuevo horario..."></textarea>
+          </label>
+          <button class="primary-btn full-field" type="submit">Guardar reprogramacion</button>
+        </form>
+      </section>
+    </div>
+
+    <div class="modal-backdrop" id="professional-modal" aria-hidden="true">
+      <section class="booking-modal" role="dialog" aria-modal="true" aria-labelledby="professional-title">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Equipo</span>
+            <h2 id="professional-title">Nuevo profesional</h2>
+          </div>
+          <button class="icon-btn" type="button" data-close-modal="professional-modal" aria-label="Cerrar profesional">x</button>
+        </div>
+        <form class="booking-form" id="professional-form">
+          <input name="originalName" type="hidden" />
+          <label>
+            Nombre
+            <input name="name" type="text" placeholder="Mara" required />
+          </label>
+          <label>
+            Especialidad
+            <input name="role" type="text" placeholder="Colorista" required />
+          </label>
+          <label>
+            Inicio
+            <input name="workStart" type="time" value="09:00" required />
+          </label>
+          <label>
+            Fin
+            <input name="workEnd" type="time" value="18:00" required />
+          </label>
+          <label class="full-field">
+            Servicios que puede realizar
+            <select name="services" id="professional-services" multiple required></select>
+          </label>
+          <button class="primary-btn full-field" type="submit">Guardar profesional</button>
+        </form>
+      </section>
+    </div>
+
+    <nav class="bottom-nav" aria-label="Secciones moviles">
+      <button class="bottom-item active" type="button" data-view="agenda">Agenda</button>
+      <button class="bottom-item" type="button" data-view="clientes">Clientes</button>
+      <button class="bottom-item" type="button" data-view="semana">Semana</button>
+      <button class="bottom-item" type="button" data-view="reportes">Reportes</button>
+    </nav>
+
+    <script src="./agendaRules.js"></script>
+    <script src="./dataAdapter.js"></script>
+    <script src="./supabaseClient.js"></script>
+    <script src="./dataProviders.js"></script>
+    <script src="./authProvider.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
