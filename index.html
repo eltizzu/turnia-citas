@@ -1,674 +1,255 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Turnia | Agenda de citas</title>
-    <meta name="theme-color" content="#2f7d68" />
-    <meta name="description" content="Demo funcional de Turnia, una agenda online para negocios que trabajan por turnos." />
-    <meta name="robots" content="noindex, nofollow" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="Turnia" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="./assets/logo-turnia.svg" />
-    <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Sora:wght@500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body>
-    <section class="entry-screen" id="entry-screen">
-      <div class="entry-card">
-        <div class="brand entry-brand">
-          <img class="brand-logo" src="./assets/logo-turnia.svg" alt="" />
-          <div>
-            <strong>Turnia</strong>
-            <span>Agenda y reservas para salones</span>
-          </div>
-        </div>
-        <div>
-          <span class="eyebrow">Demo publica</span>
-          <h1>Gestiona turnos y deja que tus clientes reserven desde un link.</h1>
-          <p>
-            Entra como negocio para administrar agenda, servicios y clientes, o mira la experiencia publica que veria un cliente.
-          </p>
-        </div>
-        <div class="demo-notice">
-          <strong>Estas probando una demo funcional</strong>
-          <p>
-            Los datos se guardan solo en este navegador. No cargues informacion real de clientes. Para volver al estado inicial, usa Restaurar demo.
-          </p>
-        </div>
-        <div class="entry-highlights">
-          <span>Agenda sincronizada</span>
-          <span>WhatsApp preparado</span>
-          <span>Reportes y exportacion</span>
-        </div>
-        <form class="login-box" id="login-form">
-          <label>
-            Email del negocio
-            <input name="email" type="email" value="salon@demo.com" />
-          </label>
-          <label>
-            Contrasena
-            <input name="password" type="password" value="turnia-demo" />
-          </label>
-          <button class="primary-btn" type="submit">Entrar como negocio</button>
-        </form>
-        <div class="entry-actions">
-          <button class="ghost-btn" type="button" id="google-login">Entrar con Google</button>
-          <button class="ghost-btn" type="button" id="enter-client">Ver link del cliente</button>
-        </div>
-        <div class="auth-message hidden" id="auth-message" role="status"></div>
-      </div>
-    </section>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Turnia — Agenda online para negocios de belleza y bienestar</title>
+  <meta name="description" content="Turnia da a peluquerías, barberías y centros de estética una agenda online simple para que los clientes reserven desde un link y el negocio gestione turnos sin depender del WhatsApp." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f6f1ea;
+      --surface: #fffaf3;
+      --border: rgba(68,52,34,0.12);
+      --text: #27211c;
+      --muted: #756b63;
+      --primary: #2f7d68;
+      --primary-dark: #1f5f4e;
+      --primary-soft: #dceee8;
+      --sun: #f1a33b;
+      --radius: 18px;
+      --shadow: 0 12px 32px rgba(68,52,34,0.10);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Outfit", sans-serif; color: var(--text); background: linear-gradient(135deg, var(--bg) 0%, #ede6da 100%); min-height: 100vh; }
 
-    <div class="app-shell hidden" id="app-shell">
-      <aside class="sidebar">
-        <div class="brand">
-          <img class="brand-logo" src="./assets/logo-turnia.svg" alt="" />
-          <div>
-            <strong>Turnia</strong>
-            <span>Agenda simple</span>
-          </div>
-        </div>
+    nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 64px; background: rgba(255,250,243,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+    .nav-brand { font-family: "Sora", sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); text-decoration: none; }
+    .nav-brand span { color: var(--primary); }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; }
+    .nav-cta { background: var(--primary) !important; color: #fff !important; padding: 8px 20px; border-radius: 10px; font-size: 0.9rem; font-weight: 600; text-decoration: none; }
+    .nav-cta:hover { background: var(--primary-dark) !important; }
 
-        <nav class="nav-list" aria-label="Secciones principales">
-          <button class="nav-item active" type="button" data-view="agenda">Agenda</button>
-          <button class="nav-item" type="button" data-view="semana">Semana</button>
-          <button class="nav-item" type="button" data-view="clientes">Clientes</button>
-          <button class="nav-item" type="button" data-view="servicios">Servicios</button>
-          <button class="nav-item" type="button" data-view="equipo">Equipo</button>
-          <button class="nav-item" type="button" data-view="reportes">Reportes</button>
-          <button class="nav-item" type="button" data-view="reserva">Link cliente</button>
-          <button class="nav-item" type="button" data-view="configuracion">Configuracion</button>
-        </nav>
+    .hero { max-width: 900px; margin: 0 auto; padding: 80px 24px 64px; text-align: center; }
+    .eyebrow { display: inline-block; background: var(--primary-soft); color: var(--primary-dark); font-size: 0.8rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 20px; }
+    h1 { font-family: "Sora", sans-serif; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.03em; margin-bottom: 20px; }
+    h1 em { color: var(--primary); font-style: normal; }
+    .hero-sub { font-size: 1.1rem; color: var(--muted); line-height: 1.7; max-width: 620px; margin: 0 auto 36px; }
+    .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { background: var(--primary); color: #fff; padding: 13px 28px; border-radius: 12px; font-weight: 600; text-decoration: none; font-size: 0.95rem; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-ghost { background: transparent; color: var(--text); padding: 13px 28px; border-radius: 12px; font-weight: 600; text-decoration: none; border: 1.5px solid var(--border); font-size: 0.95rem; }
+    .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
 
-        <div class="sidebar-note">
-          <span>Link publico</span>
-          <strong data-business-link>turnia.app/salon-demo</strong>
-          <p>El cliente reserva desde ahi y la cita entra sincronizada en esta agenda.</p>
-          <small>Demo local: no uses datos reales.</small>
-          <button class="ghost-btn" type="button" id="reset-demo">Restaurar demo</button>
-          <button class="ghost-btn" type="button" id="exit-demo">Salir</button>
-        </div>
-      </aside>
+    .section { max-width: 960px; margin: 0 auto; padding: 64px 24px; }
+    .section-label { font-size: 0.8rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--primary); margin-bottom: 12px; }
+    .section-title { font-family: "Sora", sans-serif; font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; }
+    .section-sub { color: var(--muted); font-size: 1.05rem; line-height: 1.7; max-width: 600px; }
 
-      <main class="main-app">
-        <section class="demo-banner" aria-label="Aviso de demo publica">
-          <strong>Modo demo</strong>
-          <span>Datos de prueba guardados solo en este navegador. No usar con clientes reales todavia.</span>
-        </section>
-        <header class="topbar">
-          <div>
-            <span class="eyebrow" data-business-name>Salon Demo</span>
-            <h1>Agenda de hoy</h1>
-          </div>
-          <div class="topbar-actions">
-            <button class="ghost-btn" type="button" data-view="reserva">Vista cliente</button>
-            <button class="ghost-btn" type="button" id="back-entry">Inicio</button>
-            <button class="primary-btn" type="button" id="open-booking">Nueva cita</button>
-          </div>
-        </header>
+    .problema-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 40px; }
+    .problema-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+    .problema-icon { font-size: 1.6rem; margin-bottom: 10px; }
+    .problema-card h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 6px; }
+    .problema-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
 
-        <section class="stats-grid" aria-label="Resumen del dia">
-          <article class="stat-card">
-            <span>Citas hoy</span>
-            <strong id="stat-appointments">0</strong>
-          </article>
-          <article class="stat-card">
-            <span>Confirmadas</span>
-            <strong id="stat-confirmed">0</strong>
-          </article>
-          <article class="stat-card">
-            <span>Por confirmar</span>
-            <strong id="stat-pending">0</strong>
-          </article>
-          <article class="stat-card">
-            <span>Huecos libres</span>
-            <strong id="stat-openings">0</strong>
-          </article>
-        </section>
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 40px; }
+    .feature-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; }
+    .feature-card h3 { font-family: "Sora", sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+    .feature-icon { font-size: 1.3rem; }
+    .feature-card ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .feature-card li { font-size: 0.88rem; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+    .feature-card li::before { content: "✓"; color: var(--primary); font-weight: 700; flex-shrink: 0; }
 
-        <section class="view-panel active" id="view-agenda">
-          <div class="section-head">
-            <div>
-              <span class="eyebrow" id="agenda-date-label">Dia seleccionado</span>
-              <h2>Dia en curso</h2>
-            </div>
-            <div class="agenda-controls">
-              <input class="compact-select" id="agenda-date" type="date" />
-              <div class="segmented-control" aria-label="Filtro de profesionales">
-                <button class="segment active" type="button" data-filter="Todos">Todos</button>
-                <button class="segment" type="button" data-filter="Mara">Mara</button>
-                <button class="segment" type="button" data-filter="Noe">Noe</button>
-                <button class="segment" type="button" data-filter="Eva">Eva</button>
-              </div>
-            </div>
-          </div>
-          <div class="agenda-layout">
-            <div class="timeline" id="agenda-list"></div>
-            <aside class="day-aside">
-              <h3>Huecos recomendados</h3>
-              <div class="opening-list" id="opening-list"></div>
-              <h3>Bloqueos</h3>
-              <div class="opening-list" id="block-list"></div>
-              <button class="ghost-btn" type="button" id="open-block">Bloquear horario</button>
-              <h3>Mensaje al cliente</h3>
-              <div class="message-preview" id="message-preview">
-                <p>Cuando confirmes o canceles una cita, Turnia preparara el WhatsApp para enviar.</p>
-              </div>
-              <h3>Acciones rapidas</h3>
-              <div class="quick-actions">
-                <button type="button">Enviar recordatorios</button>
-                <button type="button">Copiar enlace de reserva</button>
-                <button type="button">Ver pendientes</button>
-              </div>
-            </aside>
-          </div>
-        </section>
+    .para-quien { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-top: 36px; }
+    .quien-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; text-align: center; font-size: 0.9rem; font-weight: 500; }
+    .quien-card span { font-size: 1.6rem; display: block; margin-bottom: 8px; }
 
-        <section class="view-panel" id="view-semana">
-          <div class="section-head">
-            <div>
-              <span class="eyebrow">Vista semanal</span>
-              <h2>Semana por profesional</h2>
-            </div>
-            <select class="compact-select" id="week-professional"></select>
-          </div>
-          <div class="week-grid" id="week-grid"></div>
-        </section>
+    .pricing-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 40px; }
+    .price-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 28px; display: flex; flex-direction: column; gap: 12px; }
+    .price-card.featured { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+    .price-name { font-family: "Sora", sans-serif; font-size: 1rem; font-weight: 700; }
+    .price-setup { font-size: 0.82rem; color: var(--muted); background: #f0f0ea; border-radius: 8px; padding: 6px 10px; }
+    .price-amount { font-size: 2rem; font-weight: 700; color: var(--primary); }
+    .price-amount span { font-size: 0.9rem; font-weight: 400; color: var(--muted); }
+    .price-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+    .price-features { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+    .price-features li { font-size: 0.85rem; color: var(--muted); display: flex; gap: 8px; }
+    .price-features li::before { content: "✓"; color: var(--primary); font-weight: 700; flex-shrink: 0; }
+    .price-cta { margin-top: auto; background: var(--primary); color: #fff; text-align: center; padding: 11px; border-radius: 10px; font-weight: 600; text-decoration: none; font-size: 0.9rem; display: block; }
+    .price-cta:hover { background: var(--primary-dark); }
+    .price-cta.ghost { background: transparent; color: var(--text); border: 1.5px solid var(--border); }
+    .price-cta.ghost:hover { border-color: var(--primary); color: var(--primary); }
+    .badge-pop { font-size: 0.72rem; font-weight: 700; background: var(--primary); color: #fff; padding: 2px 9px; border-radius: 20px; margin-left: 8px; vertical-align: middle; }
 
-        <section class="view-panel" id="view-clientes">
-          <div class="section-head">
-            <div>
-              <span class="eyebrow">CRM simple</span>
-              <h2>Clientes</h2>
-            </div>
-            <button class="ghost-btn" type="button" id="open-client">Nuevo cliente</button>
-          </div>
-          <div class="clients-layout">
-            <div class="card-grid" id="client-list"></div>
-            <aside class="client-detail" id="client-detail">
-              <p>Selecciona un cliente para ver historial, notas y contacto.</p>
-            </aside>
-          </div>
-        </section>
+    .cta-section { background: var(--text); color: #fff; text-align: center; padding: 72px 24px; }
+    .cta-section h2 { font-family: "Sora", sans-serif; font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 700; margin-bottom: 14px; }
+    .cta-section p { color: rgba(255,255,255,0.65); font-size: 1rem; margin-bottom: 32px; }
+    .cta-section a { background: var(--primary); color: #fff; padding: 14px 32px; border-radius: 12px; font-weight: 600; text-decoration: none; font-size: 1rem; display: inline-block; }
+    .cta-section a:hover { background: var(--primary-dark); }
 
-        <section class="view-panel" id="view-servicios">
-          <div class="section-head">
-            <div>
-              <span class="eyebrow">Catalogo</span>
-              <h2>Servicios</h2>
-            </div>
-            <button class="ghost-btn" type="button" id="open-service">Nuevo servicio</button>
-          </div>
-          <div class="card-grid" id="service-list"></div>
-        </section>
+    footer { text-align: center; padding: 28px 24px; font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--border); }
+    footer a { color: var(--primary); text-decoration: none; }
 
-        <section class="view-panel" id="view-equipo">
-          <div class="section-head">
-            <div>
-              <span class="eyebrow">Profesionales</span>
-              <h2>Equipo</h2>
-            </div>
-            <button class="ghost-btn" type="button" id="open-professional">Nuevo profesional</button>
-          </div>
-          <div class="card-grid" id="team-list"></div>
-        </section>
+    @media (max-width: 600px) { nav { padding: 0 20px; } .nav-links { display: none; } }
+  </style>
+</head>
+<body>
 
-        <section class="view-panel" id="view-reportes">
-          <div class="section-head">
-            <div>
-              <span class="eyebrow">Valor del mes</span>
-              <h2>Reportes</h2>
-            </div>
-            <button class="ghost-btn" type="button" id="print-report">Guardar PDF</button>
-          </div>
-          <div class="report-sheet" id="report-sheet">
-            <div class="report-cover">
-              <div>
-                <span class="eyebrow" data-business-name>Salon Demo</span>
-                <h3>Resumen mensual</h3>
-                <p>Turnos, ingresos estimados, servicios mas pedidos y pendientes de confirmar.</p>
-              </div>
-              <strong>Mayo 2026</strong>
-            </div>
-            <div class="report-grid" id="report-grid"></div>
-            <div class="report-columns">
-              <section>
-                <h3>Servicios destacados</h3>
-                <div class="report-list" id="top-services"></div>
-              </section>
-              <section>
-                <h3>Agenda por profesional</h3>
-                <div class="report-list" id="professional-report"></div>
-              </section>
-            </div>
-            <div class="report-note">
-              <strong>Lectura rapida</strong>
-              <p id="report-insight"></p>
-            </div>
-          </div>
-        </section>
+<nav>
+  <a class="nav-brand" href="#"><span>Turnia</span></a>
+  <div class="nav-links">
+    <a href="#problema">El problema</a>
+    <a href="#funciones">Funciones</a>
+    <a href="#precios">Precios</a>
+    <a class="nav-cta" href="demo.html">Ver demo</a>
+  </div>
+</nav>
 
-        <section class="view-panel public-booking-panel" id="view-reserva">
-          <div class="public-actions">
-            <button class="ghost-btn" type="button" id="public-back-business">Volver al panel</button>
-            <button class="ghost-btn" type="button" id="public-back-entry">Inicio</button>
-          </div>
-          <div class="public-hero">
-            <div>
-              <span class="eyebrow">Link publico</span>
-              <h2 data-business-name>Salon Demo</h2>
-              <p>Elige servicio, profesional y horario disponible. Tu solicitud queda sincronizada con la agenda del salon.</p>
-            </div>
-            <strong data-business-link>turnia.app/salon-demo</strong>
-          </div>
+<section class="hero">
+  <div class="eyebrow">Agenda online para belleza y bienestar</div>
+  <h1>Tus clientes reservan solos. <em>Tú gestionas sin WhatsApp.</em></h1>
+  <p class="hero-sub">Turnia da a peluquerías, barberías, centros de uñas y estética una agenda online simple para gestionar turnos, clientes y servicios desde un panel claro — sin comisiones ni marketplace.</p>
+  <div class="hero-actions">
+    <a class="btn-primary" href="demo.html">Ver demo interactiva</a>
+    <a class="btn-ghost" href="manual.html" target="_blank">Manual de uso</a>
+  </div>
+</section>
 
-          <div class="public-layout">
-            <form class="client-booking" id="client-booking-form">
-              <label>
-                Fecha
-                <input name="date" type="date" required />
-              </label>
-              <label>
-                Servicio
-                <select name="service" id="client-service-select"></select>
-              </label>
-              <label>
-                Profesional
-                <select name="professional" id="client-professional-select">
-                  <option value="Cualquiera">Cualquiera disponible</option>
-                </select>
-              </label>
-              <div class="service-summary" id="service-summary"></div>
-              <div class="slot-section full-field">
-                <h3>Horarios disponibles</h3>
-                <div class="slot-grid" id="slot-list"></div>
-              </div>
-              <label>
-                Nombre
-                <input name="client" type="text" placeholder="Tu nombre" required />
-              </label>
-              <label>
-                Telefono
-                <input name="phone" type="tel" placeholder="+34 600 000 000" required />
-              </label>
-              <label class="full-field">
-                Nota opcional
-                <textarea name="note" rows="3" placeholder="Contanos si tenes alguna preferencia"></textarea>
-              </label>
-              <button class="primary-btn full-field" type="submit">Reservar turno</button>
-            </form>
+<section class="section" id="problema">
+  <div class="section-label">El problema</div>
+  <h2 class="section-title">Gestionar la agenda por WhatsApp tiene un coste real</h2>
+  <p class="section-sub">Cada mensaje de "¿tienes hueco el martes?" es tiempo que se pierde. Turnia ordena ese flujo sin complicarlo.</p>
+  <div class="problema-grid">
+    <div class="problema-card"><div class="problema-icon">📱</div><h3>Mensajes dispersos por WhatsApp</h3><p>Idas y vueltas para confirmar disponibilidad, horarios pisados y turnos perdidos.</p></div>
+    <div class="problema-card"><div class="problema-icon">⏰</div><h3>Turnos superpuestos</h3><p>Sin sistema, es fácil que dos clientes queden a la misma hora con el mismo profesional.</p></div>
+    <div class="problema-card"><div class="problema-icon">📊</div><h3>Sin visibilidad de ingresos</h3><p>No saber cuánto se ha facturado en el mes ni qué servicios funcionan mejor.</p></div>
+    <div class="problema-card"><div class="problema-icon">👥</div><h3>Sin historial del cliente</h3><p>Cada vez que llega un cliente habitual hay que volver a preguntar qué quiere.</p></div>
+  </div>
+</section>
 
-            <aside class="client-explain">
-              <h3>Reserva simple</h3>
-              <p>Solo aparecen horarios que realmente estan libres para el servicio elegido.</p>
-              <div class="sync-list" id="sync-list"></div>
-            </aside>
-          </div>
-        </section>
-
-        <section class="view-panel" id="view-configuracion">
-          <div class="section-head">
-            <div>
-              <span class="eyebrow">Setup inicial</span>
-              <h2>Configuracion del negocio</h2>
-            </div>
-            <button class="primary-btn" type="button" id="save-settings">Guardar setup</button>
-          </div>
-
-          <div class="settings-layout">
-            <form class="settings-form" id="settings-form">
-              <section class="settings-card">
-                <h3>Datos del negocio</h3>
-                <div class="settings-grid">
-                  <label>
-                    Nombre comercial
-                    <input name="businessName" type="text" value="Salon Demo" />
-                  </label>
-                  <label>
-                    Slug del link
-                    <input name="slug" type="text" value="salon-demo" />
-                  </label>
-                  <label>
-                    Ciudad
-                    <input name="city" type="text" value="Madrid" />
-                  </label>
-                  <label>
-                    Telefono del negocio
-                    <input name="businessPhone" type="tel" value="+34 600 000 000" />
-                  </label>
-                </div>
-              </section>
-
-              <section class="settings-card">
-                <h3>Horarios y reglas</h3>
-                <div class="settings-grid">
-                  <label>
-                    Apertura
-                    <input name="start" type="time" value="09:00" />
-                  </label>
-                  <label>
-                    Cierre
-                    <input name="end" type="time" value="19:00" />
-                  </label>
-                  <label>
-                    Intervalo de turnos
-                    <select name="step">
-                      <option value="15">15 minutos</option>
-                      <option value="30" selected>30 minutos</option>
-                      <option value="60">60 minutos</option>
-                    </select>
-                  </label>
-                  <label>
-                    Anticipacion minima
-                    <select name="minNotice">
-                      <option value="2">2 horas</option>
-                      <option value="12" selected>12 horas</option>
-                      <option value="24">24 horas</option>
-                    </select>
-                  </label>
-                  <label class="toggle-row">
-                    <input name="autoConfirm" type="checkbox" />
-                    Confirmar reservas online automaticamente
-                  </label>
-                  <label class="toggle-row">
-                    <input name="allowClientCancel" type="checkbox" checked />
-                    Permitir que el cliente solicite cambios
-                  </label>
-                </div>
-              </section>
-
-              <section class="settings-card">
-                <h3>Plantillas de WhatsApp</h3>
-                <label>
-                  Confirmacion
-                  <textarea name="confirmTemplate" rows="5"></textarea>
-                </label>
-                <label>
-                  Cancelacion
-                  <textarea name="cancelTemplate" rows="5"></textarea>
-                </label>
-              </section>
-
-              <section class="settings-card">
-                <h3>Exportar datos</h3>
-                <p class="export-help">
-                  Usa Excel para revisar o enviar informacion. El backup JSON guarda la demo completa y sirve como respaldo tecnico.
-                </p>
-                <div class="export-actions">
-                  <button class="ghost-btn" type="button" id="export-clients">Clientes Excel</button>
-                  <button class="ghost-btn" type="button" id="export-appointments">Citas Excel</button>
-                  <button class="ghost-btn" type="button" id="export-backup">Backup JSON</button>
-                </div>
-              </section>
-            </form>
-
-            <aside class="setup-summary">
-              <h3>Resumen de entrega</h3>
-              <div id="setup-summary"></div>
-              <h3>Checklist</h3>
-              <div class="sync-list">
-                <span>Servicios con duracion y precio</span>
-                <span>Profesionales con horarios</span>
-                <span>Link publico revisado</span>
-                <span>Plantillas de WhatsApp listas</span>
-                <span>Politica de privacidad pendiente de adaptar</span>
-              </div>
-            </aside>
-          </div>
-        </section>
-      </main>
+<section class="section" id="funciones">
+  <div class="section-label">Funciones</div>
+  <h2 class="section-title">Todo lo que necesita un negocio de turnos</h2>
+  <p class="section-sub">Desde la reserva del cliente hasta los reportes del mes, en una sola herramienta.</p>
+  <div class="features-grid">
+    <div class="feature-card">
+      <h3><span class="feature-icon">📆</span> Panel del negocio</h3>
+      <ul>
+        <li>Agenda diaria y semanal</li>
+        <li>Nueva cita manual en segundos</li>
+        <li>Confirmación, cancelación y reprogramación</li>
+        <li>Bloqueos por profesional</li>
+        <li>Filtros por profesional y servicio</li>
+      </ul>
     </div>
-
-    <div class="modal-backdrop" id="booking-modal" aria-hidden="true">
-      <section class="booking-modal" role="dialog" aria-modal="true" aria-labelledby="booking-title">
-        <div class="section-head">
-          <div>
-            <span class="eyebrow">Carga rapida</span>
-            <h2 id="booking-title">Nueva cita</h2>
-          </div>
-          <button class="icon-btn" type="button" id="close-booking" aria-label="Cerrar nueva cita">x</button>
-        </div>
-        <form class="booking-form" id="booking-form">
-          <label>
-            Cliente
-            <input name="client" type="text" placeholder="Nombre del cliente" required />
-          </label>
-          <label>
-            Telefono
-            <input name="phone" type="tel" placeholder="+34 600 000 000" />
-          </label>
-          <label>
-            Fecha
-            <input name="date" type="date" required />
-          </label>
-          <label>
-            Servicio
-            <select name="service" required id="service-select"></select>
-          </label>
-          <label>
-            Profesional
-            <select name="professional" required id="professional-select"></select>
-          </label>
-          <label>
-            Hora
-            <input name="time" type="time" required />
-          </label>
-          <label>
-            Estado
-            <select name="status">
-              <option>Pendiente</option>
-              <option>Confirmada</option>
-            </select>
-          </label>
-          <label class="full-field">
-            Nota
-            <textarea name="note" rows="3" placeholder="Color habitual, alergias, pedido especial..."></textarea>
-          </label>
-          <button class="primary-btn full-field" type="submit">Guardar cita</button>
-        </form>
-      </section>
+    <div class="feature-card">
+      <h3><span class="feature-icon">🔗</span> Link de reserva para clientes</h3>
+      <ul>
+        <li>Selección de servicio y profesional</li>
+        <li>Horarios disponibles en tiempo real</li>
+        <li>Reserva confirmada automáticamente</li>
+        <li>Sin app, desde cualquier móvil</li>
+        <li>Listo para Instagram y WhatsApp</li>
+      </ul>
     </div>
-
-    <div class="modal-backdrop" id="service-modal" aria-hidden="true">
-      <section class="booking-modal" role="dialog" aria-modal="true" aria-labelledby="service-title">
-        <div class="section-head">
-          <div>
-            <span class="eyebrow">Catalogo</span>
-            <h2 id="service-title">Nuevo servicio</h2>
-          </div>
-          <button class="icon-btn" type="button" data-close-modal="service-modal" aria-label="Cerrar servicio">x</button>
-        </div>
-        <form class="booking-form" id="service-form">
-          <input name="originalName" type="hidden" />
-          <label>
-            Nombre
-            <input name="name" type="text" placeholder="Corte express" required />
-          </label>
-          <label>
-            Categoria
-            <input name="category" type="text" placeholder="Peluqueria" required />
-          </label>
-          <label>
-            Duracion
-            <input name="duration" type="number" min="15" step="5" value="30" required />
-          </label>
-          <label>
-            Precio
-            <input name="price" type="number" min="0" step="1" value="25" required />
-          </label>
-          <label class="full-field">
-            Profesionales
-            <select name="professionals" id="service-professionals" multiple required></select>
-          </label>
-          <label class="toggle-row full-field">
-            <input name="online" type="checkbox" checked />
-            Disponible en el link publico
-          </label>
-          <button class="primary-btn full-field" type="submit">Guardar servicio</button>
-        </form>
-      </section>
+    <div class="feature-card">
+      <h3><span class="feature-icon">👤</span> Clientes y equipo</h3>
+      <ul>
+        <li>Ficha de cliente con historial de citas</li>
+        <li>Acceso rápido a WhatsApp</li>
+        <li>Profesionales con horarios y servicios</li>
+        <li>Servicios con duración y precio</li>
+        <li>Visibilidad online por servicio</li>
+      </ul>
     </div>
-
-    <div class="modal-backdrop" id="client-modal" aria-hidden="true">
-      <section class="booking-modal" role="dialog" aria-modal="true" aria-labelledby="client-title">
-        <div class="section-head">
-          <div>
-            <span class="eyebrow">Clientes</span>
-            <h2 id="client-title">Nuevo cliente</h2>
-          </div>
-          <button class="icon-btn" type="button" data-close-modal="client-modal" aria-label="Cerrar cliente">x</button>
-        </div>
-        <form class="booking-form" id="client-form">
-          <input name="originalPhone" type="hidden" />
-          <label>
-            Nombre
-            <input name="name" type="text" placeholder="Lucia Gomez" required />
-          </label>
-          <label>
-            Telefono
-            <input name="phone" type="tel" placeholder="+34 600 000 000" required />
-          </label>
-          <label class="full-field">
-            Nota interna
-            <textarea name="note" rows="4" placeholder="Preferencias, frecuencia, observaciones utiles..."></textarea>
-          </label>
-          <button class="primary-btn full-field" type="submit">Guardar cliente</button>
-        </form>
-      </section>
+    <div class="feature-card">
+      <h3><span class="feature-icon">📊</span> Reportes y exportación</h3>
+      <ul>
+        <li>Ingresos estimados del período</li>
+        <li>Ticket medio y servicios destacados</li>
+        <li>Ingresos por profesional</li>
+        <li>Exportación a PDF y Excel</li>
+        <li>Backup completo exportable</li>
+      </ul>
     </div>
+  </div>
+</section>
 
-    <div class="modal-backdrop" id="block-modal" aria-hidden="true">
-      <section class="booking-modal" role="dialog" aria-modal="true" aria-labelledby="block-title">
-        <div class="section-head">
-          <div>
-            <span class="eyebrow">Agenda</span>
-            <h2 id="block-title">Bloquear horario</h2>
-          </div>
-          <button class="icon-btn" type="button" data-close-modal="block-modal" aria-label="Cerrar bloqueo">x</button>
-        </div>
-        <form class="booking-form" id="block-form">
-          <label>
-            Profesional
-            <select name="professional" id="block-professional-select" required></select>
-          </label>
-          <label>
-            Fecha
-            <input name="date" type="date" required />
-          </label>
-          <label>
-            Motivo
-            <input name="reason" type="text" placeholder="Comida, descanso, ausencia..." required />
-          </label>
-          <label>
-            Inicio
-            <input name="start" type="time" required />
-          </label>
-          <label>
-            Fin
-            <input name="end" type="time" required />
-          </label>
-          <button class="primary-btn full-field" type="submit">Guardar bloqueo</button>
-        </form>
-      </section>
+<section class="section" id="para-quien">
+  <div class="section-label">¿Para quién?</div>
+  <h2 class="section-title">Pensado para negocios pequeños y medianos</h2>
+  <p class="section-sub">Sin comisiones por reserva, sin marketplace obligatorio. Setup asistido para los primeros clientes.</p>
+  <div class="para-quien">
+    <div class="quien-card"><span>✂️</span>Peluquerías</div>
+    <div class="quien-card"><span>💈</span>Barberías</div>
+    <div class="quien-card"><span>💅</span>Uñas y estética</div>
+    <div class="quien-card"><span>👁️</span>Pestañas y cejas</div>
+    <div class="quien-card"><span>💆</span>Masajes y wellness</div>
+  </div>
+</section>
+
+<section class="section" id="precios">
+  <div class="section-label">Precios</div>
+  <h2 class="section-title">Sin sorpresas, sin comisiones</h2>
+  <p class="section-sub">Un setup inicial para dejar todo configurado y una mensualidad según el tamaño de tu equipo.</p>
+  <div class="pricing-cards">
+    <div class="price-card">
+      <div class="price-name">Solo</div>
+      <div class="price-setup">Setup inicial: 49 €</div>
+      <div class="price-amount">19€ <span>/mes</span></div>
+      <div class="price-desc">Para profesionales independientes con agenda propia.</div>
+      <ul class="price-features">
+        <li>1 profesional</li>
+        <li>Servicios ilimitados</li>
+        <li>Link de reserva público</li>
+        <li>Clientes e historial</li>
+        <li>Reportes básicos</li>
+      </ul>
+      <a class="price-cta ghost" href="mailto:hola@impulsdigital.es?subject=Turnia Solo">Solicitar demo</a>
     </div>
-
-    <div class="modal-backdrop" id="reschedule-modal" aria-hidden="true">
-      <section class="booking-modal" role="dialog" aria-modal="true" aria-labelledby="reschedule-title">
-        <div class="section-head">
-          <div>
-            <span class="eyebrow">Agenda</span>
-            <h2 id="reschedule-title">Reprogramar cita</h2>
-          </div>
-          <button class="icon-btn" type="button" data-close-modal="reschedule-modal" aria-label="Cerrar reprogramacion">x</button>
-        </div>
-        <div class="reschedule-summary" id="reschedule-summary"></div>
-        <form class="booking-form" id="reschedule-form">
-          <input name="appointmentId" type="hidden" />
-          <label>
-            Fecha
-            <input name="date" id="reschedule-date" type="date" required />
-          </label>
-          <label>
-            Profesional
-            <select name="professional" id="reschedule-professional" required></select>
-          </label>
-          <label>
-            Nuevo horario
-            <select name="time" id="reschedule-time" required></select>
-          </label>
-          <label class="full-field">
-            Nota para el cliente
-            <textarea name="note" rows="3" placeholder="Te proponemos este nuevo horario..."></textarea>
-          </label>
-          <button class="primary-btn full-field" type="submit">Guardar reprogramacion</button>
-        </form>
-      </section>
+    <div class="price-card featured">
+      <div class="price-name">Equipo <span class="badge-pop">Popular</span></div>
+      <div class="price-setup">Setup inicial: 99 €</div>
+      <div class="price-amount">39€ <span>/mes</span></div>
+      <div class="price-desc">Para negocios con hasta 4 profesionales y servicios definidos.</div>
+      <ul class="price-features">
+        <li>Hasta 4 profesionales</li>
+        <li>Servicios por profesional</li>
+        <li>Link de reserva personalizado</li>
+        <li>Clientes con historial completo</li>
+        <li>Reportes y exportación Excel</li>
+        <li>Plantillas de WhatsApp</li>
+      </ul>
+      <a class="price-cta" href="mailto:hola@impulsdigital.es?subject=Turnia Equipo">Solicitar demo</a>
     </div>
-
-    <div class="modal-backdrop" id="professional-modal" aria-hidden="true">
-      <section class="booking-modal" role="dialog" aria-modal="true" aria-labelledby="professional-title">
-        <div class="section-head">
-          <div>
-            <span class="eyebrow">Equipo</span>
-            <h2 id="professional-title">Nuevo profesional</h2>
-          </div>
-          <button class="icon-btn" type="button" data-close-modal="professional-modal" aria-label="Cerrar profesional">x</button>
-        </div>
-        <form class="booking-form" id="professional-form">
-          <input name="originalName" type="hidden" />
-          <label>
-            Nombre
-            <input name="name" type="text" placeholder="Mara" required />
-          </label>
-          <label>
-            Especialidad
-            <input name="role" type="text" placeholder="Colorista" required />
-          </label>
-          <label>
-            Inicio
-            <input name="workStart" type="time" value="09:00" required />
-          </label>
-          <label>
-            Fin
-            <input name="workEnd" type="time" value="18:00" required />
-          </label>
-          <label class="full-field">
-            Servicios que puede realizar
-            <select name="services" id="professional-services" multiple required></select>
-          </label>
-          <button class="primary-btn full-field" type="submit">Guardar profesional</button>
-        </form>
-      </section>
+    <div class="price-card">
+      <div class="price-name">Salón</div>
+      <div class="price-setup">Setup inicial: 149 €</div>
+      <div class="price-amount">49€ <span>/mes</span></div>
+      <div class="price-desc">Para centros con más de 4 profesionales y alta rotación.</div>
+      <ul class="price-features">
+        <li>Hasta 8 profesionales</li>
+        <li>Todo lo del plan Equipo</li>
+        <li>Configuración avanzada de horarios</li>
+        <li>Exportación completa de datos</li>
+        <li>Soporte prioritario en el setup</li>
+      </ul>
+      <a class="price-cta ghost" href="mailto:hola@impulsdigital.es?subject=Turnia Salón">Solicitar demo</a>
     </div>
+  </div>
+</section>
 
-    <nav class="bottom-nav" aria-label="Secciones moviles">
-      <button class="bottom-item active" type="button" data-view="agenda">Agenda</button>
-      <button class="bottom-item" type="button" data-view="clientes">Clientes</button>
-      <button class="bottom-item" type="button" data-view="semana">Semana</button>
-      <button class="bottom-item" type="button" data-view="reportes">Reportes</button>
-    </nav>
+<section class="cta-section">
+  <h2>¿Sigues gestionando turnos por WhatsApp?</h2>
+  <p>En menos de una semana tu negocio puede tener una agenda online lista para recibir reservas.</p>
+  <a href="demo.html">Ver la demo ahora</a>
+</section>
 
-    <script src="./agendaRules.js"></script>
-    <script src="./dataAdapter.js"></script>
-    <script src="./supabaseClient.js"></script>
-    <script src="./dataProviders.js"></script>
-    <script src="./authProvider.js"></script>
-    <script src="./app.js"></script>
-    <script>
-      if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-          navigator.serviceWorker.register("./sw.js").catch(() => {});
-        });
-      }
-    </script>
-  </body>
+<footer>
+  <p>Turnia · Desarrollado por <a href="https://impulsdigital.es">Impuls Digital</a> &nbsp;·&nbsp; <a href="demo.html">Abrir demo interactiva</a> &nbsp;·&nbsp; <a href="manual.html">Manual de uso</a></p>
+</footer>
+
+</body>
 </html>
