@@ -2,7 +2,7 @@
 
 Fecha: 14 de mayo de 2026.
 
-Actualizacion: 15 de mayo de 2026.
+Actualizacion: 21 de mayo de 2026.
 
 Estado: QA de cierre de demo presentable. Documento vivo: actualizar antes de cada presentacion importante.
 
@@ -10,7 +10,11 @@ Estado: QA de cierre de demo presentable. Documento vivo: actualizar antes de ca
 
 Turnia esta en buen estado para demo guiada. Los flujos principales funcionan y no aparecieron errores de consola durante las pruebas realizadas.
 
-No se considera produccion real todavia porque falta Supabase activo, datos remotos, hosting, dominio, seguridad final y revision legal/fiscal profesional.
+Tambien quedo preparado un paquete publico limpio para subir hoy: `public-demo-2026-05-21`.
+
+Se genero tambien `turnia-demo-publica-2026-05-21.zip` con el mismo contenido para facilitar la subida o envio.
+
+No se considera produccion real todavia porque falta Supabase activo, datos remotos, dominio propio, seguridad final y revision legal/fiscal profesional.
 
 ## Pruebas automaticas
 
@@ -93,9 +97,29 @@ Se abrio el modal, se creo un bloqueo de prueba y aparecio en agenda sin errores
 
 ### Exportar datos
 
-Resultado: parcialmente validado.
+Resultado: validado para demo.
 
-Los botones de clientes, citas y backup JSON se detectaron y se pulsaron sin errores de consola. Luego de la revision visual del usuario, clientes y citas pasaron de CSV a Excel real `.xlsx` para mejorar legibilidad. Conviene hacer una comprobacion manual rapida antes de una presentacion comercial.
+Clientes y citas pasaron de CSV a Excel real `.xlsx` para mejorar legibilidad. El usuario reviso visualmente la mejora en clientes y el mismo formato aplica a citas. El backup JSON queda como respaldo tecnico, no como planilla para cliente final.
+
+Archivos esperados:
+
+- `turnia-clientes.xlsx`
+- `turnia-citas.xlsx`
+- `turnia-backup.json`
+
+### Paquete publico
+
+Resultado: correcto.
+
+Se preparo `public-demo-2026-05-21` con archivos publicos solamente:
+
+- HTML, CSS y JS de la app;
+- assets de logo/favicon;
+- manifest PWA;
+- service worker;
+- configuracion Netlify/Vercel.
+
+No incluye documentos internos, tests, schema SQL ni notas legales.
 
 ### Restaurar demo
 
@@ -105,7 +129,8 @@ Se agrego soporte para abrir `/?reset-demo=1`, limpiar datos locales y volver au
 
 ## Pendientes antes de mostrar
 
-- Probar manualmente exportacion CSV/JSON en el navegador del usuario.
+- Publicar la carpeta `public-demo-2026-05-21` en Netlify.
+- Probar la URL publicada con `/?reset-demo=1`.
 - Revisar visualmente mobile con ojo humano si se va a mostrar desde un telefono real.
 - Hacer recorrido de venta con datos limpios.
 

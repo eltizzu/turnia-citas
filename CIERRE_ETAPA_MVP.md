@@ -30,6 +30,7 @@ Turnia queda en una buena base para presentar, conversar con primeros negocios y
 - Documentos vivos creados para comercial, uso, checklist, legal/web y ecosistema.
 - QA final tecnico registrado en `RESULTADO_QA_FINAL.md`.
 - Checklist de presentacion creado en `LISTA_PARA_MOSTRAR.md`.
+- Modo demo publica preparado con avisos visibles y docs `DEMO_PUBLICA.md` / `PUBLICAR_DEMO.md`.
 - Reglas de disponibilidad separadas en `agendaRules.js`.
 - Adaptador demo -> produccion en `dataAdapter.js`.
 - Proveedores de persistencia separados en `dataProviders.js`.

@@ -6,7 +6,11 @@ Estado: documento vivo. Usar antes de mostrar la demo a un negocio.
 
 Turnia v0 esta lista para mostrar como demo funcional y validacion de producto.
 
-No es produccion real todavia. Falta conectar Supabase, login real activo, datos en nube, dominio, hosting, backups y revision legal/fiscal profesional.
+No es produccion real todavia. Falta conectar Supabase, login real activo, datos en nube, dominio propio, backups y revision legal/fiscal profesional.
+
+La interfaz ya incluye avisos de demo publica para aclarar que los datos se guardan solo en el navegador.
+
+Para compartir online, usar la carpeta limpia `public-demo-2026-05-21` o el archivo `turnia-demo-publica-2026-05-21.zip`.
 
 ## Como abrir limpio
 
@@ -17,6 +21,12 @@ http://127.0.0.1:5280/?reset-demo=1
 ```
 
 Eso limpia datos locales de pruebas y deja la demo en estado inicial.
+
+Cuando este publicada, abrir la URL final agregando:
+
+```txt
+/?reset-demo=1
+```
 
 ## Recorrido recomendado
 
@@ -51,7 +61,11 @@ Los Excel estan pensados para que el cliente los abra y entienda. El JSON no es 
 - [ ] Probar en tu maquina que `Citas Excel` abre bien.
 - [ ] Probar que `Backup JSON` descarga.
 - [ ] Mirada visual rapida en mobile si vas a mostrar desde celular.
+- [ ] Subir `public-demo-2026-05-21` a Netlify.
+- [ ] Alternativa: subir `turnia-demo-publica-2026-05-21.zip`.
+- [ ] Probar la URL publicada con `/?reset-demo=1`.
 - [ ] Decidir si vas a mencionar precio piloto o solo validar interes.
+- [ ] Si se comparte online, incluir el texto de `DEMO_PUBLICA.md` o una aclaracion similar.
 
 ## Frase honesta para presentar
 

@@ -79,6 +79,9 @@ El proximo bloque de trabajo es pasar de demo local a MVP vendible sin perder si
 - `GUIA_CREAR_SUPABASE.md`: pasos para crear Supabase, activar Auth/Google y cargar demo.
 - `PRESENTACION_TURNIA.md`: guion para mostrar la demo a un negocio.
 - `LISTA_PARA_MOSTRAR.md`: checklist breve para abrir, recorrer y presentar Turnia.
+- `DEMO_PUBLICA.md`: alcance, avisos y pasos para publicar una demo controlada.
+- `PUBLICAR_DEMO.md`: pasos para subir la demo a Netlify o Vercel.
+- `VERSION_MOVIL.md`: enfoque mobile/PWA, instalacion y limites actuales.
 
 ## Documentos vivos
 
@@ -86,6 +89,7 @@ Estos documentos deben actualizarse con cada avance importante:
 
 - `DOCUMENTOS_VIVOS.md`: regla de mantenimiento documental.
 - `DOCUMENTO_COMERCIAL.md`: venta, posicionamiento, modulos y valor.
+- `DOSSIER_COMERCIAL_TURNIA.md`: version comercial limpia para adjuntar o compartir.
 - `MANUAL_DE_USO.md`: uso por perfil y pasos de cada accion.
 - `CHECKLIST_FINAL_PRODUCTO.md`: control antes de mostrar o vender.
 - `RESUMEN_LEGAL_Y_FISCAL_INICIAL.md`: marco legal/fiscal inicial.

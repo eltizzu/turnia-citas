@@ -7,11 +7,14 @@ Este archivo define que documentos deben mantenerse actualizados durante el desa
 Cada avance importante debe revisar si impacta en alguno de estos documentos:
 
 - `DOCUMENTO_COMERCIAL.md`
+- `DOSSIER_COMERCIAL_TURNIA.md`
 - `MANUAL_DE_USO.md`
 - `CHECKLIST_FINAL_PRODUCTO.md`
 - `RESUMEN_LEGAL_Y_FISCAL_INICIAL.md`
 - `WEB_LEGAL_CONTENIDOS.md`
 - `ECOSISTEMA_IDEAS_FUTURAS.md`
+- `DEMO_PUBLICA.md`
+- `VERSION_MOVIL.md`
 
 Si cambia una funcion, flujo, perfil, decision comercial, decision legal, alcance o idea futura, actualizar el documento correspondiente en el mismo bloque de trabajo.
 
@@ -29,6 +32,8 @@ Actualizar si cambia:
 - diferenciacion;
 - estado del producto.
 
+Si el cambio afecta lo que se le muestra a un potencial cliente, actualizar tambien `DOSSIER_COMERCIAL_TURNIA.md`.
+
 ### Manual De Uso
 
 Actualizar si cambia:
@@ -39,6 +44,8 @@ Actualizar si cambia:
 - estado de cita;
 - perfil de usuario;
 - accion importante.
+
+Ultima revision importante: 21 de mayo de 2026, ampliado con carga de servicios, profesionales, relacion servicio-equipo y vista cliente.
 
 ### Checklist Final Del Producto
 

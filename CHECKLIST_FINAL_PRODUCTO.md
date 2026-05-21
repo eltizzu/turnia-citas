@@ -8,6 +8,7 @@ Estado: documento vivo. Actualizar antes de cada presentacion, piloto o entrega.
 - [x] Logo inicial creado.
 - [x] Favicon inicial creado.
 - [x] Acciones de cita separadas para evitar tarjetas apretadas.
+- [x] Aviso de demo publica agregado.
 - [x] Ya no aparece BrasaFlow.
 - [x] Demo con datos coherentes.
 - [x] Vista negocio funcional.
@@ -122,6 +123,8 @@ Estado: documento vivo. Actualizar antes de cada presentacion, piloto o entrega.
 
 - [x] Navegacion inferior.
 - [x] Layout responsive base.
+- [x] Manifest PWA basico agregado.
+- [x] Metadatos mobile agregados.
 - [ ] QA visual en ancho movil.
 - [ ] Revisar botones largos.
 - [ ] Revisar modales en pantalla chica.
@@ -170,3 +173,10 @@ Estado: documento vivo. Actualizar antes de cada presentacion, piloto o entrega.
 - [x] Mostrar reportes.
 - [x] Tener discurso comercial preparado.
 - [x] Aclarar que es demo/piloto, no produccion final.
+- [x] Manual de uso actualizado con servicios, profesionales y vista cliente.
+- [x] Dossier comercial adjuntable creado.
+- [x] Documento de demo publica creado.
+- [x] Configuracion estatica para Netlify/Vercel agregada.
+- [x] Paquete publico `public-demo-2026-05-21` creado para subir sin documentos internos.
+- [ ] Publicar demo en Netlify.
+- [ ] Probar URL publicada con `/?reset-demo=1`.

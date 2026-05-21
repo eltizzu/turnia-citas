@@ -2,6 +2,8 @@
 
 Estado: documento vivo. Actualizar cuando cambie una pantalla, accion, estado, perfil o flujo.
 
+Ultima actualizacion: 21 de mayo de 2026.
+
 Este manual esta pensado para personas no tecnicas.
 
 ## Perfiles
@@ -207,16 +209,65 @@ Cada servicio tiene:
 - profesionales que lo realizan;
 - visibilidad online.
 
+Los servicios son la base del sistema. Turnia usa la duracion del servicio para calcular si un horario entra completo en la agenda.
+
+### Que significa cada campo
+
+- `Nombre`: como vera el negocio o el cliente el servicio. Ejemplo: Corte express, Color + corte, Semipermanente.
+- `Categoria`: ayuda a ordenar. Ejemplo: Peluqueria, Barberia, Unas, Estetica.
+- `Duracion`: cuantos minutos ocupa el turno. Es clave para evitar superposiciones.
+- `Precio`: importe estimado del servicio. Se usa en reportes e ingresos estimados.
+- `Profesionales`: personas del equipo que pueden realizar ese servicio.
+- `Visible online`: define si el servicio aparece o no en el link publico del cliente.
+
+### Orden recomendado para cargar servicios
+
+1. Cargar primero los servicios principales del negocio.
+2. Usar nombres simples y entendibles.
+3. Definir duraciones realistas, no solo aproximadas.
+4. Cargar precios base.
+5. Revisar si cada servicio debe aparecer online.
+6. Luego ajustar profesionales que pueden realizarlo.
+
 Crear servicio:
 
 1. Ir a Servicios.
 2. Pulsar `Nuevo servicio`.
-3. Cargar datos.
-4. Elegir profesionales.
-5. Decidir si aparece online.
-6. Guardar.
+3. Escribir nombre.
+4. Escribir categoria.
+5. Indicar duracion.
+6. Indicar precio.
+7. Elegir profesionales que pueden realizarlo.
+8. Marcar o desmarcar si aparece online.
+9. Guardar.
+
+Editar servicio:
+
+1. Ir a Servicios.
+2. Buscar el servicio.
+3. Pulsar `Editar`.
+4. Cambiar nombre, categoria, duracion, precio, profesionales o visibilidad online.
+5. Guardar.
+
+Eliminar servicio:
+
+1. Ir a Servicios.
+2. Buscar el servicio.
+3. Pulsar `Eliminar`.
+
+Importante: en la demo no se permite eliminar un servicio si ya tiene citas asociadas. Esto evita romper historiales.
 
 Si `visible online` esta desactivado, el cliente no lo ve en el link publico.
+
+Ejemplo practico:
+
+- Servicio: Color + corte.
+- Duracion: 90 minutos.
+- Precio: 58.
+- Profesional: Mara.
+- Visible online: si.
+
+Resultado: el cliente podra reservar Color + corte solo en horarios donde Mara tenga 90 minutos libres.
 
 ## Equipo
 
@@ -230,9 +281,97 @@ Cada profesional tiene:
 
 Turnia usa estos datos para calcular disponibilidad.
 
+### Que significa cada campo
+
+- `Nombre`: nombre visible del profesional.
+- `Especialidad`: rol o descripcion. Ejemplo: Colorista, Manicura, Barberia.
+- `Inicio`: hora desde la que puede recibir turnos.
+- `Fin`: hora hasta la que puede recibir turnos.
+- `Servicios que puede realizar`: servicios asociados a esa persona.
+
+### Orden recomendado para cargar profesionales
+
+1. Cargar nombre y especialidad.
+2. Definir horario real de trabajo.
+3. Asignar solo los servicios que esa persona puede realizar.
+4. Revisar la vista cliente para confirmar que aparecen horarios coherentes.
+
+Crear profesional:
+
+1. Ir a Equipo.
+2. Pulsar `Nuevo profesional`.
+3. Escribir nombre.
+4. Escribir especialidad.
+5. Indicar hora de inicio.
+6. Indicar hora de fin.
+7. Seleccionar servicios que puede realizar.
+8. Guardar.
+
+Editar profesional:
+
+1. Ir a Equipo.
+2. Buscar el profesional.
+3. Pulsar `Editar`.
+4. Cambiar nombre, especialidad, horario o servicios.
+5. Guardar.
+
+Eliminar profesional:
+
+1. Ir a Equipo.
+2. Buscar el profesional.
+3. Pulsar `Eliminar`.
+
+Importante: en la demo no se permite eliminar un profesional si tiene citas asociadas.
+
+Ejemplo practico:
+
+- Profesional: Noe.
+- Especialidad: Manicura y barberia.
+- Horario: 10:00 a 19:00.
+- Servicios: Semipermanente, Barba + perfilado.
+
+Resultado: el link cliente solo ofrecera esos servicios con Noe dentro de su horario libre.
+
+## Relacion Entre Servicios Y Equipo
+
+Turnia calcula disponibilidad combinando:
+
+- horario general del negocio;
+- horario del profesional;
+- duracion del servicio;
+- citas existentes;
+- bloqueos;
+- servicios que cada profesional puede hacer.
+
+Ejemplo:
+
+Si un servicio dura 90 minutos y el profesional termina a las 18:00, Turnia no deberia ofrecer un turno a las 17:00 si el servicio no entra completo.
+
+Si un profesional no realiza un servicio, no aparece como opcion para ese servicio.
+
 ## Link Cliente
 
-Flujo de reserva:
+El Link Cliente es la vista publica que un negocio podria poner en Instagram, Google, WhatsApp o su web.
+
+En la demo se abre desde:
+
+- pantalla inicial: `Ver link del cliente`;
+- panel negocio: `Vista cliente`;
+- menu lateral: `Link cliente`.
+
+### Que ve el cliente
+
+El cliente ve:
+
+- nombre del negocio;
+- link publico;
+- fecha;
+- servicio;
+- profesional;
+- horarios disponibles;
+- formulario con nombre, telefono y nota.
+
+### Flujo de reserva
 
 1. Cliente entra al link.
 2. Elige servicio.
@@ -243,10 +382,60 @@ Flujo de reserva:
 7. Carga nombre, telefono y nota.
 8. Envia reserva.
 
+### Profesional: cualquiera disponible
+
+Si el cliente elige `Cualquiera disponible`, Turnia busca cualquier profesional que pueda hacer ese servicio y tenga horario libre.
+
+Ejemplo:
+
+- Servicio: Semipermanente.
+- Profesional: Cualquiera disponible.
+- Turnia muestra horarios donde haya al menos una persona capaz de hacer ese servicio.
+
+### Profesional especifico
+
+Si el cliente elige un profesional concreto, Turnia solo muestra horarios libres de esa persona.
+
+Ejemplo:
+
+- Servicio: Color + corte.
+- Profesional: Mara.
+- Turnia muestra solo horarios libres de Mara donde entren 90 minutos.
+
+### Horarios disponibles
+
+Solo aparecen horarios que cumplen estas condiciones:
+
+- el servicio entra completo;
+- el profesional trabaja en ese horario;
+- no hay otra cita pendiente o confirmada;
+- no hay bloqueo;
+- el profesional puede realizar ese servicio.
+
+### Datos del cliente
+
+El cliente debe cargar:
+
+- nombre;
+- telefono;
+- nota opcional.
+
+La nota sirve para preferencias simples, por ejemplo horario, color, largo de corte o comentario general.
+
 Segun configuracion:
 
 - puede entrar como pendiente;
 - puede entrar como confirmada automaticamente.
+
+### Que pasa despues de reservar
+
+En la demo, la reserva queda sincronizada con la agenda del negocio.
+
+Si la configuracion esta en confirmacion manual, entra como `Pendiente`.
+
+Si la configuracion tiene auto-confirmacion, entra como `Confirmada`.
+
+El negocio puede confirmar, cancelar o reprogramar desde su panel.
 
 ## Reportes
 

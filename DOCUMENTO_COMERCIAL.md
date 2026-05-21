@@ -2,6 +2,8 @@
 
 Estado: documento vivo. Actualizar cuando cambie el posicionamiento, el precio, los modulos, el publico objetivo o la forma de presentar Turnia.
 
+Nota: para enviar o subir como adjunto comercial, usar `DOSSIER_COMERCIAL_TURNIA.md`. Este documento queda como base viva interna de posicionamiento y decisiones comerciales.
+
 ## Que es Turnia
 
 Turnia es una app de agenda y reservas para negocios que trabajan por turnos: peluquerias, barberias, centros de estetica, manicura, pestanas, masajes y servicios similares.
@@ -113,7 +115,7 @@ Sectores iniciales:
 - anticipacion minima;
 - auto-confirmacion;
 - plantillas de WhatsApp;
-- exportacion CSV/JSON.
+- exportacion Excel/JSON.
 
 ## Valor que aporta
 
