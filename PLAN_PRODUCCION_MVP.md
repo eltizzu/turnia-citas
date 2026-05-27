@@ -2,6 +2,8 @@
 
 Este documento baja Turnia desde demo local a una primera version vendible con clientes reales. La prioridad no es hacer una plataforma gigante: es tener login real, datos reales, link publico por negocio y reservas sin pisarse.
 
+Nota 27 de mayo de 2026: antes de ejecutar este plan tecnico, la prioridad es completar Fase 1 y Fase 2 de `FASES_PRODUCTO_REAL.md`: demo clara y prueba privada. No conviene avanzar fuerte en infraestructura hasta validar que la app se entiende y resuelve un problema real.
+
 ## Decision recomendada
 
 Para la primera produccion conviene ir con:

@@ -10,6 +10,8 @@ Turnia es una app de agenda y reservas para negocios que trabajan por turnos: pe
 
 El objetivo es que el negocio pueda organizar su agenda diaria, gestionar clientes y permitir que las personas reserven desde un link publico sin depender todo el dia de WhatsApp, llamadas o una libreta.
 
+Estado actual: demo realista para prueba privada. El foco comercial ahora no es prometer producto terminado, sino validar que la propuesta se entiende y que el flujo resuelve un dolor real.
+
 La identidad visual inicial usa un simbolo de agenda con una T integrada y un check de confirmacion. El archivo principal esta en `assets/logo-turnia.svg` y hay una copia visible en la carpeta raiz como `logo-turnia.svg`. Busca transmitir orden, turnos y reserva confirmada sin sentirse corporativo frio.
 
 ## Problema que resuelve

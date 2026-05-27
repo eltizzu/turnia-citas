@@ -4,9 +4,11 @@ Estado: documento vivo. Actualizar cuando cambie la forma de publicar, probar o 
 
 ## Objetivo
 
-La demo publica sirve para que personas externas puedan probar Turnia sin crear cuenta real y sin cargar datos reales.
+La demo publica o privada sirve para que personas externas puedan probar Turnia sin crear cuenta real y sin cargar datos reales.
 
 Es una herramienta para mostrar el concepto, recibir feedback y validar interes antes de montar produccion con base de datos en la nube.
+
+Etapa actual recomendada: prueba privada controlada con 1 a 3 personas de confianza antes de publicar de forma mas abierta.
 
 ## Que permite probar
 
@@ -25,6 +27,7 @@ Es una herramienta para mostrar el concepto, recibir feedback y validar interes 
 - Exportar clientes/citas en Excel.
 - Descargar backup JSON tecnico.
 - Probar una version instalable basica en moviles compatibles.
+- Seguir el recorrido de `GUIA_PRUEBA_PRIVADA.md`.
 
 ## Que NO es
 
@@ -105,10 +108,8 @@ Preguntar a quien la pruebe:
 
 Si hay interes real:
 
-1. Crear Supabase.
-2. Conectar login real.
-3. Guardar datos por negocio.
-4. Crear link publico real por slug.
-5. Validar disponibilidad desde servidor.
-6. Publicar piloto privado.
-7. Configurar primer cliente real.
+1. Revisar feedback.
+2. Ajustar textos, pantallas y flujos.
+3. Repetir prueba con otra persona.
+4. Decidir si pasa a piloto controlado.
+5. Recien entonces crear Supabase, login real y datos persistentes.

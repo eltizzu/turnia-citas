@@ -4,11 +4,11 @@ Estado: documento vivo. Usar antes de mostrar la demo a un negocio.
 
 ## Veredicto
 
-Turnia v0 esta lista para mostrar como demo funcional y validacion de producto.
+Turnia v0 esta lista para mostrar como demo funcional en prueba privada y validacion de producto.
 
 No es produccion real todavia. Falta conectar Supabase, login real activo, datos en nube, dominio propio, backups y revision legal/fiscal profesional.
 
-La interfaz ya incluye avisos de demo publica para aclarar que los datos se guardan solo en el navegador.
+La interfaz ya incluye avisos de demo para aclarar que los datos son ficticios y se guardan solo en el navegador.
 
 Para compartir online, usar la carpeta limpia `public-demo-2026-05-21` o el archivo `turnia-demo-publica-2026-05-21.zip`.
 
@@ -32,18 +32,16 @@ Cuando este publicada, abrir la URL final agregando:
 
 1. Pantalla inicial y logo.
 2. Entrar como negocio.
-3. Mostrar agenda del dia.
-4. Crear una cita manual.
-5. Mostrar link cliente.
-6. Reservar desde la vista cliente.
-7. Volver al panel y ver la reserva pendiente.
-8. Confirmar cita y mostrar WhatsApp preparado.
-9. Reprogramar cita.
-10. Bloquear horario.
-11. Mostrar clientes.
-12. Mostrar reportes.
-13. Mostrar exportaciones.
-14. Explicar siguiente paso: produccion con Supabase.
+3. Pedirle a la persona que lea la Agenda sin explicar demasiado.
+4. Confirmar una cita pendiente y revisar el WhatsApp preparado.
+5. Crear una cita manual.
+6. Abrir la vista cliente.
+7. Reservar desde la vista cliente con datos ficticios.
+8. Volver al panel y ver la reserva pendiente.
+9. Revisar Clientes, Servicios y Equipo.
+10. Mostrar Reportes solo como valor aproximado.
+11. Mostrar exportaciones si la persona pregunta por datos.
+12. Hacer las preguntas de `GUIA_PRUEBA_PRIVADA.md`.
 
 ## Exportaciones
 
@@ -66,10 +64,11 @@ Los Excel estan pensados para que el cliente los abra y entienda. El JSON no es 
 - [ ] Probar la URL publicada con `/?reset-demo=1`.
 - [ ] Decidir si vas a mencionar precio piloto o solo validar interes.
 - [ ] Si se comparte online, incluir el texto de `DEMO_PUBLICA.md` o una aclaracion similar.
+- [ ] Usar `GUIA_PRUEBA_PRIVADA.md` para anotar observaciones.
 
 ## Frase honesta para presentar
 
-> Esta es una demo funcional para validar Turnia con primeros negocios. Ya se puede ver el flujo completo, pero la version de produccion va con login real, base de datos en la nube, dominio y revision legal antes de trabajar con datos reales.
+> Esta es una demo funcional para validar si Turnia se entiende y si resolveria un problema real. Los datos son ficticios; la version para uso real va con login, base de datos en la nube, dominio, backups y revision legal antes de trabajar con clientes reales.
 
 ## No prometer todavia
 
@@ -82,10 +81,10 @@ Los Excel estan pensados para que el cliente los abra y entienda. El JSON no es 
 
 ## Siguiente paso despues de mostrar
 
-Si el negocio se interesa:
+Si la persona entiende la demo y ve valor:
 
-1. Pedir sus servicios reales.
-2. Pedir profesionales y horarios.
-3. Cargar una version demo personalizada.
-4. Validar si pagaria setup + mensualidad.
-5. Pasar a produccion piloto con Supabase.
+1. Registrar feedback.
+2. Ajustar textos o pantallas confusas.
+3. Repetir con otra persona de confianza.
+4. Decidir si vale preparar piloto controlado.
+5. Recien ahi avanzar con Supabase/login/datos reales.

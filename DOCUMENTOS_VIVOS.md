@@ -15,6 +15,8 @@ Cada avance importante debe revisar si impacta en alguno de estos documentos:
 - `ECOSISTEMA_IDEAS_FUTURAS.md`
 - `DEMO_PUBLICA.md`
 - `VERSION_MOVIL.md`
+- `GUIA_PRUEBA_PRIVADA.md`
+- `FASES_PRODUCTO_REAL.md`
 
 Si cambia una funcion, flujo, perfil, decision comercial, decision legal, alcance o idea futura, actualizar el documento correspondiente en el mismo bloque de trabajo.
 
@@ -90,6 +92,26 @@ Actualizar si aparece:
 - decision de sacar algo del MVP;
 - decision de meter algo al MVP.
 
+### Guia De Prueba Privada
+
+Actualizar si cambia:
+
+- recorrido recomendado para probar;
+- preguntas de feedback;
+- criterios para avanzar;
+- limite de uso con datos reales.
+
+### Fases Producto Real
+
+Actualizar si cambia:
+
+- etapa actual;
+- criterio para pasar de demo a piloto;
+- tareas de produccion;
+- decision de no construir infraestructura todavia.
+
 ## Estado actual
 
 Creado el 14 de mayo de 2026 como base documental viva para Turnia.
+
+Actualizacion importante: 27 de mayo de 2026, se agregaron documentos para separar demo clara, prueba privada, piloto controlado, base seria y producto comercial.

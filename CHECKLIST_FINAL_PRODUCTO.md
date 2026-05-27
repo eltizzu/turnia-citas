@@ -11,6 +11,8 @@ Estado: documento vivo. Actualizar antes de cada presentacion, piloto o entrega.
 - [x] Aviso de demo publica agregado.
 - [x] Ya no aparece BrasaFlow.
 - [x] Demo con datos coherentes.
+- [x] Demo ampliada con datos ficticios mas realistas.
+- [x] Explicaciones breves agregadas por seccion.
 - [x] Vista negocio funcional.
 - [x] Vista cliente funcional.
 - [x] Reglas de disponibilidad separadas.
@@ -20,6 +22,8 @@ Estado: documento vivo. Actualizar antes de cada presentacion, piloto o entrega.
 - [ ] QA manual final completo antes de presentar.
 - [ ] Pulido visual final mobile con ojo humano.
 - [ ] Textos finales revisados.
+- [x] Guia de prueba privada creada.
+- [x] Fases de producto real documentadas.
 
 ## Pantalla de inicio
 
@@ -29,6 +33,7 @@ Estado: documento vivo. Actualizar antes de cada presentacion, piloto o entrega.
 - [x] Incluye boton Google demo.
 - [x] Maneja usuario sin negocio asignado.
 - [ ] Revisar copy final para venta.
+- [x] Pantalla inicial enfocada en prueba privada y no en uso real.
 
 ## Panel negocio
 
@@ -42,6 +47,7 @@ Estado: documento vivo. Actualizar antes de cada presentacion, piloto o entrega.
 - [x] Configuracion.
 - [ ] Revisar que todas las acciones tengan feedback claro.
 - [ ] Revisar que no haya textos demasiado tecnicos.
+- [x] Secciones principales explican que se hace y que conviene probar.
 - [x] Login, agenda y panel probados en navegador.
 
 ## Agenda
@@ -180,3 +186,5 @@ Estado: documento vivo. Actualizar antes de cada presentacion, piloto o entrega.
 - [x] Paquete publico `public-demo-2026-05-21` creado para subir sin documentos internos.
 - [ ] Publicar demo en Netlify.
 - [ ] Probar URL publicada con `/?reset-demo=1`.
+- [ ] Hacer prueba privada con 1 persona de confianza.
+- [ ] Registrar feedback en `GUIA_PRUEBA_PRIVADA.md` o documento de resultados.

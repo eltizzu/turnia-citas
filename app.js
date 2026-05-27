@@ -1,4 +1,4 @@
-const STORAGE_KEY = "turnia-demo-state-v1";
+const STORAGE_KEY = "turnia-demo-state-v2";
 const demoDate = "2026-05-11";
 const dayNames = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"];
 
@@ -37,6 +37,31 @@ const demoData = {
       phone: "+34 622 903 881",
       note: "Le gusta recibir confirmacion por WhatsApp.",
     },
+    {
+      name: "Candela Ruiz",
+      phone: "+34 633 118 440",
+      note: "Cliente frecuente. Suele pedir corte express cada 5 semanas.",
+    },
+    {
+      name: "Rocio Vera",
+      phone: "+34 644 902 110",
+      note: "Primera visita. Pregunto por lifting de pestanas.",
+    },
+    {
+      name: "Marta Leon",
+      phone: "+34 655 901 234",
+      note: "Prefiere horarios de tarde y confirmar siempre por WhatsApp.",
+    },
+    {
+      name: "Nadia Ferrer",
+      phone: "+34 666 210 874",
+      note: "Quiere probar manicura antes de un evento.",
+    },
+    {
+      name: "Sofia Martin",
+      phone: "+34 677 451 903",
+      note: "Suele venir con poco margen, revisar huecos libres.",
+    },
   ],
   blocks: [
     {
@@ -45,6 +70,20 @@ const demoData = {
       start: "14:00",
       end: "14:45",
       reason: "Comida",
+    },
+    {
+      date: "2026-05-11",
+      professional: "Eva",
+      start: "12:30",
+      end: "13:00",
+      reason: "Preparacion de cabina",
+    },
+    {
+      date: "2026-05-12",
+      professional: "Noe",
+      start: "15:00",
+      end: "15:45",
+      reason: "Descanso",
     },
   ],
   appointments: [
@@ -107,6 +146,54 @@ const demoData = {
       price: 16,
       status: "Pendiente",
       note: "Quiere confirmar por WhatsApp.",
+    },
+    {
+      date: "2026-05-11",
+      time: "12:15",
+      client: "Nadia Ferrer",
+      phone: "+34 666 210 874",
+      service: "Semipermanente",
+      professional: "Noe",
+      duration: 50,
+      price: 24,
+      status: "Confirmada",
+      note: "Evento el fin de semana. Prefiere tonos nude.",
+    },
+    {
+      date: "2026-05-11",
+      time: "15:30",
+      client: "Sofia Martin",
+      phone: "+34 677 451 903",
+      service: "Corte express",
+      professional: "Mara",
+      duration: 35,
+      price: 18,
+      status: "Pendiente",
+      note: "Pidio aviso si queda un hueco antes.",
+    },
+    {
+      date: "2026-05-12",
+      time: "10:00",
+      client: "Lucia Gomez",
+      phone: "+34 611 234 120",
+      service: "Color + corte",
+      professional: "Mara",
+      duration: 90,
+      price: 58,
+      status: "Confirmada",
+      note: "Mantener tono miel.",
+    },
+    {
+      date: "2026-05-15",
+      time: "11:30",
+      client: "Rocio Vera",
+      phone: "+34 644 902 110",
+      service: "Lifting de pestanas",
+      professional: "Eva",
+      duration: 60,
+      price: 38,
+      status: "Cancelada",
+      note: "Aviso que no podia asistir.",
     },
   ],
   services: [

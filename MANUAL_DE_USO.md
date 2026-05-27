@@ -2,7 +2,7 @@
 
 Estado: documento vivo. Actualizar cuando cambie una pantalla, accion, estado, perfil o flujo.
 
-Ultima actualizacion: 21 de mayo de 2026.
+Ultima actualizacion: 27 de mayo de 2026.
 
 Este manual esta pensado para personas no tecnicas.
 
@@ -63,9 +63,21 @@ En demo:
 - email de negocio: `salon@demo.com`;
 - contrasena: `turnia-demo`.
 
+La pantalla inicial aclara que es una demo de prueba privada. La persona puede recorrer la app sin cargar datos reales.
+
+Primer paso recomendado:
+
+1. Entrar como negocio.
+2. Revisar agenda.
+3. Confirmar una cita pendiente.
+4. Abrir la vista cliente.
+5. Crear una reserva ficticia.
+
 ## Agenda
 
 La agenda muestra citas y bloqueos del dia seleccionado.
+
+La seccion explica que sirve para revisar el dia, confirmar pendientes y encontrar huecos libres.
 
 Controles:
 
@@ -165,6 +177,8 @@ El link cliente no mostrara ese horario como disponible.
 
 Sirve para revisar la semana completa.
 
+La seccion esta pensada para detectar si un profesional tiene dias cargados, huecos o bloqueos.
+
 Uso:
 
 1. Entrar a `Semana`.
@@ -182,6 +196,8 @@ La seccion Clientes permite ver:
 - historial;
 - ingresos estimados;
 - contacto por WhatsApp.
+
+En la demo hay clientes ficticios cargados para no empezar desde cero.
 
 Crear cliente:
 
@@ -210,6 +226,8 @@ Cada servicio tiene:
 - visibilidad online.
 
 Los servicios son la base del sistema. Turnia usa la duracion del servicio para calcular si un horario entra completo en la agenda.
+
+La seccion explica que el primer paso es revisar si los servicios tienen duracion, precio y profesionales asignados.
 
 ### Que significa cada campo
 
@@ -280,6 +298,8 @@ Cada profesional tiene:
 - servicios asignados.
 
 Turnia usa estos datos para calcular disponibilidad.
+
+La seccion explica que el primer paso es revisar horario de trabajo y servicios asignados.
 
 ### Que significa cada campo
 
@@ -352,6 +372,8 @@ Si un profesional no realiza un servicio, no aparece como opcion para ese servic
 ## Link Cliente
 
 El Link Cliente es la vista publica que un negocio podria poner en Instagram, Google, WhatsApp o su web.
+
+En la demo aparece como `Vista cliente` o `Link cliente`. Sirve para probar si una persona podria reservar sin escribir por WhatsApp.
 
 En la demo se abre desde:
 
@@ -455,6 +477,8 @@ Boton importante:
 
 - `Guardar PDF`: usa la funcion imprimir/guardar como PDF del navegador.
 
+En etapa demo, los reportes sirven para mostrar valor aproximado. No deben tomarse como contabilidad real.
+
 ## Configuracion
 
 Permite cambiar:
@@ -476,6 +500,8 @@ Tambien permite exportar:
 - backup JSON.
 
 Los archivos Excel se abren como planilla clara para el negocio. El backup JSON es tecnico y sirve para guardar todos los datos de la demo, no para leerlo como Excel.
+
+En la interfaz aparece como `Ajustes`. Para la prueba privada no hace falta tocar todo: alcanza con entender que el negocio puede adaptar horarios, link y mensajes.
 
 ## Restaurar demo
 

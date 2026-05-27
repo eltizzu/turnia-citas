@@ -19,7 +19,7 @@ No hace falta backend para esta demo.
 - `netlify.toml`: configuracion basica para Netlify.
 - `vercel.json`: configuracion basica para Vercel.
 - `DEMO_PUBLICA.md`: alcance y aviso de uso.
-- `public-demo-2026-05-21`: paquete limpio listo para subir sin documentos internos, tests ni archivos de base de datos.
+- `public-demo-2026-05-21`: paquete limpio listo para subir sin documentos internos, tests ni archivos de base de datos. Incluye landing, demo, manual, assets y scripts publicos.
 - `turnia-demo-publica-2026-05-21.zip`: el mismo paquete comprimido.
 
 ## Antes de publicar

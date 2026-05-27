@@ -41,7 +41,7 @@ Turnia compite por simpleza, cercania y velocidad:
 
 ## Estado actual
 
-Esta carpeta contiene una primera demo en HTML, CSS y JavaScript. El objetivo inmediato es convertirla en una app visual funcional antes de construir backend.
+Esta carpeta contiene una primera demo en HTML, CSS y JavaScript. La etapa actual es demo realista para prueba privada: validar si una persona entiende Turnia, si le resuelve algo real y si usaria una version configurada para su negocio antes de invertir fuerte en infraestructura.
 
 La demo guarda datos en el navegador con `localStorage`: citas, clientes, servicios, profesionales, bloqueos y configuracion. El boton "Restaurar demo" borra esos datos locales y vuelve al estado inicial.
 
@@ -82,6 +82,8 @@ El proximo bloque de trabajo es pasar de demo local a MVP vendible sin perder si
 - `DEMO_PUBLICA.md`: alcance, avisos y pasos para publicar una demo controlada.
 - `PUBLICAR_DEMO.md`: pasos para subir la demo a Netlify o Vercel.
 - `VERSION_MOVIL.md`: enfoque mobile/PWA, instalacion y limites actuales.
+- `GUIA_PRUEBA_PRIVADA.md`: recorrido para probar Turnia con una persona de confianza y registrar feedback.
+- `FASES_PRODUCTO_REAL.md`: separacion entre demo clara, prueba privada, piloto controlado, base seria y producto comercial.
 
 ## Documentos vivos
 
@@ -95,6 +97,8 @@ Estos documentos deben actualizarse con cada avance importante:
 - `RESUMEN_LEGAL_Y_FISCAL_INICIAL.md`: marco legal/fiscal inicial.
 - `WEB_LEGAL_CONTENIDOS.md`: contenidos legales minimos de la web.
 - `ECOSISTEMA_IDEAS_FUTURAS.md`: alcance actual, futuras mejoras y productos hermanos.
+- `GUIA_PRUEBA_PRIVADA.md`: prueba controlada, preguntas y observaciones.
+- `FASES_PRODUCTO_REAL.md`: fases para no adelantar infraestructura antes de validar valor.
 
 Decision inicial recomendada: Supabase para Auth/Postgres/RLS y Netlify o Vercel para publicar el frontend.
 

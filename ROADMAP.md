@@ -2,6 +2,8 @@
 
 Ver tambien `PLAN_PRODUCCION_MVP.md` y `MODELO_DATOS_PRODUCCION.md` para el salto de demo local a produccion.
 
+Etapa actual: demo clara + prueba privada. Antes de construir infraestructura seria, validar con 1 a 3 personas reales usando `GUIA_PRUEBA_PRIVADA.md`.
+
 ## Version 1: Base Vendible
 
 Objetivo: que una peluqueria, barberia o centro pequeno pueda usar Turnia para organizar su dia.
