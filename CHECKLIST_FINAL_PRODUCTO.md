@@ -129,6 +129,10 @@ Estado: documento vivo. Actualizar antes de cada presentacion, piloto o entrega.
 
 - [x] Navegacion inferior.
 - [x] Layout responsive base.
+- [x] Acciones moviles simplificadas para reducir ruido.
+- [x] Boton `Inicio` oculto en la barra superior mobile.
+- [x] Acciones secundarias de citas ocultas en mobile.
+- [x] Acciones rapidas ocultas en mobile.
 - [x] Manifest PWA basico agregado.
 - [x] Metadatos mobile agregados.
 - [ ] QA visual en ancho movil.

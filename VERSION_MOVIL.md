@@ -22,6 +22,10 @@ Eso significa:
 - Panel negocio usable desde celular.
 - Vista cliente mobile.
 - Modales adaptados a una columna.
+- Acciones moviles simplificadas para no marear durante la demo.
+- Acciones secundarias de citas ocultas en mobile.
+- Accesos rapidos secundarios ocultos en mobile.
+- Barra superior mobile enfocada en `Vista cliente` y `Nueva cita`.
 - Logo y favicon.
 - `manifest.webmanifest` para modo instalable.
 - Metadatos mobile en `index.html`.
@@ -39,7 +43,9 @@ Cuando la demo este publicada:
 6. Ir a vista cliente.
 7. Reservar un turno.
 8. Volver al panel.
-9. Revisar reportes/configuracion.
+9. Revisar clientes o reportes solo si la persona ya entendio el flujo principal.
+
+En mobile conviene no mostrar todo de golpe. Para una prueba privada, el recorrido principal es agenda + confirmar cita + vista cliente + reserva.
 
 ## Como instalar en pantalla de inicio
 

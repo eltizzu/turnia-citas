@@ -913,7 +913,7 @@ function renderAgenda() {
             <div class="appointment-actions">
               <button type="button" data-action="confirm" data-appointment-id="${id}">Confirmar</button>
               <button type="button" data-action="reschedule" data-appointment-id="${id}">Reprogramar</button>
-              <button type="button" data-action="cancel" data-appointment-id="${id}">Cancelar</button>
+              <button class="optional-action" type="button" data-action="cancel" data-appointment-id="${id}">Cancelar</button>
             </div>
           `
           : item.status === "Confirmada"
@@ -921,8 +921,8 @@ function renderAgenda() {
               <div class="appointment-actions">
                 <button type="button" data-action="whatsapp" data-appointment-id="${id}">WhatsApp</button>
                 <button type="button" data-action="reschedule" data-appointment-id="${id}">Reprogramar</button>
-                <button type="button" data-action="finish" data-appointment-id="${id}">Finalizar</button>
-                <button type="button" data-action="no-show" data-appointment-id="${id}">No asistio</button>
+                <button class="optional-action" type="button" data-action="finish" data-appointment-id="${id}">Finalizar</button>
+                <button class="optional-action" type="button" data-action="no-show" data-appointment-id="${id}">No asistio</button>
               </div>
             `
             : "";
