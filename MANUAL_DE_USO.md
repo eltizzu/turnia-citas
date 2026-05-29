@@ -60,7 +60,7 @@ Acciones:
 
 En demo:
 
-- email de negocio: `salon@demo.com`;
+- email de negocio: `demo@turnia.app`;
 - contrasena: `turnia-demo`.
 
 La pantalla inicial aclara que es una demo de prueba privada. La persona puede recorrer la app sin cargar datos reales.
@@ -232,7 +232,7 @@ La seccion explica que el primer paso es revisar si los servicios tienen duracio
 ### Que significa cada campo
 
 - `Nombre`: como vera el negocio o el cliente el servicio. Ejemplo: Corte express, Color + corte, Semipermanente.
-- `Categoria`: ayuda a ordenar. Ejemplo: Peluqueria, Barberia, Unas, Estetica.
+- `Categoria`: ayuda a ordenar. Ejemplo: Peluqueria, Barberia, Unas, Estetica, Salud, Bienestar o Consultoria.
 - `Duracion`: cuantos minutos ocupa el turno. Es clave para evitar superposiciones.
 - `Precio`: importe estimado del servicio. Se usa en reportes e ingresos estimados.
 - `Profesionales`: personas del equipo que pueden realizar ese servicio.
@@ -484,6 +484,7 @@ En etapa demo, los reportes sirven para mostrar valor aproximado. No deben tomar
 Permite cambiar:
 
 - nombre del negocio;
+- tipo de negocio o nicho de ejemplo;
 - slug del link;
 - ciudad;
 - telefono;
@@ -502,6 +503,16 @@ Tambien permite exportar:
 Los archivos Excel se abren como planilla clara para el negocio. El backup JSON es tecnico y sirve para guardar todos los datos de la demo, no para leerlo como Excel.
 
 En la interfaz aparece como `Ajustes`. Para la prueba privada no hace falta tocar todo: alcanza con entender que el negocio puede adaptar horarios, link y mensajes.
+
+El link del cliente no es unico para todos. Sale del slug configurado en cada negocio.
+
+Ejemplo:
+
+- una fisioterapia podria usar `turnia.app/clinica-movimiento`;
+- una barberia podria usar `turnia.app/barberia-norte`;
+- una profesora podria usar `turnia.app/clases-laura`.
+
+Si ese negocio pone un boton en su web, el boton apunta a su propio link de Turnia.
 
 ## Restaurar demo
 

@@ -14,10 +14,11 @@ const demoData = {
     step: 30,
   },
   business: {
-    name: "Salon Demo",
-    slug: "salon-demo",
+    name: "Centro Demo",
+    slug: "centro-demo",
     city: "Madrid",
     phone: "+34 600 000 000",
+    type: "Fisioterapia y bienestar",
     minNotice: 12,
     autoConfirm: false,
     allowClientCancel: true,
@@ -45,7 +46,7 @@ const demoData = {
     {
       name: "Rocio Vera",
       phone: "+34 644 902 110",
-      note: "Primera visita. Pregunto por lifting de pestanas.",
+      note: "Primera visita. Pregunto por una sesion de fisioterapia.",
     },
     {
       name: "Marta Leon",
@@ -128,10 +129,10 @@ const demoData = {
       time: "13:15",
       client: "Rocio Vera",
       phone: "+34 644 902 110",
-      service: "Lifting de pestanas",
+      service: "Fisioterapia inicial",
       professional: "Eva",
       duration: 60,
-      price: 38,
+      price: 45,
       status: "Confirmada",
       note: "Primera visita.",
     },
@@ -188,10 +189,10 @@ const demoData = {
       time: "11:30",
       client: "Rocio Vera",
       phone: "+34 644 902 110",
-      service: "Lifting de pestanas",
+      service: "Masaje descontracturante",
       professional: "Eva",
       duration: 60,
-      price: 38,
+      price: 42,
       status: "Cancelada",
       note: "Aviso que no podia asistir.",
     },
@@ -222,10 +223,18 @@ const demoData = {
       online: true,
     },
     {
-      name: "Lifting de pestanas",
+      name: "Fisioterapia inicial",
       duration: 60,
-      price: 38,
-      category: "Estetica",
+      price: 45,
+      category: "Salud",
+      professionals: ["Eva"],
+      online: true,
+    },
+    {
+      name: "Masaje descontracturante",
+      duration: 60,
+      price: 42,
+      category: "Bienestar",
       professionals: ["Eva"],
       online: true,
     },
@@ -241,24 +250,24 @@ const demoData = {
   team: [
     {
       name: "Mara",
-      role: "Colorista",
+      role: "Especialista capilar",
       workStart: "09:00",
       workEnd: "18:00",
       services: ["Corte express", "Color + corte"],
     },
     {
       name: "Noe",
-      role: "Manicura y barberia",
+      role: "Unas y barberia",
       workStart: "10:00",
       workEnd: "19:00",
       services: ["Semipermanente", "Barba + perfilado"],
     },
     {
       name: "Eva",
-      role: "Estetica",
+      role: "Fisioterapia y bienestar",
       workStart: "09:00",
       workEnd: "17:00",
-      services: ["Lifting de pestanas"],
+      services: ["Fisioterapia inicial", "Masaje descontracturante"],
     },
   ],
 };
@@ -1326,6 +1335,7 @@ function renderSettings() {
     form.elements.slug.value = state.business.slug;
     form.elements.city.value = state.business.city;
     form.elements.businessPhone.value = state.business.phone;
+    form.elements.businessType.value = state.business.type || "Fisioterapia y bienestar";
     form.elements.start.value = businessHours.start;
     form.elements.end.value = businessHours.end;
     form.elements.step.value = String(businessHours.step);
@@ -1338,6 +1348,7 @@ function renderSettings() {
 
   document.getElementById("setup-summary").innerHTML = `
     <article><strong>${state.business.name}</strong><span>${state.business.city}</span></article>
+    <article><strong>${state.business.type || "Negocio con turnos"}</strong><span>Tipo de negocio</span></article>
     <article><strong>${getBusinessLink()}</strong><span>Link publico</span></article>
     <article><strong>${businessHours.start} - ${businessHours.end}</strong><span>Horario general</span></article>
     <article><strong>${businessHours.step} min</strong><span>Intervalo de reserva</span></article>
@@ -1579,7 +1590,7 @@ function handleBusinessSession(session) {
 
   if (!session.business) {
     showAuthMessage(
-      "Tu usuario inicio sesion, pero todavia no tiene un negocio asignado. En produccion, Turnia mostraria esta pantalla hasta que lo asociemos a un salon.",
+      "Tu usuario inicio sesion, pero todavia no tiene un negocio asignado. En produccion, Turnia mostraria esta pantalla hasta que lo asociemos a un negocio.",
       "warning",
     );
     return;
@@ -2270,7 +2281,7 @@ function bindBookingEvents() {
     alert(
       state.business.autoConfirm
         ? "Reserva confirmada. El negocio ya la vera en agenda."
-        : "Reserva enviada. El salon la vera como pendiente para confirmar.",
+        : "Reserva enviada. El negocio la vera como pendiente para confirmar.",
     );
     event.currentTarget.reset();
     state.selectedClientSlot = "";
@@ -2289,16 +2300,17 @@ function bindBookingEvents() {
     const form = document.getElementById("settings-form");
     const formData = new FormData(form);
 
-    state.business.name = formData.get("businessName").trim() || "Salon Demo";
+    state.business.name = formData.get("businessName").trim() || "Centro Demo";
     state.business.slug =
       formData
         .get("slug")
         .trim()
         .toLowerCase()
         .replace(/[^a-z0-9-]+/g, "-")
-        .replace(/^-|-$/g, "") || "salon-demo";
+        .replace(/^-|-$/g, "") || "centro-demo";
     state.business.city = formData.get("city").trim() || "Madrid";
     state.business.phone = formData.get("businessPhone").trim() || "+34 600 000 000";
+    state.business.type = formData.get("businessType") || "Fisioterapia y bienestar";
     state.business.minNotice = Number(formData.get("minNotice"));
     state.business.autoConfirm = formData.has("autoConfirm");
     state.business.allowClientCancel = formData.has("allowClientCancel");

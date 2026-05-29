@@ -52,7 +52,7 @@
         <form class="login-box" id="login-form">
           <label>
             Email del negocio
-            <input name="email" type="email" value="salon@demo.com" />
+            <input name="email" type="email" value="demo@turnia.app" />
           </label>
           <label>
             Contrasena
@@ -91,7 +91,7 @@
 
         <div class="sidebar-note">
           <span>Link publico</span>
-          <strong data-business-link>turnia.app/salon-demo</strong>
+          <strong data-business-link>turnia.app/centro-demo</strong>
           <p>El cliente reserva desde ahi y la cita entra sincronizada en esta agenda.</p>
           <small>Demo local: no uses datos reales.</small>
           <button class="ghost-btn" type="button" id="reset-demo">Restaurar demo</button>
@@ -106,7 +106,7 @@
         </section>
         <header class="topbar">
           <div>
-            <span class="eyebrow" data-business-name>Salon Demo</span>
+            <span class="eyebrow" data-business-name>Centro Demo</span>
             <h1>Agenda de hoy</h1>
           </div>
           <div class="topbar-actions">
@@ -244,7 +244,7 @@
           <div class="report-sheet" id="report-sheet">
             <div class="report-cover">
               <div>
-                <span class="eyebrow" data-business-name>Salon Demo</span>
+                <span class="eyebrow" data-business-name>Centro Demo</span>
                 <h3>Resumen mensual</h3>
                 <p>Turnos, ingresos estimados, servicios mas pedidos y pendientes de confirmar.</p>
               </div>
@@ -276,10 +276,10 @@
           <div class="public-hero">
             <div>
               <span class="eyebrow">Vista del cliente</span>
-              <h2 data-business-name>Salon Demo</h2>
+              <h2 data-business-name>Centro Demo</h2>
               <p>Esta es la pantalla que un negocio podria compartir en Instagram, WhatsApp o su web. La reserva entra sincronizada en la agenda.</p>
             </div>
-            <strong data-business-link>turnia.app/salon-demo</strong>
+            <strong data-business-link>turnia.app/centro-demo</strong>
           </div>
 
           <div class="public-layout">
@@ -343,11 +343,11 @@
                 <div class="settings-grid">
                   <label>
                     Nombre comercial
-                    <input name="businessName" type="text" value="Salon Demo" />
+                    <input name="businessName" type="text" value="Centro Demo" />
                   </label>
                   <label>
                     Slug del link
-                    <input name="slug" type="text" value="salon-demo" />
+                    <input name="slug" type="text" value="centro-demo" />
                   </label>
                   <label>
                     Ciudad
@@ -357,6 +357,30 @@
                     Telefono del negocio
                     <input name="businessPhone" type="tel" value="+34 600 000 000" />
                   </label>
+                </div>
+              </section>
+
+              <section class="settings-card">
+                <h3>Tipo de negocio</h3>
+                <p class="export-help">
+                  Esto ayuda a adaptar ejemplos, servicios sugeridos y textos. El link del cliente siempre sale del negocio configurado.
+                </p>
+                <div class="settings-grid">
+                  <label>
+                    Nicho de ejemplo
+                    <select name="businessType">
+                      <option value="Belleza y cuidado personal">Belleza y cuidado personal</option>
+                      <option value="Fisioterapia y bienestar" selected>Fisioterapia y bienestar</option>
+                      <option value="Clases y asesorias">Clases y asesorias</option>
+                      <option value="Servicios profesionales">Servicios profesionales</option>
+                      <option value="Otro negocio con turnos">Otro negocio con turnos</option>
+                    </select>
+                  </label>
+                  <div class="niche-example">
+                    <span class="eyebrow">Ejemplo</span>
+                    <strong>Si es una web de fisio</strong>
+                    <p>El boton de la web podria decir "Reservar sesion" y apuntar al link propio de ese centro, por ejemplo <span data-business-link>turnia.app/centro-demo</span>.</p>
+                  </div>
                 </div>
               </section>
 

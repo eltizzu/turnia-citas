@@ -17,6 +17,7 @@ Cada avance importante debe revisar si impacta en alguno de estos documentos:
 - `VERSION_MOVIL.md`
 - `GUIA_PRUEBA_PRIVADA.md`
 - `FASES_PRODUCTO_REAL.md`
+- `ENFOQUE_MULTI_NICHO.md`
 
 Si cambia una funcion, flujo, perfil, decision comercial, decision legal, alcance o idea futura, actualizar el documento correspondiente en el mismo bloque de trabajo.
 
@@ -110,8 +111,19 @@ Actualizar si cambia:
 - tareas de produccion;
 - decision de no construir infraestructura todavia.
 
+### Enfoque Multi Nicho
+
+Actualizar si cambia:
+
+- nichos compatibles;
+- lenguaje base del producto;
+- rubros priorizados;
+- decision de crear o no verticales especificas.
+
 ## Estado actual
 
 Creado el 14 de mayo de 2026 como base documental viva para Turnia.
 
 Actualizacion importante: 27 de mayo de 2026, se agregaron documentos para separar demo clara, prueba privada, piloto controlado, base seria y producto comercial.
+
+Actualizacion importante: 30 de mayo de 2026, Turnia pasa a posicionarse como agenda adaptable para negocios de servicios por turno, no solo para salones/belleza.

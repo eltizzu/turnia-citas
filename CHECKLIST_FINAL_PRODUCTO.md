@@ -13,6 +13,9 @@ Estado: documento vivo. Actualizar antes de cada presentacion, piloto o entrega.
 - [x] Demo con datos coherentes.
 - [x] Demo ampliada con datos ficticios mas realistas.
 - [x] Explicaciones breves agregadas por seccion.
+- [x] Posicionamiento ampliado a negocios de servicios por turno.
+- [x] Demo renombrada a `Centro Demo` para no limitar Turnia a salones.
+- [x] Ajustes incluye ejemplo de tipo de negocio y link propio por negocio.
 - [x] Vista negocio funcional.
 - [x] Vista cliente funcional.
 - [x] Reglas de disponibilidad separadas.

@@ -6,7 +6,7 @@ Nota: para enviar o subir como adjunto comercial, usar `DOSSIER_COMERCIAL_TURNIA
 
 ## Que es Turnia
 
-Turnia es una app de agenda y reservas para negocios que trabajan por turnos: peluquerias, barberias, centros de estetica, manicura, pestanas, masajes y servicios similares.
+Turnia es una app de agenda y reservas para negocios y profesionales que trabajan con citas por horario: barberias, peluquerias, unas, estetica, fisioterapia, masajes, bienestar, consultorias y servicios similares.
 
 El objetivo es que el negocio pueda organizar su agenda diaria, gestionar clientes y permitir que las personas reserven desde un link publico sin depender todo el dia de WhatsApp, llamadas o una libreta.
 
@@ -32,7 +32,7 @@ Turnia ordena ese flujo sin convertirlo en un sistema pesado.
 
 Cliente ideal inicial:
 
-- salones pequenos o medianos;
+- negocios pequenos o medianos que trabajan con reservas;
 - profesionales independientes;
 - negocios con 1 a 8 profesionales;
 - servicios con duracion y precio definidos;
@@ -47,7 +47,9 @@ Sectores iniciales:
 - estetica;
 - pestanas/cejas;
 - masajes;
-- wellness simple.
+- fisioterapia;
+- bienestar/wellness;
+- nutricion, coaching o asesorias por cita.
 
 ## Modulos actuales
 
@@ -111,6 +113,7 @@ Sectores iniciales:
 ### Configuracion
 
 - datos del negocio;
+- tipo de negocio o nicho;
 - slug/link publico;
 - horarios;
 - intervalo de turnos;
@@ -169,6 +172,8 @@ Presentacion recomendada:
 9. Explicar setup inicial: cargamos servicios, equipo y reglas del negocio.
 
 Ver tambien `PRESENTACION_TURNIA.md` para un guion completo de demo.
+
+Ver tambien `ENFOQUE_MULTI_NICHO.md` para la decision de producto adaptable por rubro.
 
 ## Precio inicial posible
 

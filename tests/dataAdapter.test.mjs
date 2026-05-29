@@ -20,8 +20,8 @@ const demoState = {
     step: 30,
   },
   business: {
-    name: "Salon Demo",
-    slug: "salon-demo",
+    name: "Centro Demo",
+    slug: "centro-demo",
     city: "Madrid",
     phone: "+34 600 000 000",
     minNotice: 12,
@@ -82,7 +82,7 @@ const demoState = {
 };
 
 test("normaliza textos para slugs e ids estables", () => {
-  assert.equal(adapter.slugify("Lifting de pestañas"), "lifting-de-pestanas");
+  assert.equal(adapter.slugify("Fisioterapia inicial"), "fisioterapia-inicial");
   assert.equal(adapter.stableId("service", "Corte"), adapter.stableId("service", "Corte"));
 });
 

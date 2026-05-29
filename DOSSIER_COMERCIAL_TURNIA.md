@@ -2,7 +2,7 @@
 
 ## Agenda online simple para negocios que trabajan por turnos
 
-Turnia es una herramienta para ayudar a salones, barberias, centros de estetica y profesionales de servicios a organizar sus citas, reducir mensajes repetidos y permitir que sus clientes reserven desde un link.
+Turnia es una herramienta para ayudar a negocios y profesionales que trabajan con citas por horario a organizar su agenda, reducir mensajes repetidos y permitir que sus clientes reserven desde un link.
 
 La idea es simple: el negocio mantiene el control de su agenda y el cliente puede pedir turno de forma clara, sin idas y vueltas innecesarias.
 
@@ -32,6 +32,9 @@ Turnia esta pensado para negocios que trabajan con reservas por horario, especia
 - manicura y unas;
 - pestanas y cejas;
 - masajes;
+- fisioterapia;
+- bienestar y wellness;
+- nutricion, coaching o asesorias;
 - profesionales independientes;
 - estudios pequenos con varios profesionales.
 

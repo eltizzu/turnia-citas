@@ -29,7 +29,7 @@ No mezclar ideas verdes con el MVP.
 
 Regla:
 
-- si ayuda a que un salon reserve y gestione mejor, puede entrar;
+- si ayuda a que un negocio de servicios reserve y gestione mejor, puede entrar;
 - si abre otro negocio distinto, va a ideas futuras;
 - si requiere mucha infraestructura antes de validar, se pospone.
 
@@ -51,7 +51,7 @@ Prioridad: media. Primero validar WhatsApp semiautomatico.
 - negocio ve interesados;
 - Turnia avisa cuando se libera hueco.
 
-Prioridad: media-alta para salones con mucha demanda.
+Prioridad: media-alta para negocios con mucha demanda.
 
 ### Reactivacion de clientes
 
@@ -151,7 +151,7 @@ Modulo de resenas:
 
 ## Ideas que quedan fuera por ahora
 
-- marketplace publico de salones;
+- marketplace publico de negocios;
 - app nativa movil;
 - inteligencia artificial para recomendar horarios;
 - integracion profunda con Google Calendar;
@@ -174,3 +174,5 @@ Antes de sumar una funcion, preguntar:
 7. No aumenta mucho el riesgo legal/fiscal?
 
 Si la respuesta es dudosa, dejarlo en este documento y no meterlo todavia.
+
+Ver tambien `ENFOQUE_MULTI_NICHO.md` para distinguir adaptacion por rubro de productos nuevos.

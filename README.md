@@ -1,6 +1,6 @@
 # Turnia
 
-Turnia es una app de agenda y citas para negocios que trabajan por turnos: peluquerias, barberias, centros de estetica, unas, masajes y servicios similares.
+Turnia es una app de agenda y citas para negocios y profesionales que trabajan con reservas por horario: barberias, peluquerias, unas, fisioterapia, masajes, estetica, bienestar, consultorias y servicios similares.
 
 La idea no es crear otro panel frio ni un software enorme de gestion. Turnia debe sentirse como una agenda moderna, clara y muy comoda desde el movil.
 
@@ -8,7 +8,7 @@ La marca inicial usa el logo en `assets/logo-turnia.svg`, una copia rapida en `l
 
 ## Promesa
 
-Ayudar a salones y profesionales a organizar su agenda, confirmar citas y reducir huecos perdidos sin depender todo el dia de WhatsApp, llamadas o una libreta.
+Ayudar a negocios de servicios a organizar su agenda, confirmar citas y reducir huecos perdidos sin depender todo el dia de WhatsApp, llamadas o una libreta.
 
 ## Enfoque inicial
 
@@ -84,6 +84,7 @@ El proximo bloque de trabajo es pasar de demo local a MVP vendible sin perder si
 - `VERSION_MOVIL.md`: enfoque mobile/PWA, instalacion y limites actuales.
 - `GUIA_PRUEBA_PRIVADA.md`: recorrido para probar Turnia con una persona de confianza y registrar feedback.
 - `FASES_PRODUCTO_REAL.md`: separacion entre demo clara, prueba privada, piloto controlado, base seria y producto comercial.
+- `ENFOQUE_MULTI_NICHO.md`: decision de producto para adaptar Turnia a distintos rubros sin perder foco.
 
 ## Documentos vivos
 
@@ -99,6 +100,7 @@ Estos documentos deben actualizarse con cada avance importante:
 - `ECOSISTEMA_IDEAS_FUTURAS.md`: alcance actual, futuras mejoras y productos hermanos.
 - `GUIA_PRUEBA_PRIVADA.md`: prueba controlada, preguntas y observaciones.
 - `FASES_PRODUCTO_REAL.md`: fases para no adelantar infraestructura antes de validar valor.
+- `ENFOQUE_MULTI_NICHO.md`: nichos compatibles, lenguaje base y reglas de adaptacion.
 
 Decision inicial recomendada: Supabase para Auth/Postgres/RLS y Netlify o Vercel para publicar el frontend.
 

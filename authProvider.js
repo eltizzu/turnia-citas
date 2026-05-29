@@ -1,7 +1,7 @@
 (function attachAuthProvider(global) {
   const demoBusiness = {
-    id: "business_demo_salon",
-    name: "Salon Demo",
+    id: "business_demo_centro",
+    name: "Centro Demo",
     role: "admin",
   };
 
@@ -15,7 +15,7 @@
       },
       async signInWithEmail({ email }) {
         const normalizedEmail = String(email || "").trim().toLowerCase();
-        const hasBusiness = normalizedEmail === "salon@demo.com";
+        const hasBusiness = normalizedEmail === "demo@turnia.app";
 
         session = {
           user: {

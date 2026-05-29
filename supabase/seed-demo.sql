@@ -5,13 +5,14 @@ with created_business as (
   insert into public.businesses (id, name, slug, city, phone, timezone, settings)
   values (
     '11111111-1111-4111-8111-111111111111',
-    'Salon Demo',
-    'salon-demo',
+    'Centro Demo',
+    'centro-demo',
     'Madrid',
     '+34 600 000 000',
     'Europe/Madrid',
     '{
       "businessHours": { "start": "09:00", "end": "19:00", "step": 30 },
+      "businessType": "Fisioterapia y bienestar",
       "minNotice": 12,
       "autoConfirm": false,
       "allowClientCancel": true
@@ -30,7 +31,7 @@ owner_user as (
     id,
     'REEMPLAZAR_AUTH_USER_ID'::uuid,
     'Dueno Demo',
-    'salon@demo.com',
+    'demo@turnia.app',
     'admin',
     true
   from created_business
@@ -42,9 +43,9 @@ owner_user as (
 professionals_seed as (
   insert into public.professionals (id, business_id, name, role, work_start, work_end, active)
   values
-    ('22222222-2222-4222-8222-222222222221', '11111111-1111-4111-8111-111111111111', 'Mara', 'Colorista', '09:00', '18:00', true),
-    ('22222222-2222-4222-8222-222222222222', '11111111-1111-4111-8111-111111111111', 'Noe', 'Manicura y barberia', '10:00', '19:00', true),
-    ('22222222-2222-4222-8222-222222222223', '11111111-1111-4111-8111-111111111111', 'Eva', 'Estetica', '09:00', '17:00', true)
+    ('22222222-2222-4222-8222-222222222221', '11111111-1111-4111-8111-111111111111', 'Mara', 'Especialista capilar', '09:00', '18:00', true),
+    ('22222222-2222-4222-8222-222222222222', '11111111-1111-4111-8111-111111111111', 'Noe', 'Unas y barberia', '10:00', '19:00', true),
+    ('22222222-2222-4222-8222-222222222223', '11111111-1111-4111-8111-111111111111', 'Eva', 'Fisioterapia y bienestar', '09:00', '17:00', true)
   on conflict (id) do update
     set name = excluded.name,
         role = excluded.role,
@@ -59,8 +60,9 @@ services_seed as (
     ('33333333-3333-4333-8333-333333333331', '11111111-1111-4111-8111-111111111111', 'Corte express', 'Peluqueria', 35, 1800, true, true),
     ('33333333-3333-4333-8333-333333333332', '11111111-1111-4111-8111-111111111111', 'Color + corte', 'Peluqueria', 90, 5800, true, true),
     ('33333333-3333-4333-8333-333333333333', '11111111-1111-4111-8111-111111111111', 'Semipermanente', 'Unas', 50, 2400, true, true),
-    ('33333333-3333-4333-8333-333333333334', '11111111-1111-4111-8111-111111111111', 'Lifting de pestanas', 'Estetica', 60, 3800, true, true),
-    ('33333333-3333-4333-8333-333333333335', '11111111-1111-4111-8111-111111111111', 'Barba + perfilado', 'Barberia', 30, 1600, true, true)
+    ('33333333-3333-4333-8333-333333333334', '11111111-1111-4111-8111-111111111111', 'Fisioterapia inicial', 'Salud', 60, 4500, true, true),
+    ('33333333-3333-4333-8333-333333333335', '11111111-1111-4111-8111-111111111111', 'Barba + perfilado', 'Barberia', 30, 1600, true, true),
+    ('33333333-3333-4333-8333-333333333336', '11111111-1111-4111-8111-111111111111', 'Masaje descontracturante', 'Bienestar', 60, 4200, true, true)
   on conflict (id) do update
     set name = excluded.name,
         category = excluded.category,
@@ -76,7 +78,8 @@ values
   ('11111111-1111-4111-8111-111111111111', '22222222-2222-4222-8222-222222222221', '33333333-3333-4333-8333-333333333332'),
   ('11111111-1111-4111-8111-111111111111', '22222222-2222-4222-8222-222222222222', '33333333-3333-4333-8333-333333333333'),
   ('11111111-1111-4111-8111-111111111111', '22222222-2222-4222-8222-222222222222', '33333333-3333-4333-8333-333333333335'),
-  ('11111111-1111-4111-8111-111111111111', '22222222-2222-4222-8222-222222222223', '33333333-3333-4333-8333-333333333334')
+  ('11111111-1111-4111-8111-111111111111', '22222222-2222-4222-8222-222222222223', '33333333-3333-4333-8333-333333333334'),
+  ('11111111-1111-4111-8111-111111111111', '22222222-2222-4222-8222-222222222223', '33333333-3333-4333-8333-333333333336')
 on conflict (professional_id, service_id) do nothing;
 
 insert into public.clients (id, business_id, name, phone, note)

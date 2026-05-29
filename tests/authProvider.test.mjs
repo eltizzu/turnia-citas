@@ -14,10 +14,10 @@ async function loadAuthProvider(extraSandbox = {}) {
 test("login demo con email conocido devuelve negocio asignado", async () => {
   const auth = await loadAuthProvider();
   const provider = auth.createDemoAuthProvider();
-  const session = await provider.signInWithEmail({ email: "salon@demo.com" });
+  const session = await provider.signInWithEmail({ email: "demo@turnia.app" });
 
   assert.equal(session.user.provider, "email");
-  assert.equal(session.business.name, "Salon Demo");
+  assert.equal(session.business.name, "Centro Demo");
   assert.equal(provider.getSession().business.role, "admin");
 });
 
@@ -36,7 +36,7 @@ test("login demo con Google devuelve un usuario asociado al negocio demo", async
   const session = await provider.signInWithGoogle();
 
   assert.equal(session.user.provider, "google");
-  assert.equal(session.business.id, "business_demo_salon");
+  assert.equal(session.business.id, "business_demo_centro");
 });
 
 test("factory prepara modo Supabase cuando la configuracion lo pide", async () => {
@@ -84,8 +84,8 @@ test("provider Supabase listo inicia sesion con password y busca negocio", async
               role: "admin",
               businesses: {
                 id: "business-1",
-                name: "Salon",
-                slug: "salon",
+                name: "Centro",
+                slug: "centro",
               },
             },
             error: null,
@@ -102,7 +102,7 @@ test("provider Supabase listo inicia sesion con password y busca negocio", async
   });
 
   assert.equal(provider.mode, "supabase-ready");
-  assert.equal(session.business.name, "Salon");
+  assert.equal(session.business.name, "Centro");
   assert.equal(session.user.name, "Dueno");
   assert.equal(calls[0][0], "password");
 });
