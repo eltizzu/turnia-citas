@@ -38,12 +38,6 @@
             Recorre la demo como si fueras el negocio. Tambien podes abrir la vista del cliente para probar una reserva desde el link.
           </p>
         </div>
-        <div class="demo-notice">
-          <strong>Estas probando una demo funcional</strong>
-          <p>
-            Esta version sirve para validar si se entiende y si resuelve un problema real. Los datos se guardan solo en este navegador: no cargues informacion real de clientes.
-          </p>
-        </div>
         <div class="entry-highlights">
           <span>Agenda con datos de ejemplo</span>
           <span>Reserva desde link cliente</span>
@@ -52,11 +46,11 @@
         <form class="login-box" id="login-form">
           <label>
             Email del negocio
-            <input name="email" type="email" value="demo@turnia.app" />
+            <input name="email" type="email" placeholder="tu@email.com" />
           </label>
           <label>
             Contrasena
-            <input name="password" type="password" value="turnia-demo" />
+            <input name="password" type="password" placeholder="••••••••" />
           </label>
           <button class="primary-btn" type="submit">Entrar como negocio</button>
         </form>
@@ -93,8 +87,7 @@
           <span>Link publico</span>
           <strong data-business-link>turnia.app/centro-demo</strong>
           <p>El cliente reserva desde ahi y la cita entra sincronizada en esta agenda.</p>
-          <small>Demo local: no uses datos reales.</small>
-          <button class="ghost-btn" type="button" id="reset-demo">Restaurar demo</button>
+          <button class="ghost-btn" type="button" id="reset-demo" style="display:none">Restaurar demo</button>
           <button class="ghost-btn" type="button" id="exit-demo">Salir</button>
         </div>
       </aside>
