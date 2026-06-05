@@ -15,16 +15,16 @@
       },
       async signInWithEmail({ email }) {
         const normalizedEmail = String(email || "").trim().toLowerCase();
-        const hasBusiness = normalizedEmail === "demo@turnia.app";
 
+        // En modo demo cualquier email/contraseña entra con el negocio de ejemplo
         session = {
           user: {
-            id: hasBusiness ? "demo-user-owner" : `demo-user-${normalizedEmail || "unknown"}`,
-            email: normalizedEmail || "sin-email@demo.local",
-            name: hasBusiness ? "Dueno Demo" : "Usuario sin negocio",
+            id: "demo-user-owner",
+            email: normalizedEmail || "demo@turnia.app",
+            name: "Dueno Demo",
             provider: "email",
           },
-          business: hasBusiness ? demoBusiness : null,
+          business: demoBusiness,
         };
 
         return session;

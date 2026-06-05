@@ -55,7 +55,7 @@
           <button class="primary-btn" type="submit">Entrar como negocio</button>
         </form>
         <div class="entry-actions">
-          <button class="ghost-btn" type="button" id="google-login">Entrar con Google</button>
+
           <button class="ghost-btn" type="button" id="enter-client">Ver link del cliente</button>
         </div>
         <div class="auth-message hidden" id="auth-message" role="status"></div>
@@ -688,6 +688,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
     <script src="./config.js"></script>
+    <script>
+      // demo.html siempre usa datos ficticios — nunca conecta a Supabase
+      if (window.TURNIA_CONFIG) window.TURNIA_CONFIG.dataMode = 'demo';
+    </script>
     <script src="./agendaRules.js"></script>
     <script src="./dataAdapter.js"></script>
     <script src="./supabaseClient.js"></script>
