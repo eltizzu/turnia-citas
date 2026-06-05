@@ -2,6 +2,8 @@
 
 Esta guia es para pasar Turnia de demo local a una primera base real.
 
+Estado actual: en esta maquina no esta instalada la CLI de Supabase, asi que el primer alta conviene hacerla desde el panel web de Supabase y el SQL Editor.
+
 ## 1. Crear proyecto
 
 1. Entrar en https://supabase.com.
@@ -32,7 +34,7 @@ La publishable/anon key puede ir en frontend si RLS esta bien configurado. La se
 4. Ejecutarlo en Supabase.
 5. Revisar que no haya errores.
 
-Ese archivo crea tablas, indices, triggers y RLS inicial.
+Ese archivo crea tablas, indices, triggers, RLS inicial, proteccion anti turnos superpuestos y RPCs publicas limitadas para el link cliente.
 
 ## 4. Crear usuario admin
 
@@ -65,7 +67,41 @@ Esto crea:
 - bloqueos
 - plantillas
 
-## 6. Activar Google Login
+## 6. Ejecutar prueba rapida
+
+Despues de `schema.sql` y `seed-demo.sql`:
+
+1. Abrir [supabase/smoke-test.sql](supabase/smoke-test.sql).
+2. Copiarlo en SQL Editor.
+3. Ejecutarlo.
+4. Confirmar que:
+   - `get_public_booking_page('centro-demo')` devuelve negocio, servicios y profesionales.
+   - `get_public_available_slots(...)` devuelve horarios.
+   - la segunda reserva en el mismo horario se rechaza con aviso `slot_not_available`.
+
+El archivo usa `ROLLBACK`, asi que no deberia dejar datos de prueba guardados.
+
+## 7. Conectar frontend en modo preview
+
+Para probar configuracion sin secretos:
+
+1. Copiar `turnia.config.example.js` como `turnia.config.local.js`.
+2. Cambiar:
+   - `dataMode: "supabase"`
+   - `supabaseUrl`
+   - `supabaseAnonKey`
+3. No subir `turnia.config.local.js` si tiene datos reales.
+4. Cargar el SDK oficial de Supabase antes de `supabaseClient.js` cuando conectemos el frontend real.
+
+Importante: hoy `dataProviders.js` sigue en modo `supabase-preview`; prepara payloads pero todavia no reemplaza toda la lectura/escritura local por consultas reales.
+
+La capa para el link publico real ya vive en `publicBookingApi.js`:
+
+- `getBookingPage(slug)` llama `get_public_booking_page`.
+- `getAvailableSlots(...)` llama `get_public_available_slots`.
+- `createAppointment(...)` llama `create_public_appointment`.
+
+## 8. Activar Google Login
 
 Supabase permite login con Google usando OAuth.
 
@@ -83,7 +119,7 @@ Documentacion oficial:
 
 - https://supabase.com/docs/guides/auth/social-login/auth-google
 
-## 7. Como funciona en Turnia
+## 9. Como funciona en Turnia
 
 Cuando un usuario entra con Google:
 
@@ -99,7 +135,7 @@ Esto permite:
 - varios usuarios para el mismo negocio
 - impedir que un usuario vea datos de otro negocio
 
-## 8. Seguridad basica
+## 10. Seguridad basica
 
 Antes de usar con clientes reales:
 
@@ -107,6 +143,7 @@ Antes de usar con clientes reales:
 - No exponer secret/service role key.
 - Probar que usuario A no ve datos de usuario B.
 - Probar reservas simultaneas.
+- Probar `smoke-test.sql`.
 - Activar HTTPS.
 - Revisar textos legales.
 

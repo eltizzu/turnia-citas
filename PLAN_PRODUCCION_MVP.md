@@ -130,7 +130,7 @@ Tareas:
 - crear capa `dataProvider`
 - separar proveedores de persistencia en `dataProviders.js`
 - mantener `localStorageProvider` para demo
-- preparar `supabaseProvider` vacio o mockeado
+- preparar `supabaseProvider` en modo preview, sin prometer persistencia real hasta conectar tablas y permisos
 - documentar variables de entorno
 - preparar `supabase/schema.sql` con tablas y RLS inicial
 
@@ -162,10 +162,11 @@ Tareas:
 - guardar bloqueos en base de datos
 - calcular disponibilidad usando datos del negocio
 - validar disponibilidad en servidor antes de insertar
+- mantener restricciones SQL anti-solapamiento como ultima barrera de seguridad
 - reprogramar sin pisar horarios
 - confirmar/cancelar/finalizar con persistencia real
 
-Resultado esperado: dos dispositivos ven la misma agenda y no pueden reservar el mismo horario.
+Resultado esperado: dos dispositivos ven la misma agenda y la base rechaza cualquier intento de reservar el mismo horario.
 
 ### Fase 4 - Link publico real
 
@@ -174,8 +175,8 @@ Objetivo: clientes reservan desde un link compartible.
 Tareas:
 
 - ruta publica por slug
-- lectura publica limitada de servicios/profesionales/horarios
-- creacion publica de solicitud de cita
+- lectura publica limitada de servicios/profesionales/horarios usando RPCs
+- creacion publica de solicitud de cita usando `create_public_appointment(...)`
 - pantalla de confirmacion para cliente
 - mensajes de WhatsApp preparados
 

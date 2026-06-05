@@ -248,6 +248,16 @@ body.public-mode #view-reserva {
   display: block !important;
 }
 
+body.direct-client-mode .demo-banner,
+body.direct-client-mode .topbar,
+body.direct-client-mode .public-actions {
+  display: none !important;
+}
+
+body.direct-client-mode .main-app {
+  min-height: auto;
+}
+
 .public-actions {
   display: flex;
   justify-content: flex-end;
@@ -607,6 +617,9 @@ h3 {
 }
 
 .appointment-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 36px;
   padding: 0 0.7rem;
   border-color: var(--line);

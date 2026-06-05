@@ -71,7 +71,7 @@ test("factory permite preparar modo supabase sin romper la demo", async () => {
   assert.deepEqual(calls, [{ demo: true }]);
 });
 
-test("factory marca Supabase listo si puede crear cliente", async () => {
+test("factory marca Supabase como preview si puede crear cliente", async () => {
   const providers = await loadProviders({
     TURNIA_CONFIG: {
       dataMode: "supabase",
@@ -87,5 +87,6 @@ test("factory marca Supabase listo si puede crear cliente", async () => {
 
   const provider = providers.createDataProvider({ storageKey: "turnia-test" });
 
-  assert.equal(provider.mode, "supabase-ready");
+  assert.equal(provider.mode, "supabase-preview");
+  assert.equal(provider.persistenceReady, false);
 });

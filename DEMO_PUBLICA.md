@@ -70,6 +70,22 @@ Cuando este publicada, seria algo como:
 https://demo.turnia.app/?reset-demo=1
 ```
 
+## Como abrir directamente la vista cliente
+
+Para simular un boton externo de una web, abrir:
+
+```txt
+demo.html?reserva=1
+```
+
+Ejemplo publicado:
+
+```txt
+https://demo.turnia.app/demo.html?reserva=1
+```
+
+Ese enlace entra directo a la reserva del cliente y no muestra la pantalla de login demo.
+
 ## Recomendacion para publicar
 
 Publicar primero como demo controlada en:
@@ -113,3 +129,5 @@ Si hay interes real:
 3. Repetir prueba con otra persona.
 4. Decidir si pasa a piloto controlado.
 5. Recien entonces crear Supabase, login real y datos persistentes.
+
+Nota tecnica actual: la demo ya escapa los datos principales que se pintan en pantalla y evita duplicar listeners al navegar, pero sigue siendo una demo de navegador. No debe usarse todavia con datos reales de clientes ni como agenda productiva.

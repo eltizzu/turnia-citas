@@ -248,6 +248,16 @@ body.public-mode #view-reserva {
   display: block !important;
 }
 
+body.direct-client-mode .demo-banner,
+body.direct-client-mode .topbar,
+body.direct-client-mode .public-actions {
+  display: none !important;
+}
+
+body.direct-client-mode .main-app {
+  min-height: auto;
+}
+
 .public-actions {
   display: flex;
   justify-content: flex-end;

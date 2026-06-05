@@ -21,7 +21,8 @@
 
   function createSupabaseProvider({ adapter = global.TurniaDataAdapter, client = null } = {}) {
     return {
-      mode: client ? "supabase-ready" : "supabase-pending",
+      mode: client ? "supabase-preview" : "supabase-pending",
+      persistenceReady: false,
       load() {
         return null;
       },

@@ -381,6 +381,20 @@ En la demo se abre desde:
 - panel negocio: `Vista cliente`;
 - menu lateral: `Link cliente`.
 
+Para abrir directamente la vista del cliente en la demo, se puede usar:
+
+```txt
+demo.html?reserva=1
+```
+
+Ese modo no muestra la pantalla de login ni el panel del negocio.
+
+En produccion, el equivalente seria el link propio del negocio:
+
+```txt
+turnia.app/{slug-del-negocio}
+```
+
 ### Que ve el cliente
 
 El cliente ve:
@@ -513,6 +527,12 @@ Ejemplo:
 - una profesora podria usar `turnia.app/clases-laura`.
 
 Si ese negocio pone un boton en su web, el boton apunta a su propio link de Turnia.
+
+Ejemplo de boton en una web de fisioterapia:
+
+```txt
+Reservar sesion -> turnia.app/clinica-movimiento
+```
 
 ## Restaurar demo
 

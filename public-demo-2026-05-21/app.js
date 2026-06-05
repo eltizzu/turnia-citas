@@ -1,11 +1,17 @@
 const STORAGE_KEY = "turnia-demo-state-v2";
 const demoDate = "2026-05-11";
 const dayNames = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"];
+const initialUrlParams = new URLSearchParams(window.location.search);
 
-if (new URLSearchParams(window.location.search).has("reset-demo")) {
+if (initialUrlParams.has("reset-demo")) {
   localStorage.removeItem(STORAGE_KEY);
   window.history.replaceState({}, "", window.location.pathname);
 }
+
+const shouldOpenClientView =
+  initialUrlParams.has("reserva") ||
+  initialUrlParams.has("cliente") ||
+  initialUrlParams.has("publico");
 
 const demoData = {
   businessHours: {
@@ -276,11 +282,23 @@ function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
+const appConfig = window.TURNIA_CONFIG || {};
+const supabaseClient = TurniaSupabaseClient?.createClient(appConfig);
+const publicBookingApi = TurniaPublicBookingApi?.createPublicBookingApi({
+  client: supabaseClient,
+});
+const supabaseDataApi = TurniaSupabaseDataApi?.createBusinessDataApi({
+  client: supabaseClient,
+});
+
 const dataProvider = TurniaDataProviders.createDataProvider({
   storageKey: STORAGE_KEY,
   adapter: TurniaDataAdapter,
+  client: supabaseClient,
 });
-const authProvider = TurniaAuthProvider.createAuthProvider();
+const authProvider = TurniaAuthProvider.createAuthProvider({
+  client: supabaseClient,
+});
 
 const persistedData = loadPersistedData();
 const businessHours = persistedData?.businessHours || clone(demoData.businessHours);
@@ -298,9 +316,113 @@ const state = {
 };
 const services = persistedData?.services || clone(demoData.services);
 const team = persistedData?.team || clone(demoData.team);
+let currentSession = null;
+let publicSlotsRequestId = 0;
+
+function replaceArray(target, items) {
+  target.splice(0, target.length, ...(items || []));
+}
+
+function replaceStateFromData(data) {
+  if (!data) return;
+
+  Object.keys(businessHours).forEach((key) => delete businessHours[key]);
+  Object.assign(businessHours, data.businessHours || clone(demoData.businessHours));
+
+  Object.assign(state.business, data.business || clone(demoData.business));
+  replaceArray(state.clients, data.clients || []);
+  replaceArray(state.blocks, data.blocks || []);
+  replaceArray(state.appointments, data.appointments || []);
+  replaceArray(services, data.services || []);
+  replaceArray(team, data.team || []);
+
+  if (!state.selectedClientPhone && state.clients[0]) {
+    state.selectedClientPhone = state.clients[0].phone;
+  }
+}
+
+function getPublicSlug() {
+  return initialUrlParams.get("slug") || initialUrlParams.get("negocio") || state.business.slug || "centro-demo";
+}
+
+function shouldUsePublicBookingApi() {
+  return Boolean(publicBookingApi?.isReady && document.body.classList.contains("public-mode"));
+}
 
 function loadPersistedData() {
   return dataProvider.load();
+}
+
+async function loadBusinessFromSupabase(businessId) {
+  if (!supabaseDataApi?.isReady || !businessId) return false;
+
+  const data = await supabaseDataApi.loadBusinessState(businessId);
+  replaceStateFromData(data);
+  fillFormOptions();
+  renderAll();
+  return true;
+}
+
+function mapPublicBookingPage(data) {
+  const business = data?.business || {};
+  const publicServices = data?.services || [];
+  const professionalsById = new Map();
+
+  publicServices.forEach((service) => {
+    (service.professionals || []).forEach((professional) => {
+      if (!professionalsById.has(professional.id)) {
+        professionalsById.set(professional.id, {
+          id: professional.id,
+          name: professional.name,
+          role: professional.role || "Profesional",
+          workStart: business.business_hours?.start || "09:00",
+          workEnd: business.business_hours?.end || "18:00",
+          services: [],
+        });
+      }
+      professionalsById.get(professional.id).services.push(service.name);
+    });
+  });
+
+  return {
+    businessHours: {
+      start: business.business_hours?.start || "09:00",
+      end: business.business_hours?.end || "18:00",
+      step: Number(business.business_hours?.step || 30),
+    },
+    business: {
+      ...state.business,
+      name: business.name || state.business.name,
+      slug: business.slug || getPublicSlug(),
+      city: business.city || state.business.city,
+      type: business.business_type || state.business.type,
+      minNotice: Number(business.min_notice || 0),
+      autoConfirm: Boolean(business.auto_confirm),
+    },
+    clients: state.clients,
+    appointments: state.appointments,
+    blocks: state.blocks,
+    services: publicServices.map((service) => ({
+      id: service.id,
+      name: service.name,
+      category: service.category || "General",
+      duration: Number(service.duration_minutes || 0),
+      price: Number(service.price_cents || 0) / 100,
+      professionals: (service.professionals || []).map((professional) => professional.name),
+      online: true,
+    })),
+    team: Array.from(professionalsById.values()),
+  };
+}
+
+async function loadPublicBookingFromSupabase() {
+  if (!publicBookingApi?.isReady) return false;
+
+  const data = await publicBookingApi.getBookingPage(getPublicSlug());
+  replaceStateFromData(mapPublicBookingPage(data));
+  fillFormOptions();
+  renderAll();
+  return true;
 }
 
 function getPersistableState() {
@@ -347,6 +469,17 @@ function xmlEscape(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
 }
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+const escapeAttr = escapeHtml;
 
 function columnName(index) {
   let name = "";
@@ -898,13 +1031,13 @@ function renderAgenda() {
         return `
           <article class="agenda-item agenda-block">
             <div class="agenda-time">
-              <strong>${item.start}</strong>
-              <span>hasta ${item.end}</span>
+              <strong>${escapeHtml(item.start)}</strong>
+              <span>hasta ${escapeHtml(item.end)}</span>
             </div>
             <div class="agenda-main">
               <div>
-                <h3>${item.reason}</h3>
-                <span>${item.professional}</span>
+                <h3>${escapeHtml(item.reason)}</h3>
+                <span>${escapeHtml(item.professional)}</span>
               </div>
               <p>Horario bloqueado. No aparece disponible en el link publico.</p>
             </div>
@@ -920,18 +1053,18 @@ function renderAgenda() {
         item.status === "Pendiente"
           ? `
             <div class="appointment-actions">
-              <button type="button" data-action="confirm" data-appointment-id="${id}">Confirmar</button>
-              <button type="button" data-action="reschedule" data-appointment-id="${id}">Reprogramar</button>
-              <button class="optional-action" type="button" data-action="cancel" data-appointment-id="${id}">Cancelar</button>
+              <button type="button" data-action="confirm" data-appointment-id="${escapeAttr(id)}">Confirmar</button>
+              <button type="button" data-action="reschedule" data-appointment-id="${escapeAttr(id)}">Reprogramar</button>
+              <button class="optional-action" type="button" data-action="cancel" data-appointment-id="${escapeAttr(id)}">Cancelar</button>
             </div>
           `
           : item.status === "Confirmada"
             ? `
               <div class="appointment-actions">
-                <button type="button" data-action="whatsapp" data-appointment-id="${id}">WhatsApp</button>
-                <button type="button" data-action="reschedule" data-appointment-id="${id}">Reprogramar</button>
-                <button class="optional-action" type="button" data-action="finish" data-appointment-id="${id}">Finalizar</button>
-                <button class="optional-action" type="button" data-action="no-show" data-appointment-id="${id}">No asistio</button>
+                <button type="button" data-action="whatsapp" data-appointment-id="${escapeAttr(id)}">WhatsApp</button>
+                <button type="button" data-action="reschedule" data-appointment-id="${escapeAttr(id)}">Reprogramar</button>
+                <button class="optional-action" type="button" data-action="finish" data-appointment-id="${escapeAttr(id)}">Finalizar</button>
+                <button class="optional-action" type="button" data-action="no-show" data-appointment-id="${escapeAttr(id)}">No asistio</button>
               </div>
             `
             : "";
@@ -939,19 +1072,19 @@ function renderAgenda() {
       return `
         <article class="agenda-item">
           <div class="agenda-time">
-            <strong>${item.time}</strong>
-            <span>${item.duration} min</span>
+            <strong>${escapeHtml(item.time)}</strong>
+            <span>${escapeHtml(item.duration)} min</span>
           </div>
           <div class="agenda-main">
             <div>
-              <h3>${item.client}</h3>
-              <span>${item.service} con ${item.professional}</span>
+              <h3>${escapeHtml(item.client)}</h3>
+              <span>${escapeHtml(item.service)} con ${escapeHtml(item.professional)}</span>
             </div>
-            <p>${item.note}</p>
+            <p>${escapeHtml(item.note)}</p>
           </div>
           <div class="agenda-side">
-            <span class="status-tag ${getStatusClass(item.status)}">${item.status}</span>
-            <strong>${money(item.price)}</strong>
+            <span class="status-tag ${escapeAttr(getStatusClass(item.status))}">${escapeHtml(item.status)}</span>
+            <strong>${escapeHtml(money(item.price))}</strong>
           </div>
           ${actions}
         </article>
@@ -967,7 +1100,7 @@ function renderProfessionalFilters() {
   root.innerHTML = [
     '<button class="segment active" type="button" data-filter="Todos">Todos</button>',
     ...team.map(
-      (person) => `<button class="segment" type="button" data-filter="${person.name}">${person.name}</button>`,
+      (person) => `<button class="segment" type="button" data-filter="${escapeAttr(person.name)}">${escapeHtml(person.name)}</button>`,
     ),
   ].join("");
 
@@ -981,7 +1114,7 @@ function renderWeekProfessionalOptions() {
   const current = select.value || "Todos";
   select.innerHTML = [
     '<option value="Todos">Todos los profesionales</option>',
-    ...team.map((person) => `<option value="${person.name}">${person.name}</option>`),
+    ...team.map((person) => `<option value="${escapeAttr(person.name)}">${escapeHtml(person.name)}</option>`),
   ].join("");
   select.value = [...team.map((person) => person.name), "Todos"].includes(current)
     ? current
@@ -1021,8 +1154,8 @@ function renderWeek() {
       return `
         <section class="week-day">
           <div class="week-day-head">
-            <strong>${formatDateLabel(date)}</strong>
-            <span>${items.length} evento(s)</span>
+            <strong>${escapeHtml(formatDateLabel(date))}</strong>
+            <span>${escapeHtml(items.length)} evento(s)</span>
           </div>
           <div class="week-items">
             ${
@@ -1032,14 +1165,14 @@ function renderWeek() {
                       type === "block"
                         ? `
                           <article class="week-item block-item">
-                            <strong>${item.start} - ${item.end}</strong>
-                            <span>${item.professional} - ${item.reason}</span>
+                            <strong>${escapeHtml(item.start)} - ${escapeHtml(item.end)}</strong>
+                            <span>${escapeHtml(item.professional)} - ${escapeHtml(item.reason)}</span>
                           </article>
                         `
                         : `
                           <article class="week-item">
-                            <strong>${item.time} - ${item.client}</strong>
-                            <span>${item.service} - ${item.professional} - ${item.status}</span>
+                            <strong>${escapeHtml(item.time)} - ${escapeHtml(item.client)}</strong>
+                            <span>${escapeHtml(item.service)} - ${escapeHtml(item.professional)} - ${escapeHtml(item.status)}</span>
                           </article>
                         `,
                     )
@@ -1059,10 +1192,10 @@ function renderOpenings() {
     .map(
       (item) => `
         <article class="opening-item">
-          <strong>${item.time}</strong>
+          <strong>${escapeHtml(item.time)}</strong>
           <div>
-            <span>${item.professional}</span>
-            <p>${item.label}</p>
+            <span>${escapeHtml(item.professional)}</span>
+            <p>${escapeHtml(item.label)}</p>
           </div>
         </article>
       `,
@@ -1088,12 +1221,12 @@ function renderBlocks() {
         .map(
           (block) => `
             <article class="opening-item block-item">
-              <strong>${block.start}</strong>
+              <strong>${escapeHtml(block.start)}</strong>
               <div>
-                <span>${block.professional} hasta ${block.end}</span>
-                <p>${block.reason}</p>
+                <span>${escapeHtml(block.professional)} hasta ${escapeHtml(block.end)}</span>
+                <p>${escapeHtml(block.reason)}</p>
               </div>
-              <button class="mini-danger" type="button" data-delete-block="${getBlockId(block)}">Eliminar</button>
+              <button class="mini-danger" type="button" data-delete-block="${escapeAttr(getBlockId(block))}">Eliminar</button>
             </article>
           `,
         )
@@ -1108,13 +1241,13 @@ function renderClients() {
       const appointments = getAppointmentsForClient(client.phone);
       const lastAppointment = appointments.sort((a, b) => b.time.localeCompare(a.time))[0];
       return `
-        <button class="info-card client-card ${state.selectedClientPhone === client.phone ? "active" : ""}" type="button" data-client-phone="${client.phone}">
-          <h3>${client.name}</h3>
-          <p>${client.phone}</p>
-          <strong>${appointments.length} cita(s)</strong>
-          <small>${lastAppointment ? `${lastAppointment.service} - ${lastAppointment.status}` : "Sin citas aun"}</small>
+        <button class="info-card client-card ${state.selectedClientPhone === client.phone ? "active" : ""}" type="button" data-client-phone="${escapeAttr(client.phone)}">
+          <h3>${escapeHtml(client.name)}</h3>
+          <p>${escapeHtml(client.phone)}</p>
+          <strong>${escapeHtml(appointments.length)} cita(s)</strong>
+          <small>${lastAppointment ? `${escapeHtml(lastAppointment.service)} - ${escapeHtml(lastAppointment.status)}` : "Sin citas aun"}</small>
           <span class="card-actions">
-            <span class="mini-danger" data-delete-client="${client.phone}">Eliminar</span>
+            <span class="mini-danger" data-delete-client="${escapeAttr(client.phone)}">Eliminar</span>
           </span>
         </button>
       `;
@@ -1157,21 +1290,21 @@ function renderClientDetail() {
     <div class="client-detail-head">
       <div>
         <span class="eyebrow">Ficha cliente</span>
-        <h3>${client.name}</h3>
-        <p>${client.phone}</p>
+        <h3>${escapeHtml(client.name)}</h3>
+        <p>${escapeHtml(client.phone)}</p>
       </div>
       <div class="detail-actions">
-        <button class="ghost-btn mini-action" type="button" data-edit-client="${client.phone}">Editar</button>
-        <a class="whatsapp-link" href="${getWhatsappUrl(client.phone, message)}" target="_blank" rel="noreferrer">WhatsApp</a>
+        <button class="ghost-btn mini-action" type="button" data-edit-client="${escapeAttr(client.phone)}">Editar</button>
+        <a class="whatsapp-link" href="${escapeAttr(getWhatsappUrl(client.phone, message))}" target="_blank" rel="noreferrer">WhatsApp</a>
       </div>
     </div>
     <div class="client-note">
       <strong>Nota interna</strong>
-      <p>${client.note || "Sin notas."}</p>
+      <p>${escapeHtml(client.note || "Sin notas.")}</p>
     </div>
     <div class="client-metrics">
-      <article><strong>${appointments.length}</strong><span>Citas</span></article>
-      <article><strong>${money(revenue)}</strong><span>Ingresos</span></article>
+      <article><strong>${escapeHtml(appointments.length)}</strong><span>Citas</span></article>
+      <article><strong>${escapeHtml(money(revenue))}</strong><span>Ingresos</span></article>
     </div>
     <h3>Historial</h3>
     <div class="client-history">
@@ -1181,8 +1314,8 @@ function renderClientDetail() {
               .map(
                 (appointment) => `
                   <article>
-                    <strong>${appointment.time} - ${appointment.service}</strong>
-                    <span>${appointment.professional} - ${appointment.status} - ${money(appointment.price)}</span>
+                    <strong>${escapeHtml(appointment.time)} - ${escapeHtml(appointment.service)}</strong>
+                    <span>${escapeHtml(appointment.professional)} - ${escapeHtml(appointment.status)} - ${escapeHtml(money(appointment.price))}</span>
                   </article>
                 `,
               )
@@ -1198,13 +1331,13 @@ function renderServices() {
     .map(
       (service) => `
         <article class="info-card">
-          <span>${service.category}</span>
-          <h3>${service.name}</h3>
-          <p>${service.duration} minutos - ${service.professionals.join(", ")}</p>
-          <strong>${money(service.price)}</strong>
+          <span>${escapeHtml(service.category)}</span>
+          <h3>${escapeHtml(service.name)}</h3>
+          <p>${escapeHtml(service.duration)} minutos - ${service.professionals.map(escapeHtml).join(", ")}</p>
+          <strong>${escapeHtml(money(service.price))}</strong>
           <small>${service.online ? "Visible online" : "Solo interno"}</small>
-          <button class="ghost-btn mini-action" type="button" data-edit-service="${service.name}">Editar</button>
-          <button class="mini-danger" type="button" data-delete-service="${service.name}">Eliminar</button>
+          <button class="ghost-btn mini-action" type="button" data-edit-service="${escapeAttr(service.name)}">Editar</button>
+          <button class="mini-danger" type="button" data-delete-service="${escapeAttr(service.name)}">Eliminar</button>
         </article>
       `,
     )
@@ -1226,12 +1359,12 @@ function renderTeam() {
 
       return `
         <article class="info-card professional-card">
-          <div class="avatar">${person.name.slice(0, 1)}</div>
-          <h3>${person.name}</h3>
-          <p>${person.role}</p>
-          <strong>${appointments} citas - libre ${nextSlot ? nextSlot.time : "sin huecos"}</strong>
-          <button class="ghost-btn mini-action" type="button" data-edit-professional="${person.name}">Editar</button>
-          <button class="mini-danger" type="button" data-delete-professional="${person.name}">Eliminar</button>
+          <div class="avatar">${escapeHtml(person.name.slice(0, 1))}</div>
+          <h3>${escapeHtml(person.name)}</h3>
+          <p>${escapeHtml(person.role)}</p>
+          <strong>${escapeHtml(appointments)} citas - libre ${escapeHtml(nextSlot ? nextSlot.time : "sin huecos")}</strong>
+          <button class="ghost-btn mini-action" type="button" data-edit-professional="${escapeAttr(person.name)}">Editar</button>
+          <button class="mini-danger" type="button" data-delete-professional="${escapeAttr(person.name)}">Eliminar</button>
         </article>
       `;
     })
@@ -1273,8 +1406,8 @@ function renderReports() {
     .map(
       (stat) => `
         <article class="report-card">
-          <span>${stat.label}</span>
-          <strong>${stat.value}</strong>
+          <span>${escapeHtml(stat.label)}</span>
+          <strong>${escapeHtml(stat.value)}</strong>
         </article>
       `,
     )
@@ -1288,8 +1421,8 @@ function renderReports() {
     .map(
       ([service, count]) => `
         <article>
-          <strong>${service}</strong>
-          <span>${count} turnos</span>
+          <strong>${escapeHtml(service)}</strong>
+          <span>${escapeHtml(count)} turnos</span>
         </article>
       `,
     )
@@ -1304,8 +1437,8 @@ function renderReports() {
 
       return `
         <article>
-          <strong>${person.name}</strong>
-          <span>${appointments.length} turnos - ${money(income)}</span>
+          <strong>${escapeHtml(person.name)}</strong>
+          <span>${escapeHtml(appointments.length)} turnos - ${escapeHtml(money(income))}</span>
         </article>
       `;
     })
@@ -1347,11 +1480,11 @@ function renderSettings() {
   }
 
   document.getElementById("setup-summary").innerHTML = `
-    <article><strong>${state.business.name}</strong><span>${state.business.city}</span></article>
-    <article><strong>${state.business.type || "Negocio con turnos"}</strong><span>Tipo de negocio</span></article>
-    <article><strong>${getBusinessLink()}</strong><span>Link publico</span></article>
-    <article><strong>${businessHours.start} - ${businessHours.end}</strong><span>Horario general</span></article>
-    <article><strong>${businessHours.step} min</strong><span>Intervalo de reserva</span></article>
+    <article><strong>${escapeHtml(state.business.name)}</strong><span>${escapeHtml(state.business.city)}</span></article>
+    <article><strong>${escapeHtml(state.business.type || "Negocio con turnos")}</strong><span>Tipo de negocio</span></article>
+    <article><strong>${escapeHtml(getBusinessLink())}</strong><span>Link publico</span></article>
+    <article><strong>${escapeHtml(businessHours.start)} - ${escapeHtml(businessHours.end)}</strong><span>Horario general</span></article>
+    <article><strong>${escapeHtml(businessHours.step)} min</strong><span>Intervalo de reserva</span></article>
     <article><strong>${state.business.autoConfirm ? "Automatica" : "Pendiente"}</strong><span>Entrada de reservas online</span></article>
   `;
 }
@@ -1442,46 +1575,30 @@ function renderClientProfessionals() {
   const serviceName = document.getElementById("client-service-select").value;
   const service = getService(serviceName);
   const select = document.getElementById("client-professional-select");
+  if (!service) {
+    select.innerHTML = '<option value="Cualquiera">Cualquiera disponible</option>';
+    return;
+  }
 
   select.innerHTML = [
     '<option value="Cualquiera">Cualquiera disponible</option>',
-    ...service.professionals.map((name) => `<option value="${name}">${name}</option>`),
+    ...service.professionals.map((name) => `<option value="${escapeAttr(name)}">${escapeHtml(name)}</option>`),
   ].join("");
 }
 
-function renderClientBooking() {
-  const serviceName = document.getElementById("client-service-select").value;
-  const professional = document.getElementById("client-professional-select").value;
-  const date = document.querySelector("#client-booking-form [name='date']").value || state.selectedDate;
-  const service = getService(serviceName);
-  const slots = getAvailableSlots(serviceName, professional, "", date);
-
-  document.getElementById("service-summary").innerHTML = `
-    <strong>${service.name}</strong>
-    <span>${service.category} - ${service.duration} min - ${money(service.price)}</span>
-  `;
-
+function renderSlotButtons(slots) {
   document.getElementById("slot-list").innerHTML = slots.length
     ? slots
         .map(
           (slot) => `
-            <button class="slot-btn ${state.selectedClientSlot === slot.time ? "active" : ""}" type="button" data-slot="${slot.time}" data-slot-professional="${slot.professionals[0]}">
-              <strong>${slot.time}</strong>
-              <span>${slot.label}</span>
+            <button class="slot-btn ${state.selectedClientSlot === slot.time ? "active" : ""}" type="button" data-slot="${escapeAttr(slot.time)}" data-slot-professional="${escapeAttr(slot.professional || slot.professionals?.[0] || "")}" data-slot-professional-id="${escapeAttr(slot.professionalId || "")}">
+              <strong>${escapeHtml(slot.time)}</strong>
+              <span>${escapeHtml(slot.label)}</span>
             </button>
           `,
         )
         .join("")
     : '<p class="empty-state">No hay horarios disponibles para esta combinacion.</p>';
-
-  document.getElementById("sync-list").innerHTML = [
-    "Citas pendientes bloquean el hueco.",
-    "Citas confirmadas bloquean el hueco.",
-    "El servicio debe entrar completo.",
-    "El profesional debe poder hacer ese servicio.",
-  ]
-    .map((item) => `<span>${item}</span>`)
-    .join("");
 
   document.querySelectorAll("[data-slot]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -1493,32 +1610,105 @@ function renderClientBooking() {
   });
 }
 
+async function loadPublicSlots({ service, professional, date, requestId }) {
+  try {
+    const selectedProfessional = getTeamMember(professional);
+    const response = await publicBookingApi.getAvailableSlots({
+      slug: state.business.slug,
+      serviceId: service.id,
+      date,
+      professionalId: professional === "Cualquiera" ? null : selectedProfessional?.id,
+    });
+
+    if (requestId !== publicSlotsRequestId) return;
+
+    renderSlotButtons((response.slots || []).map((slot) => {
+      const availableProfessionals = slot.professionals || [];
+      const firstProfessional = availableProfessionals[0] || {};
+      return {
+        time: slot.time,
+        label: availableProfessionals.length
+          ? availableProfessionals.map((item) => item.name).join(", ")
+          : "Disponible",
+        professional: firstProfessional.name || "",
+        professionalId: firstProfessional.id || "",
+      };
+    }));
+  } catch (error) {
+    if (requestId !== publicSlotsRequestId) return;
+    document.getElementById("slot-list").innerHTML =
+      `<p class="empty-state">${escapeHtml(error.message || "No se pudieron cargar horarios.")}</p>`;
+  }
+}
+
+function renderClientBooking() {
+  const serviceName = document.getElementById("client-service-select").value;
+  const professional = document.getElementById("client-professional-select").value;
+  const date = document.querySelector("#client-booking-form [name='date']").value || state.selectedDate;
+  const service = getService(serviceName);
+  if (!service) {
+    document.getElementById("service-summary").innerHTML = "<strong>Sin servicios disponibles</strong>";
+    document.getElementById("slot-list").innerHTML = '<p class="empty-state">No hay servicios visibles para reservar.</p>';
+    return;
+  }
+  const usePublicApi = shouldUsePublicBookingApi() && service.id;
+  const slots = usePublicApi ? [] : getAvailableSlots(serviceName, professional, "", date);
+
+  document.getElementById("service-summary").innerHTML = `
+    <strong>${escapeHtml(service.name)}</strong>
+    <span>${escapeHtml(service.category)} - ${escapeHtml(service.duration)} min - ${escapeHtml(money(service.price))}</span>
+  `;
+
+  if (usePublicApi) {
+    const requestId = publicSlotsRequestId + 1;
+    publicSlotsRequestId = requestId;
+    document.getElementById("slot-list").innerHTML = '<p class="empty-state">Cargando horarios reales...</p>';
+    loadPublicSlots({ service, professional, date, requestId });
+  } else {
+    renderSlotButtons(slots.map((slot) => ({
+      ...slot,
+      professional: slot.professionals[0],
+      label: slot.label,
+    })));
+  }
+
+  document.getElementById("sync-list").innerHTML = [
+    "Citas pendientes bloquean el hueco.",
+    "Citas confirmadas bloquean el hueco.",
+    "El servicio debe entrar completo.",
+    "El profesional debe poder hacer ese servicio.",
+  ]
+    .map((item) => `<span>${item}</span>`)
+    .join("");
+
+}
+
 function fillFormOptions() {
   syncServiceProfessionals();
 
   document.getElementById("service-select").innerHTML = services
-    .map((service) => `<option>${service.name}</option>`)
+    .map((service) => `<option>${escapeHtml(service.name)}</option>`)
     .join("");
 
   document.getElementById("professional-select").innerHTML = team
-    .map((person) => `<option>${person.name}</option>`)
+    .map((person) => `<option>${escapeHtml(person.name)}</option>`)
     .join("");
 
   document.getElementById("block-professional-select").innerHTML = team
-    .map((person) => `<option>${person.name}</option>`)
+    .map((person) => `<option>${escapeHtml(person.name)}</option>`)
     .join("");
 
   document.getElementById("client-service-select").innerHTML = services
     .filter((service) => service.online)
-    .map((service) => `<option>${service.name}</option>`)
+    .map((service) => `<option>${escapeHtml(service.name)}</option>`)
     .join("");
 
   document.getElementById("service-professionals").innerHTML = team
-    .map((person) => `<option value="${person.name}">${person.name}</option>`)
+    .map((person) => `<option value="${escapeAttr(person.name)}">${escapeHtml(person.name)}</option>`)
     .join("");
 
   document.getElementById("professional-services").innerHTML = services
-    .map((service) => `<option value="${service.name}">${service.name}</option>`)
+    .map((service) => `<option value="${escapeAttr(service.name)}">${escapeHtml(service.name)}</option>`)
     .join("");
 
   renderClientProfessionals();
@@ -1543,12 +1733,6 @@ function setView(view) {
     button.classList.toggle("active", button.dataset.view === view);
   });
 
-  document.getElementById("agenda-date").addEventListener("change", (event) => {
-    state.selectedDate = event.target.value || demoDate;
-    saveState();
-    renderAll();
-  });
-
   if (view === "reserva") {
     state.selectedClientSlot = "";
     renderClientBooking();
@@ -1558,13 +1742,21 @@ function setView(view) {
 function enterApp(mode = "business") {
   document.getElementById("entry-screen").classList.add("hidden");
   document.getElementById("app-shell").classList.remove("hidden");
-  document.body.classList.toggle("public-mode", mode === "client");
-  setView(mode === "client" ? "reserva" : "agenda");
+  document.body.classList.toggle("public-mode", mode === "client" || mode === "direct-client");
+  document.body.classList.toggle("direct-client-mode", mode === "direct-client");
+  setView(mode === "client" || mode === "direct-client" ? "reserva" : "agenda");
+  if ((mode === "client" || mode === "direct-client") && publicBookingApi?.isReady) {
+    loadPublicBookingFromSupabase().catch((error) => {
+      document.getElementById("slot-list").innerHTML =
+        `<p class="empty-state">${escapeHtml(error.message || "No se pudo cargar el link publico.")}</p>`;
+    });
+  }
 }
 
 function exitApp() {
   authProvider.signOut();
   document.body.classList.remove("public-mode");
+  document.body.classList.remove("direct-client-mode");
   document.getElementById("app-shell").classList.add("hidden");
   document.getElementById("entry-screen").classList.remove("hidden");
 }
@@ -1582,7 +1774,7 @@ function clearAuthMessage() {
   messageBox.classList.add("hidden");
 }
 
-function handleBusinessSession(session) {
+async function handleBusinessSession(session) {
   if (session?.pendingRedirect) {
     showAuthMessage(session.message, "info");
     return;
@@ -1597,6 +1789,17 @@ function handleBusinessSession(session) {
   }
 
   clearAuthMessage();
+  currentSession = session;
+  if (supabaseDataApi?.isReady && session.business.id) {
+    showAuthMessage("Cargando datos reales del negocio...", "info");
+    try {
+      await loadBusinessFromSupabase(session.business.id);
+      clearAuthMessage();
+    } catch (error) {
+      showAuthMessage(error.message || "No se pudieron cargar los datos reales.", "warning");
+      return;
+    }
+  }
   enterApp("business");
 }
 
@@ -1651,9 +1854,9 @@ function renderMessagePreview() {
   }
 
   root.innerHTML = `
-    <strong>${state.lastMessage.title}</strong>
-    <pre>${state.lastMessage.text}</pre>
-    <a class="whatsapp-link" href="${state.lastMessage.url}" target="_blank" rel="noreferrer">Abrir WhatsApp</a>
+    <strong>${escapeHtml(state.lastMessage.title)}</strong>
+    <pre>${escapeHtml(state.lastMessage.text)}</pre>
+    <a class="whatsapp-link" href="${escapeAttr(state.lastMessage.url)}" target="_blank" rel="noreferrer">Abrir WhatsApp</a>
   `;
 }
 
@@ -1691,7 +1894,7 @@ function renderRescheduleSlots(appointment) {
 
   document.getElementById("reschedule-time").innerHTML = slots.length
     ? slots
-        .map((slot) => `<option value="${slot.time}">${slot.time} - ${slot.label}</option>`)
+        .map((slot) => `<option value="${escapeAttr(slot.time)}">${escapeHtml(slot.time)} - ${escapeHtml(slot.label)}</option>`)
         .join("")
     : '<option value="">Sin horarios disponibles</option>';
 }
@@ -1705,14 +1908,14 @@ function openRescheduleModal(appointment) {
     getAppointmentId(appointment);
   document.getElementById("reschedule-date").value = appointment.date || state.selectedDate;
   document.getElementById("reschedule-summary").innerHTML = `
-    <strong>${appointment.client}</strong>
-    <span>${appointment.service} - ${formatDateLabel(appointment.date || state.selectedDate)} ${appointment.time} con ${appointment.professional}</span>
+    <strong>${escapeHtml(appointment.client)}</strong>
+    <span>${escapeHtml(appointment.service)} - ${escapeHtml(formatDateLabel(appointment.date || state.selectedDate))} ${escapeHtml(appointment.time)} con ${escapeHtml(appointment.professional)}</span>
   `;
 
   professionalSelect.innerHTML = service.professionals
     .map(
       (professional) =>
-        `<option value="${professional}" ${professional === appointment.professional ? "selected" : ""}>${professional}</option>`,
+        `<option value="${escapeAttr(professional)}" ${professional === appointment.professional ? "selected" : ""}>${escapeHtml(professional)}</option>`,
     )
     .join("");
 
@@ -1777,7 +1980,7 @@ function bindEvents() {
         email: formData.get("email"),
         password: formData.get("password"),
       });
-      handleBusinessSession(session);
+      await handleBusinessSession(session);
     } catch (error) {
       showAuthMessage(error.message, "warning");
     }
@@ -1786,7 +1989,7 @@ function bindEvents() {
   document.getElementById("google-login").addEventListener("click", async () => {
     try {
       const session = await authProvider.signInWithGoogle();
-      handleBusinessSession(session);
+      await handleBusinessSession(session);
     } catch (error) {
       showAuthMessage(error.message, "warning");
     }
@@ -1807,8 +2010,15 @@ function bindEvents() {
   document.querySelectorAll("[data-view]").forEach((button) => {
     button.addEventListener("click", () => {
       document.body.classList.toggle("public-mode", button.dataset.view === "reserva");
+      document.body.classList.remove("direct-client-mode");
       setView(button.dataset.view);
     });
+  });
+
+  document.getElementById("agenda-date").addEventListener("change", (event) => {
+    state.selectedDate = event.target.value || demoDate;
+    saveState();
+    renderAll();
   });
 
   bindProfessionalFilters();
@@ -2262,7 +2472,42 @@ function bindBookingEvents() {
 
     const selectedSlotButton = document.querySelector(`[data-slot="${state.selectedClientSlot}"].active`);
     const professional = selectedSlotButton?.dataset.slotProfessional;
+    const professionalId = selectedSlotButton?.dataset.slotProfessionalId;
     const formData = new FormData(event.currentTarget);
+
+    if (shouldUsePublicBookingApi()) {
+      const selectedService = getService(formData.get("service"));
+      const selectedProfessional = getTeamMember(professional);
+
+      publicBookingApi
+        .createAppointment({
+          slug: state.business.slug,
+          serviceId: selectedService.id,
+          professionalId: professionalId || selectedProfessional?.id,
+          date: formData.get("date") || state.selectedDate,
+          startTime: state.selectedClientSlot,
+          clientName: formData.get("client"),
+          clientPhone: formData.get("phone"),
+          clientNote: formData.get("note"),
+        })
+        .then(() => {
+          alert(
+            state.business.autoConfirm
+              ? "Reserva confirmada. El negocio ya la vera en agenda."
+              : "Reserva enviada. El negocio la vera como pendiente para confirmar.",
+          );
+          event.currentTarget.reset();
+          state.selectedClientSlot = "";
+          fillFormOptions();
+          renderClientBooking();
+        })
+        .catch((error) => {
+          alert(error.message || "No se pudo crear la reserva.");
+          state.selectedClientSlot = "";
+          renderClientBooking();
+        });
+      return;
+    }
 
     const result = addAppointmentFromForm(
       formData,
@@ -2288,7 +2533,11 @@ function bindBookingEvents() {
     fillFormOptions();
     saveState();
     renderAll();
-    setView("agenda");
+    if (document.body.classList.contains("public-mode")) {
+      renderClientBooking();
+    } else {
+      setView("agenda");
+    }
   });
 
   document.getElementById("print-report").addEventListener("click", () => {
@@ -2351,6 +2600,26 @@ function renderAll() {
   renderWeek();
 }
 
-fillFormOptions();
-bindEvents();
-renderAll();
+async function initializeApp() {
+  fillFormOptions();
+  bindEvents();
+  renderAll();
+
+  if (shouldOpenClientView) {
+    enterApp("direct-client");
+    return;
+  }
+
+  if (authProvider.mode === "supabase-ready") {
+    try {
+      const session = await authProvider.getSession();
+      if (session?.business) {
+        await handleBusinessSession(session);
+      }
+    } catch {
+      // La demo local debe seguir disponible aunque Supabase no tenga sesion activa.
+    }
+  }
+}
+
+initializeApp();

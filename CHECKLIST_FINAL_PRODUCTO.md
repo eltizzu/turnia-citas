@@ -153,8 +153,22 @@ Estado: documento vivo. Actualizar antes de cada presentacion, piloto o entrega.
 - [x] Auth provider preparado.
 - [x] Supabase client preparado.
 - [x] Data providers preparados.
-- [ ] Crear proyecto Supabase real.
-- [ ] Ejecutar schema.
+- [x] Provider Supabase aclarado como preview, no persistencia real.
+- [x] Renderizados principales escapados para evitar HTML inyectado desde datos editables.
+- [x] Listener de fecha corregido para no duplicarse al cambiar de pantalla.
+- [x] Restricciones SQL iniciales para evitar citas y bloqueos superpuestos.
+- [x] RPCs publicas de lectura limitada para negocio, servicios, profesionales y horarios.
+- [x] RPC inicial `create_public_appointment(...)` para reserva publica validada en servidor.
+- [x] Capa frontend `publicBookingApi.js` preparada para consumir RPCs del link publico.
+- [x] Capa frontend `supabaseDataApi.js` preparada para cargar panel de gestion desde Supabase.
+- [x] `config.js` corregido para exponer `window.TURNIA_CONFIG`.
+- [x] Vista cliente preparada para pedir horarios y crear reservas por RPC cuando Supabase esta activo.
+- [x] Smoke test SQL preparado para validar schema, seed, link publico y conflicto de horario.
+- [x] Handoff Supabase preparado para guiar la creacion del proyecto real.
+- [x] Crear proyecto Supabase real.
+- [x] Ejecutar schema.
+- [x] Ejecutar seed demo.
+- [x] Ejecutar smoke test en Supabase.
 - [ ] Configurar Auth.
 - [ ] Activar Google.
 - [ ] Conectar datos reales.

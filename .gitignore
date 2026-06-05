@@ -1,5 +1,6 @@
 ﻿node_modules/
 .env
+turnia.config.local.js
 .DS_Store
 dist/
 build/

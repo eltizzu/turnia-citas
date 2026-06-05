@@ -141,7 +141,7 @@ Fuentes:
 - `public_link`
 - `import`
 
-Regla importante: antes de crear o reprogramar una cita, el servidor debe verificar que no se superpone con otra cita activa ni con un bloqueo.
+Regla importante: antes de crear o reprogramar una cita, el servidor debe verificar que no se superpone con otra cita activa ni con un bloqueo. En Supabase esto queda cubierto por restricciones de exclusion, triggers y una RPC publica inicial para crear reservas desde el link sin exponer tablas completas.
 
 ### blocks
 
@@ -212,11 +212,11 @@ exists (
 
 Permitido publicamente:
 
-- leer negocio por `slug`
-- leer servicios activos y online
-- leer profesionales activos necesarios para disponibilidad
-- consultar horarios disponibles
-- crear solicitud de cita
+- leer negocio por `slug` usando `get_public_booking_page(slug)`
+- leer servicios activos y online usando `get_public_booking_page(slug)`
+- leer profesionales activos necesarios para disponibilidad usando `get_public_booking_page(slug)`
+- consultar horarios disponibles usando `get_public_available_slots(slug, service_id, date, professional_id)`
+- crear solicitud de cita usando `create_public_appointment(...)`
 
 No permitido publicamente:
 
@@ -270,8 +270,9 @@ Plan:
 
 - Agenda del dia: citas y bloqueos por negocio, fecha y profesional opcional.
 - Vista semanal: citas y bloqueos entre lunes y sabado.
-- Link publico: negocio por `slug`, servicios online y profesionales activos.
-- Crear cita publica: validar cliente, buscar/crear cliente, verificar disponibilidad y crear cita.
+- Link publico: `get_public_booking_page(slug)` para negocio, servicios online y profesionales activos.
+- Horarios publicos: `get_public_available_slots(slug, service_id, date, professional_id)` para disponibilidad sin exponer agenda completa.
+- Crear cita publica: `create_public_appointment(...)` para validar cliente, buscar/crear cliente, verificar disponibilidad y crear cita.
 
 ## Dejar fuera del MVP
 

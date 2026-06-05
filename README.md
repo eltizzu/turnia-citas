@@ -51,16 +51,20 @@ La logica de disponibilidad vive en `agendaRules.js`: horarios, choques entre ci
 
 El puente entre la demo y el modelo de produccion vive en `dataAdapter.js`. Convierte servicios, profesionales, clientes, citas, bloqueos y plantillas al formato pensado para Supabase.
 
-La puerta de persistencia vive en `dataProviders.js`. Hoy usa guardado local, pero ya deja armado el punto donde se conectara Supabase.
+La puerta de persistencia vive en `dataProviders.js`. Hoy usa guardado local. Si se configura Supabase, el provider queda en modo `supabase-preview`: puede preparar el payload de produccion, pero todavia no lee ni escribe datos reales en la base.
 
 La puerta de login vive en `authProvider.js`. Hoy simula email/Google en modo demo y deja preparado el lugar donde luego se conectara Supabase Auth.
 
-`supabaseClient.js` centraliza la deteccion de configuracion y la creacion del cliente Supabase cuando exista SDK, URL y anon key.
+`supabaseClient.js` centraliza la deteccion de configuracion y la creacion del cliente Supabase cuando exista SDK, URL y anon key. Esto no reemplaza la fase de conectar tablas, permisos, lectura/escritura y validaciones del backend.
+
+`publicBookingApi.js` concentra las llamadas RPC del link publico real: ficha publica del negocio, horarios disponibles y creacion de reserva. La demo visual todavia usa datos locales, pero esta capa deja preparado el cableado para Supabase.
+
+`supabaseDataApi.js` carga los datos reales del panel de gestion cuando hay una sesion Supabase asociada a un negocio: negocio, horarios, servicios, profesionales, clientes, citas, bloqueos y plantillas.
 
 Las reglas de agenda tienen pruebas en `tests/agendaRules.test.mjs`. Se ejecutan con:
 
 ```bash
-node --test tests/agendaRules.test.mjs tests/dataAdapter.test.mjs tests/dataProviders.test.mjs tests/authProvider.test.mjs tests/supabaseClient.test.mjs
+node --test tests/agendaRules.test.mjs tests/dataAdapter.test.mjs tests/dataProviders.test.mjs tests/authProvider.test.mjs tests/supabaseClient.test.mjs tests/publicBookingApi.test.mjs tests/supabaseDataApi.test.mjs tests/schema.test.mjs
 ```
 
 Ver tambien `ESTADO_DEMO.md` para saber que partes estan listas para mostrar y que partes siguen simuladas.

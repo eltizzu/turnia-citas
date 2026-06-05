@@ -161,3 +161,11 @@ Ejemplos:
 - `turnia.app/clases-laura`
 
 Si un centro de fisioterapia pone un boton en su web, ese boton apunta a su link propio de Turnia. Turnia sabe que es fisioterapia porque ese negocio tiene configurado su tipo de negocio, servicios, profesionales y textos.
+
+En la demo estatica, el modo equivalente para abrir directamente la reserva es:
+
+```txt
+demo.html?reserva=1
+```
+
+Esto evita mostrar la pantalla interna de demo/login cuando el objetivo es simular el boton publico de una web externa.
