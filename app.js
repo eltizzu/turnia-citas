@@ -1986,7 +1986,7 @@ function bindEvents() {
     }
   });
 
-  document.getElementById("google-login").addEventListener("click", async () => {
+  document.getElementById("google-login")?.addEventListener("click", async () => {
     try {
       const session = await authProvider.signInWithGoogle();
       await handleBusinessSession(session);

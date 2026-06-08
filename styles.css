@@ -1356,8 +1356,20 @@ textarea {
   }
 
   .segmented-control {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .segmented-control::-webkit-scrollbar {
+    display: none;
+  }
+
+  .segmented-control .segment {
+    flex: 0 0 auto;
+    white-space: nowrap;
   }
 
   .public-layout,
