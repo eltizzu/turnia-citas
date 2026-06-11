@@ -106,6 +106,8 @@
       id: client.id,
       name: client.name,
       phone: client.phone,
+      email: client.email || "",
+      createdAt: client.created_at,
       note: client.note || "Sin notas.",
     }));
   }

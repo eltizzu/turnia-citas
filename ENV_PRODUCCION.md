@@ -10,13 +10,16 @@ Variables publicas que puede usar el navegador:
 - `TURNIA_SUPABASE_ANON_KEY`
 - `TURNIA_APP_ENV`
 - `TURNIA_DATA_MODE`
+- `TURNIA_SENTRY_DSN`
+- `TURNIA_RELEASE`
 
 Notas:
 
 - La anon key de Supabase puede estar en frontend, pero solo si RLS esta bien configurado.
 - Nunca poner service role key en el navegador.
 - `TURNIA_APP_ENV` puede ser `local`, `staging` o `production`.
-- En la version estatica actual se puede partir de `turnia.config.example.js` para generar una configuracion real.
+- En hosting, `scripts/write-config.mjs` genera `config.js` desde variables de entorno.
+- `TURNIA_SENTRY_DSN` puede quedar vacio en local. En staging/produccion activa monitoreo de errores frontend.
 - `supabaseClient.js` solo crea cliente si `dataMode` es `supabase`, hay URL/key y el SDK oficial esta cargado.
 
 ## Servidor / funciones
@@ -60,3 +63,5 @@ Solo para clientes reales.
 - Textos legales revisados.
 - Backups activos.
 - Dominio y HTTPS activos.
+- Sentry configurado para capturar errores frontend.
+- `config.js` generado por entorno, sin claves reales guardadas en repo.

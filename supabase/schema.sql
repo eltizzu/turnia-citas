@@ -124,6 +124,15 @@ create table if not exists public.appointment_events (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.public_booking_attempts (
+  id uuid primary key default gen_random_uuid(),
+  business_id uuid not null references public.businesses(id) on delete cascade,
+  business_slug text not null,
+  normalized_phone text not null,
+  request_ip inet,
+  created_at timestamptz not null default now()
+);
+
 create index if not exists idx_business_users_auth_user_id on public.business_users(auth_user_id);
 create index if not exists idx_professionals_business_id on public.professionals(business_id);
 create index if not exists idx_services_business_id on public.services(business_id);
@@ -131,6 +140,13 @@ create index if not exists idx_clients_business_phone on public.clients(business
 create index if not exists idx_appointments_business_date on public.appointments(business_id, date);
 create index if not exists idx_appointments_professional_date on public.appointments(professional_id, date);
 create index if not exists idx_blocks_professional_date on public.blocks(professional_id, date);
+create index if not exists idx_public_booking_attempts_phone_window
+  on public.public_booking_attempts(business_id, normalized_phone, created_at desc);
+create index if not exists idx_public_booking_attempts_ip_window
+  on public.public_booking_attempts(business_id, request_ip, created_at desc)
+  where request_ip is not null;
+create index if not exists idx_public_booking_attempts_business_window
+  on public.public_booking_attempts(business_id, created_at desc);
 
 create or replace function public.appointment_time_range(
   target_date date,
@@ -315,6 +331,7 @@ alter table public.appointments enable row level security;
 alter table public.blocks enable row level security;
 alter table public.message_templates enable row level security;
 alter table public.appointment_events enable row level security;
+alter table public.public_booking_attempts enable row level security;
 
 create policy "business members can read business"
 on public.businesses for select
@@ -383,6 +400,109 @@ create policy "business members can create appointment events"
 on public.appointment_events for insert
 to authenticated
 with check (public.user_belongs_to_business(business_id));
+
+create or replace function public.get_request_ip()
+returns inet
+language plpgsql
+stable
+as $$
+declare
+  request_headers jsonb;
+  raw_ip text;
+begin
+  begin
+    request_headers := nullif(current_setting('request.headers', true), '')::jsonb;
+  exception
+    when others then
+      return null;
+  end;
+
+  raw_ip := coalesce(
+    request_headers->>'cf-connecting-ip',
+    request_headers->>'x-real-ip',
+    split_part(coalesce(request_headers->>'x-forwarded-for', ''), ',', 1)
+  );
+  raw_ip := nullif(trim(raw_ip), '');
+
+  if raw_ip is null then
+    return null;
+  end if;
+
+  return raw_ip::inet;
+exception
+  when others then
+    return null;
+end;
+$$;
+
+create or replace function public.assert_public_booking_rate_limit(
+  target_business_id uuid,
+  target_business_slug text,
+  target_client_phone text
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_normalized_phone text;
+  v_request_ip inet;
+  v_window_start timestamptz := now() - interval '10 minutes';
+  phone_attempts integer;
+  ip_attempts integer;
+  business_attempts integer;
+begin
+  v_normalized_phone := regexp_replace(coalesce(target_client_phone, ''), '[^0-9]+', '', 'g');
+  v_request_ip := public.get_request_ip();
+
+  if v_normalized_phone = '' then
+    raise exception 'client_phone_required' using errcode = 'P0001';
+  end if;
+
+  perform pg_advisory_xact_lock(
+    hashtextextended(
+      'public-booking-rate:' || target_business_id::text || ':' || v_normalized_phone || ':' || coalesce(v_request_ip::text, 'no-ip'),
+      0
+    )
+  );
+
+  select count(*) into phone_attempts
+  from public.public_booking_attempts
+  where business_id = target_business_id
+    and public_booking_attempts.normalized_phone = v_normalized_phone
+    and created_at >= v_window_start;
+
+  select count(*) into ip_attempts
+  from public.public_booking_attempts
+  where business_id = target_business_id
+    and public_booking_attempts.request_ip is not null
+    and public_booking_attempts.request_ip = v_request_ip
+    and created_at >= v_window_start;
+
+  select count(*) into business_attempts
+  from public.public_booking_attempts
+  where business_id = target_business_id
+    and created_at >= v_window_start;
+
+  if phone_attempts >= 3 or ip_attempts >= 20 or business_attempts >= 80 then
+    raise exception 'public_booking_rate_limited' using errcode = 'P0001';
+  end if;
+
+  insert into public.public_booking_attempts (
+    business_id,
+    business_slug,
+    normalized_phone,
+    request_ip
+  )
+  values (
+    target_business_id,
+    target_business_slug,
+    v_normalized_phone,
+    v_request_ip
+  );
+end;
+$$;
 
 create or replace function public.get_public_booking_page(p_business_slug text)
 returns jsonb
@@ -666,6 +786,12 @@ begin
   if not found then
     raise exception 'business_not_found' using errcode = 'P0001';
   end if;
+
+  perform public.assert_public_booking_rate_limit(
+    selected_business.id,
+    selected_business.slug,
+    p_client_phone
+  );
 
   select *
   into selected_service

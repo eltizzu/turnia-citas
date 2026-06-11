@@ -32,6 +32,25 @@ test("schema expone una RPC publica limitada para crear reservas", async () => {
   assert.match(schema, /grant execute on function public\.create_public_appointment/);
 });
 
+test("schema limita abuso de reservas publicas por telefono, ip y negocio", async () => {
+  const schema = await loadSchema();
+  const createAppointmentStart = schema.indexOf("create or replace function public.create_public_appointment");
+  const availableSlotsStart = schema.indexOf("create or replace function public.get_public_available_slots");
+  const createAppointmentBody = schema.slice(createAppointmentStart);
+  const availableSlotsBody = schema.slice(availableSlotsStart, createAppointmentStart);
+
+  assert.match(schema, /create table if not exists public\.public_booking_attempts/);
+  assert.match(schema, /alter table public\.public_booking_attempts enable row level security/);
+  assert.match(schema, /create or replace function public\.get_request_ip/);
+  assert.match(schema, /create or replace function public\.assert_public_booking_rate_limit/);
+  assert.match(schema, /public_booking_rate_limited/);
+  assert.match(schema, /normalized_phone/);
+  assert.match(schema, /request_ip/);
+  assert.match(schema, /business_attempts/);
+  assert.match(createAppointmentBody, /perform public\.assert_public_booking_rate_limit/);
+  assert.doesNotMatch(availableSlotsBody, /perform public\.assert_public_booking_rate_limit/);
+});
+
 test("schema expone RPCs publicas de lectura limitada para el link cliente", async () => {
   const schema = await loadSchema();
 
@@ -55,4 +74,6 @@ test("smoke test valida reserva publica y conflicto de horario", async () => {
   assert.match(smokeTest, /public\.create_public_appointment/);
   assert.match(smokeTest, /slot_not_available/);
   assert.match(smokeTest, /expected_slot_conflict_but_booking_was_created/);
+  assert.match(smokeTest, /public_booking_rate_limited/);
+  assert.match(smokeTest, /expected_rate_limit_but_booking_was_created/);
 });

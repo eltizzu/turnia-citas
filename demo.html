@@ -189,14 +189,18 @@
             <div>
               <span class="eyebrow">Ficha de clientes</span>
               <h2>Clientes</h2>
-              <p class="section-intro">Aca se ve el historial, telefono y notas utiles de cada cliente. Para probar, selecciona una ficha y abre WhatsApp.</p>
+              <p class="section-intro">Aca se ve la base de clientes armada automaticamente desde citas y reservas. Busca por nombre o telefono y toca una ficha para ver historial completo.</p>
             </div>
             <button class="ghost-btn" type="button" id="open-client">Nuevo cliente</button>
           </div>
+          <label class="client-search">
+            Buscar cliente
+            <input id="client-search" type="search" placeholder="Nombre, telefono o email" autocomplete="off" />
+          </label>
           <div class="clients-layout">
             <div class="card-grid" id="client-list"></div>
             <aside class="client-detail" id="client-detail">
-              <p>Selecciona un cliente para ver historial, notas, gasto estimado y contacto por WhatsApp.</p>
+              <p>Selecciona un cliente para ver historial, primer contacto, citas, gasto estimado y contacto por WhatsApp.</p>
             </aside>
           </div>
         </section>
@@ -234,16 +238,31 @@
             </div>
             <button class="ghost-btn" type="button" id="print-report">Guardar PDF</button>
           </div>
+          <div class="report-controls" aria-label="Filtro de metricas">
+            <button class="period-btn active" type="button" data-report-period="week">Esta semana</button>
+            <button class="period-btn" type="button" data-report-period="month">Este mes</button>
+            <button class="period-btn" type="button" data-report-period="threeMonths">Ultimos 3 meses</button>
+          </div>
           <div class="report-sheet" id="report-sheet">
             <div class="report-cover">
               <div>
                 <span class="eyebrow" data-business-name>Centro Demo</span>
-                <h3>Resumen mensual</h3>
-                <p>Turnos, ingresos estimados, servicios mas pedidos y pendientes de confirmar.</p>
+                <h3 id="report-title">Resumen mensual</h3>
+                <p>Turnos, ingresos estimados, servicios mas pedidos y momentos con mas demanda.</p>
               </div>
-              <strong>Mayo 2026</strong>
+              <strong id="report-period-label">Mayo 2026</strong>
             </div>
             <div class="report-grid" id="report-grid"></div>
+            <div class="report-charts">
+              <section>
+                <h3>Citas por estado</h3>
+                <canvas id="status-chart" height="170"></canvas>
+              </section>
+              <section>
+                <h3>Demanda por hora</h3>
+                <canvas id="demand-chart" height="170"></canvas>
+              </section>
+            </div>
             <div class="report-columns">
               <section>
                 <h3>Servicios destacados</h3>
@@ -257,6 +276,10 @@
             <div class="report-note">
               <strong>Lectura rapida</strong>
               <p id="report-insight"></p>
+            </div>
+            <div class="report-note cotiza-soon">
+              <strong>Cotiza proximamente</strong>
+              <p>Las metricas de presupuestos se van a activar cuando definamos la tabla de Cotiza. Por ahora no mostramos numeros inventados.</p>
             </div>
           </div>
         </section>
@@ -566,6 +589,10 @@
             Telefono
             <input name="phone" type="tel" placeholder="+34 600 000 000" required />
           </label>
+          <label>
+            Email
+            <input name="email" type="email" placeholder="cliente@email.com" />
+          </label>
           <label class="full-field">
             Nota interna
             <textarea name="note" rows="4" placeholder="Preferencias, frecuencia, observaciones utiles..."></textarea>
@@ -687,12 +714,27 @@
     </nav>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="https://browser.sentry-cdn.com/8.55.0/bundle.min.js" crossorigin="anonymous"></script>
     <script src="./config.js"></script>
     <script>
       // demo.html siempre usa datos ficticios — nunca conecta a Supabase
-      if (window.TURNIA_CONFIG) window.TURNIA_CONFIG.dataMode = 'demo';
+      window.TURNIA_CONFIG ||= { dataMode: "demo", appEnv: "local" };
+      if (window.TURNIA_CONFIG.dataMode !== "supabase") {
+        window.TURNIA_CONFIG.dataMode = "demo";
+      }
+      if (window.Sentry && window.TURNIA_CONFIG?.sentryDsn) {
+        Sentry.init({
+          dsn: window.TURNIA_CONFIG.sentryDsn,
+          environment: window.TURNIA_CONFIG.appEnv || "local",
+          release: window.TURNIA_CONFIG.release || undefined,
+          tracesSampleRate: 0,
+        });
+      }
     </script>
     <script src="./agendaRules.js"></script>
+    <script src="./turniaMetrics.js"></script>
+    <script src="./turniaClients.js"></script>
     <script src="./dataAdapter.js"></script>
     <script src="./supabaseClient.js"></script>
     <script src="./publicBookingApi.js"></script>

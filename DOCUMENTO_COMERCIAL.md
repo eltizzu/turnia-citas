@@ -93,22 +93,30 @@ Sectores iniciales:
 
 - ficha del cliente;
 - telefono;
+- email;
+- primer contacto;
 - notas;
-- historial;
+- historial completo de citas;
+- buscador por nombre, telefono o email;
+- total de citas;
+- ingresos estimados por cliente;
 - WhatsApp.
 
 ### Reportes
 
-- turnos;
+- dashboard de metricas por periodo;
+- filtro de esta semana, este mes y ultimos 3 meses;
+- total de citas del periodo;
 - ingresos estimados;
 - ticket medio;
-- pendientes;
-- finalizadas;
-- no asistio;
-- canceladas;
+- citas por estado;
+- hora y dia con mas demanda;
 - servicios destacados;
 - ingresos por profesional;
+- graficos simples para lectura rapida;
 - guardar como PDF desde el navegador.
+
+Nota de alcance: las metricas de Cotiza quedan como modulo futuro hasta definir una tabla real de presupuestos. No se muestran numeros inventados.
 
 ### Configuracion
 

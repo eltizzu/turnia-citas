@@ -191,13 +191,32 @@ La seccion Clientes permite ver:
 
 - nombre;
 - telefono;
+- email;
+- fecha de primer contacto;
 - notas;
-- cantidad de citas;
-- historial;
+- total de citas;
+- historial completo;
 - ingresos estimados;
 - contacto por WhatsApp.
 
+Los clientes se arman automaticamente desde las citas existentes. Si entra una reserva o se crea una cita manual con un cliente nuevo, Turnia lo agrega a la base de clientes.
+
 En la demo hay clientes ficticios cargados para no empezar desde cero.
+
+Buscar cliente:
+
+1. Ir a `Clientes`.
+2. Escribir nombre, telefono o email en el buscador.
+3. Turnia filtra la lista al momento.
+4. Tocar una ficha para ver el detalle.
+
+Ver historial:
+
+1. Entrar a `Clientes`.
+2. Seleccionar un cliente.
+3. Revisar primer contacto, total de citas, ingresos estimados y email.
+4. Bajar a `Historial`.
+5. Ver cada cita con fecha, hora, servicio, profesional, estado, importe y nota.
 
 Crear cliente:
 
@@ -205,14 +224,53 @@ Crear cliente:
 2. Pulsar `Nuevo cliente`.
 3. Cargar nombre.
 4. Cargar telefono.
-5. Agregar nota.
-6. Guardar.
+5. Cargar email si se tiene.
+6. Agregar nota.
+7. Guardar.
 
 Editar cliente:
 
 1. Seleccionar cliente.
 2. Editar desde su ficha.
 3. Guardar.
+
+## Reportes / Metricas
+
+La seccion Reportes funciona como un dashboard simple para entender como viene el negocio.
+
+Sirve para ver:
+
+- cuantas citas hubo en el periodo;
+- ingresos estimados;
+- ticket medio;
+- citas pendientes, confirmadas, finalizadas y canceladas;
+- servicio mas reservado;
+- hora y dia con mas demanda;
+- movimiento por profesional.
+
+Filtros disponibles:
+
+- `Esta semana`: muestra solo las citas de la semana seleccionada.
+- `Este mes`: muestra las citas del mes de la fecha seleccionada.
+- `Ultimos 3 meses`: muestra una mirada mas amplia para detectar tendencias.
+
+Graficos:
+
+- `Citas por estado`: ayuda a ver si hay muchas pendientes o canceladas.
+- `Demanda por hora`: ayuda a detectar horarios fuertes.
+
+Como usarlo:
+
+1. Ir a `Reportes`.
+2. Elegir el periodo que se quiere revisar.
+3. Mirar primero las tarjetas de resumen.
+4. Revisar los graficos.
+5. Leer la lectura rapida.
+6. Si hace falta, pulsar `Guardar PDF` para guardar una copia desde el navegador.
+
+Importante: los ingresos son estimados y se calculan con citas confirmadas o finalizadas. No reemplazan contabilidad ni facturacion.
+
+Cotiza aparece como modulo futuro. Todavia no muestra metricas porque falta definir la base de presupuestos.
 
 ## Servicios
 

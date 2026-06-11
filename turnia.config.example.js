@@ -1,8 +1,13 @@
 window.TURNIA_CONFIG = {
-  dataMode: "local",
+  appEnv: "local",
+  dataMode: "demo",
   supabaseUrl: "https://TU-PROYECTO.supabase.co",
   supabaseAnonKey: "TU-ANON-KEY",
+  sentryDsn: "",
+  release: "",
 };
 
-// Cuando usemos Supabase real, tambien habra que cargar el SDK oficial
-// antes de supabaseClient.js. En la demo local no hace falta.
+// En hosting real conviene generar config.js con scripts/write-config.mjs
+// usando variables TURNIA_APP_ENV, TURNIA_DATA_MODE, TURNIA_SUPABASE_URL,
+// TURNIA_SUPABASE_ANON_KEY y TURNIA_SENTRY_DSN.
+// La service_role key nunca va en este archivo ni en el navegador.

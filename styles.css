@@ -721,6 +721,25 @@ h3 {
   gap: 1rem;
 }
 
+.client-search {
+  display: grid;
+  gap: 0.4rem;
+  max-width: 520px;
+  margin-bottom: 1rem;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.client-search input {
+  min-height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--ink);
+  padding: 0 0.95rem;
+  font: inherit;
+}
+
 .info-card {
   position: relative;
   min-height: 142px;
@@ -736,6 +755,23 @@ h3 {
   width: 100%;
   color: var(--ink);
   text-align: left;
+}
+
+.client-card p,
+.client-card small {
+  overflow-wrap: anywhere;
+}
+
+.client-card-meta {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 0.35rem;
+  padding: 0.3rem 0.55rem;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary-strong);
+  font-size: 0.78rem;
+  font-weight: 800;
 }
 
 .client-card.active {
@@ -803,10 +839,12 @@ h3 {
 .client-metrics article {
   display: grid;
   gap: 0.25rem;
+  overflow-wrap: anywhere;
 }
 
 .client-metrics span,
-.client-history span {
+.client-history span,
+.client-history p {
   color: var(--muted);
 }
 
@@ -956,6 +994,30 @@ h3 {
   gap: 1rem;
 }
 
+.report-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.period-btn {
+  min-height: 42px;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.period-btn.active,
+.period-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--primary-strong);
+}
+
 .week-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1043,6 +1105,27 @@ h3 {
   font-size: 1.55rem;
 }
 
+.report-charts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.report-charts section {
+  display: grid;
+  gap: 0.8rem;
+  min-height: 250px;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.report-charts canvas {
+  width: 100%;
+  min-height: 170px;
+}
+
 .report-columns {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1067,6 +1150,10 @@ h3 {
   display: grid;
   gap: 0.35rem;
   padding: 1rem;
+}
+
+.cotiza-soon {
+  background: var(--primary-soft);
 }
 
 .settings-layout {
@@ -1374,6 +1461,7 @@ textarea {
 
   .public-layout,
   .client-booking,
+  .report-charts,
   .report-columns,
   .settings-layout,
   .settings-grid,
@@ -1391,6 +1479,11 @@ textarea {
 
   .report-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .report-controls {
+    display: grid;
+    grid-template-columns: 1fr;
   }
 
   .week-grid {

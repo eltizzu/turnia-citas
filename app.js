@@ -37,36 +37,50 @@ const demoData = {
     {
       name: "Lucia Gomez",
       phone: "+34 611 234 120",
+      email: "lucia.gomez@email.com",
+      createdAt: "2026-04-02",
       note: "Prefiere tonos miel y suele reservar cada 6 semanas.",
     },
     {
       name: "Paula Sosa",
       phone: "+34 622 903 881",
+      email: "paula.sosa@email.com",
+      createdAt: "2026-04-18",
       note: "Le gusta recibir confirmacion por WhatsApp.",
     },
     {
       name: "Candela Ruiz",
       phone: "+34 633 118 440",
+      email: "candela.ruiz@email.com",
+      createdAt: "2026-03-22",
       note: "Cliente frecuente. Suele pedir corte express cada 5 semanas.",
     },
     {
       name: "Rocio Vera",
       phone: "+34 644 902 110",
+      email: "rocio.vera@email.com",
+      createdAt: "2026-05-03",
       note: "Primera visita. Pregunto por una sesion de fisioterapia.",
     },
     {
       name: "Marta Leon",
       phone: "+34 655 901 234",
+      email: "marta.leon@email.com",
+      createdAt: "2026-05-08",
       note: "Prefiere horarios de tarde y confirmar siempre por WhatsApp.",
     },
     {
       name: "Nadia Ferrer",
       phone: "+34 666 210 874",
+      email: "nadia.ferrer@email.com",
+      createdAt: "2026-05-09",
       note: "Quiere probar manicura antes de un evento.",
     },
     {
       name: "Sofia Martin",
       phone: "+34 677 451 903",
+      email: "sofia.martin@email.com",
+      createdAt: "2026-05-10",
       note: "Suele venir con poco margen, revisar huecos libres.",
     },
   ],
@@ -318,6 +332,9 @@ const services = persistedData?.services || clone(demoData.services);
 const team = persistedData?.team || clone(demoData.team);
 let currentSession = null;
 let publicSlotsRequestId = 0;
+let reportPeriod = "month";
+let clientSearchQuery = "";
+const reportCharts = {};
 
 function replaceArray(target, items) {
   target.splice(0, target.length, ...(items || []));
@@ -821,6 +838,16 @@ function formatDateLabel(dateString) {
   return `${dayNames[date.getDay()]} ${date.getDate()}/${date.getMonth() + 1}`;
 }
 
+function formatFullDate(dateString) {
+  if (!dateString) return "Sin fecha";
+  const date = dateFromString(dateString);
+  return new Intl.DateTimeFormat("es-ES", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(date);
+}
+
 function getStatusClass(status) {
   return status.toLowerCase().replaceAll(" ", "-");
 }
@@ -879,12 +906,15 @@ function upsertClientFromAppointment(appointment) {
   const existing = getClientByPhone(appointment.phone);
   if (existing) {
     existing.name = appointment.client;
+    existing.createdAt ||= appointment.date || demoDate;
     return;
   }
 
   state.clients.push({
     name: appointment.client,
     phone: appointment.phone,
+    email: appointment.email || "",
+    createdAt: appointment.date || demoDate,
     note: appointment.note || "Cliente creado desde una cita.",
   });
 }
@@ -1236,23 +1266,37 @@ function renderBlocks() {
 
 function renderClients() {
   syncClientsFromAppointments();
-  document.getElementById("client-list").innerHTML = state.clients
-    .map((client) => {
-      const appointments = getAppointmentsForClient(client.phone);
-      const lastAppointment = appointments.sort((a, b) => b.time.localeCompare(a.time))[0];
-      return `
-        <button class="info-card client-card ${state.selectedClientPhone === client.phone ? "active" : ""}" type="button" data-client-phone="${escapeAttr(client.phone)}">
-          <h3>${escapeHtml(client.name)}</h3>
-          <p>${escapeHtml(client.phone)}</p>
-          <strong>${escapeHtml(appointments.length)} cita(s)</strong>
-          <small>${lastAppointment ? `${escapeHtml(lastAppointment.service)} - ${escapeHtml(lastAppointment.status)}` : "Sin citas aun"}</small>
-          <span class="card-actions">
-            <span class="mini-danger" data-delete-client="${escapeAttr(client.phone)}">Eliminar</span>
-          </span>
-        </button>
-      `;
-    })
-    .join("");
+  const input = document.getElementById("client-search");
+  if (input && input.value !== clientSearchQuery) {
+    input.value = clientSearchQuery;
+  }
+
+  const profiles = TurniaClients.buildClientProfiles({
+    clients: state.clients,
+    appointments: state.appointments,
+    query: clientSearchQuery,
+  });
+
+  document.getElementById("client-list").innerHTML = profiles.length
+    ? profiles
+        .map((client) => {
+          const lastAppointment = client.lastAppointment;
+          return `
+            <button class="info-card client-card ${state.selectedClientPhone === client.phone ? "active" : ""}" type="button" data-client-phone="${escapeAttr(client.phone)}">
+              <span class="client-card-meta">${escapeHtml(client.firstContact ? formatFullDate(client.firstContact) : "Primer contacto pendiente")}</span>
+              <h3>${escapeHtml(client.name)}</h3>
+              <p>${escapeHtml(client.phone)}</p>
+              <p>${escapeHtml(client.email || "Sin email")}</p>
+              <strong>${escapeHtml(client.totalAppointments)} cita(s)</strong>
+              <small>${lastAppointment ? `${escapeHtml(formatFullDate(lastAppointment.date))} - ${escapeHtml(lastAppointment.service)} - ${escapeHtml(lastAppointment.status)}` : "Sin citas aun"}</small>
+              <span class="card-actions">
+                <span class="mini-danger" data-delete-client="${escapeAttr(client.phone)}">Eliminar</span>
+              </span>
+            </button>
+          `;
+        })
+        .join("")
+    : '<p class="empty-state">No encontramos clientes con esa busqueda.</p>';
 
   bindClientCards();
   bindDeleteActions();
@@ -1268,9 +1312,11 @@ function renderClientDetail() {
   const root = document.getElementById("client-detail");
   if (!root) return;
 
-  const client =
-    getClientByPhone(state.selectedClientPhone) ||
-    state.clients[0];
+  const profiles = TurniaClients.buildClientProfiles({
+    clients: state.clients,
+    appointments: state.appointments,
+  });
+  const client = profiles.find((item) => normalizePhone(item.phone) === normalizePhone(state.selectedClientPhone)) || profiles[0];
 
   if (!client) {
     root.innerHTML = "<p>Todavia no hay clientes cargados.</p>";
@@ -1278,12 +1324,6 @@ function renderClientDetail() {
   }
 
   state.selectedClientPhone = client.phone;
-  const appointments = getAppointmentsForClient(client.phone).sort((a, b) =>
-    b.time.localeCompare(a.time),
-  );
-  const revenue = appointments
-.filter((item) => ["Confirmada", "Finalizada"].includes(item.status))
-    .reduce((sum, item) => sum + item.price, 0);
   const message = `Hola ${client.name}, te escribimos desde ${state.business.name}.`;
 
   root.innerHTML = `
@@ -1291,7 +1331,7 @@ function renderClientDetail() {
       <div>
         <span class="eyebrow">Ficha cliente</span>
         <h3>${escapeHtml(client.name)}</h3>
-        <p>${escapeHtml(client.phone)}</p>
+        <p>${escapeHtml(client.phone)}${client.email ? ` - ${escapeHtml(client.email)}` : ""}</p>
       </div>
       <div class="detail-actions">
         <button class="ghost-btn mini-action" type="button" data-edit-client="${escapeAttr(client.phone)}">Editar</button>
@@ -1303,19 +1343,22 @@ function renderClientDetail() {
       <p>${escapeHtml(client.note || "Sin notas.")}</p>
     </div>
     <div class="client-metrics">
-      <article><strong>${escapeHtml(appointments.length)}</strong><span>Citas</span></article>
-      <article><strong>${escapeHtml(money(revenue))}</strong><span>Ingresos</span></article>
+      <article><strong>${escapeHtml(client.firstContact ? formatFullDate(client.firstContact) : "Sin fecha")}</strong><span>Primer contacto</span></article>
+      <article><strong>${escapeHtml(client.totalAppointments)}</strong><span>Total citas</span></article>
+      <article><strong>${escapeHtml(money(client.estimatedRevenue))}</strong><span>Ingresos estimados</span></article>
+      <article><strong>${escapeHtml(client.email || "Sin email")}</strong><span>Email</span></article>
     </div>
     <h3>Historial</h3>
     <div class="client-history">
       ${
-        appointments.length
-          ? appointments
+        client.history.length
+          ? client.history
               .map(
                 (appointment) => `
                   <article>
-                    <strong>${escapeHtml(appointment.time)} - ${escapeHtml(appointment.service)}</strong>
-                    <span>${escapeHtml(appointment.professional)} - ${escapeHtml(appointment.status)} - ${escapeHtml(money(appointment.price))}</span>
+                    <strong>${escapeHtml(formatFullDate(appointment.date))} · ${escapeHtml(appointment.time)} · ${escapeHtml(appointment.service)}</strong>
+                    <span>${escapeHtml(appointment.professional)} · ${escapeHtml(appointment.status)} · ${escapeHtml(money(appointment.price))}</span>
+                    <p>${escapeHtml(appointment.note || "Sin nota.")}</p>
                   </article>
                 `,
               )
@@ -1381,26 +1424,109 @@ function groupCount(items, keyGetter) {
   }, {});
 }
 
+function formatReportDate(date) {
+  return new Intl.DateTimeFormat("es-ES", { day: "numeric", month: "short" }).format(date);
+}
+
+function renderChart(chartKey, canvasId, config) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas || !window.Chart) return;
+
+  if (reportCharts[chartKey]) {
+    reportCharts[chartKey].destroy();
+  }
+
+  reportCharts[chartKey] = new Chart(canvas, config);
+}
+
+function renderReportCharts(metrics) {
+  const statusLabels = TurniaMetrics.STATUS_LABELS;
+  const statusValues = statusLabels.map((status) => metrics.statusCounts[status] || 0);
+  const demandLabels = metrics.demandByHour.map((item) => item.label);
+  const demandValues = metrics.demandByHour.map((item) => item.count);
+
+  renderChart("status", "status-chart", {
+    type: "bar",
+    data: {
+      labels: statusLabels,
+      datasets: [
+        {
+          data: statusValues,
+          backgroundColor: ["#f59e0b", "#7c9e8f", "#b5835a", "#ef4444", "#8c7b72"],
+          borderRadius: 10,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { beginAtZero: true, ticks: { precision: 0 } },
+      },
+    },
+  });
+
+  renderChart("demand", "demand-chart", {
+    type: "line",
+    data: {
+      labels: demandLabels.length ? demandLabels : ["Sin datos"],
+      datasets: [
+        {
+          data: demandValues.length ? demandValues : [0],
+          borderColor: "#b5835a",
+          backgroundColor: "rgba(181, 131, 90, 0.16)",
+          fill: true,
+          tension: 0.35,
+          pointRadius: 4,
+          pointBackgroundColor: "#b5835a",
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { beginAtZero: true, ticks: { precision: 0 } },
+      },
+    },
+  });
+}
+
 function renderReports() {
-  const revenueAppointments = getRevenueAppointments();
-  const totalRevenue = revenueAppointments.reduce((sum, item) => sum + item.price, 0);
-  const pending = state.appointments.filter((item) => item.status === "Pendiente").length;
-  const cancelled = state.appointments.filter((item) => item.status === "Cancelada").length;
-  const finished = state.appointments.filter((item) => item.status === "Finalizada").length;
-  const noShows = state.appointments.filter((item) => item.status === "No asistio").length;
-  const averageTicket = revenueAppointments.length ? totalRevenue / revenueAppointments.length : 0;
+  const metrics = TurniaMetrics.buildDashboardMetrics({
+    appointments: state.appointments,
+    period: reportPeriod,
+    referenceDate: state.selectedDate,
+  });
+  const pending = metrics.statusCounts.Pendiente || 0;
+  const confirmed = metrics.statusCounts.Confirmada || 0;
+  const cancelled = metrics.statusCounts.Cancelada || 0;
+  const finished = metrics.statusCounts.Finalizada || 0;
 
   const stats = [
-    { label: "Turnos cargados", value: state.appointments.length },
-    { label: "Ingresos estimados", value: money(totalRevenue) },
-    { label: "Ticket medio", value: money(averageTicket) },
-    { label: "Por confirmar", value: pending },
+    { label: "Citas del periodo", value: metrics.totalAppointments },
+    { label: "Ingresos estimados", value: money(metrics.estimatedRevenue) },
+    { label: "Ticket medio", value: money(metrics.averageTicket) },
+    { label: "Pendientes", value: pending },
+    { label: "Confirmadas", value: confirmed },
     { label: "Finalizadas", value: finished },
-    { label: "No asistio", value: noShows },
     { label: "Canceladas", value: cancelled },
-    { label: "Huecos visibles", value: getRecommendedOpenings().length },
-    { label: "Bloqueos", value: state.blocks.length },
+    { label: "Hora fuerte", value: metrics.busiestHour?.label || "Sin datos" },
+    { label: "Dia fuerte", value: metrics.busiestDay?.label || "Sin datos" },
   ];
+
+  document.querySelectorAll("[data-report-period]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.reportPeriod === reportPeriod);
+  });
+
+  document.getElementById("report-title").textContent = `Resumen - ${metrics.range.label}`;
+  const reportEndDate = dateFromString(addDays(toDateString(metrics.range.end), -1));
+  document.getElementById("report-period-label").textContent =
+    `${formatReportDate(metrics.range.start)} al ${formatReportDate(reportEndDate)}`;
 
   document.getElementById("report-grid").innerHTML = stats
     .map(
@@ -1413,24 +1539,22 @@ function renderReports() {
     )
     .join("");
 
-  const byService = Object.entries(groupCount(state.appointments, (item) => item.service))
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 5);
-
-  document.getElementById("top-services").innerHTML = byService
-    .map(
-      ([service, count]) => `
-        <article>
-          <strong>${escapeHtml(service)}</strong>
-          <span>${escapeHtml(count)} turnos</span>
-        </article>
-      `,
-    )
-    .join("");
+  document.getElementById("top-services").innerHTML = metrics.topServices.length
+    ? metrics.topServices
+        .map(
+          (item) => `
+            <article>
+              <strong>${escapeHtml(item.label)}</strong>
+              <span>${escapeHtml(item.count)} turnos</span>
+            </article>
+          `,
+        )
+        .join("")
+    : `<p class="empty-state">Todavia no hay citas en este periodo.</p>`;
 
   document.getElementById("professional-report").innerHTML = team
     .map((person) => {
-      const appointments = state.appointments.filter((item) => item.professional === person.name);
+      const appointments = metrics.appointments.filter((item) => item.professional === person.name);
       const income = appointments
         .filter((item) => ["Confirmada", "Finalizada"].includes(item.status))
         .reduce((sum, item) => sum + item.price, 0);
@@ -1444,9 +1568,14 @@ function renderReports() {
     })
     .join("");
 
-  const bestService = byService[0]?.[0] || "todavia sin datos";
+  const bestService = metrics.topServices[0]?.label || "todavia sin datos";
+  const strongestDemand = metrics.busiestHour?.label
+    ? `La hora con mas movimiento es ${metrics.busiestHour.label}`
+    : "Todavia no hay una hora destacada";
   document.getElementById("report-insight").textContent =
-    `Este mes el servicio con mas movimiento es ${bestService}. Hay ${pending} cita(s) pendiente(s): confirmarlas puede asegurar ingresos y liberar decisiones del dia.`;
+    `${metrics.range.label}: el servicio con mas movimiento es ${bestService}. ${strongestDemand}. Hay ${pending} cita(s) pendiente(s) para revisar.`;
+
+  renderReportCharts(metrics);
 }
 
 function renderBusinessIdentity() {
@@ -1562,6 +1691,7 @@ function openClientModal(phone = "") {
     form.elements.originalPhone.value = client.phone;
     form.elements.name.value = client.name;
     form.elements.phone.value = client.phone;
+    form.elements.email.value = client.email || "";
     form.elements.note.value = client.note;
   } else {
     title.textContent = "Nuevo cliente";
@@ -2045,6 +2175,11 @@ function bindEvents() {
     openClientModal();
   });
 
+  document.getElementById("client-search").addEventListener("input", (event) => {
+    clientSearchQuery = event.currentTarget.value;
+    renderClients();
+  });
+
   document.getElementById("open-block").addEventListener("click", () => {
     fillFormOptions();
     document.getElementById("block-modal").classList.add("visible");
@@ -2141,6 +2276,8 @@ function bindEvents() {
     if (existing) {
       existing.name = formData.get("name").trim();
       existing.phone = phone;
+      existing.email = formData.get("email").trim();
+      existing.createdAt ||= state.selectedDate || demoDate;
       existing.note = formData.get("note").trim();
 
       state.appointments.forEach((appointment) => {
@@ -2153,6 +2290,8 @@ function bindEvents() {
       state.clients.push({
         name: formData.get("name").trim(),
         phone,
+        email: formData.get("email").trim(),
+        createdAt: state.selectedDate || demoDate,
         note: formData.get("note").trim(),
       });
     }
@@ -2543,6 +2682,13 @@ function bindBookingEvents() {
   document.getElementById("print-report").addEventListener("click", () => {
     setView("reportes");
     window.print();
+  });
+
+  document.querySelectorAll("[data-report-period]").forEach((button) => {
+    button.addEventListener("click", () => {
+      reportPeriod = button.dataset.reportPeriod || "month";
+      renderReports();
+    });
   });
 
   document.getElementById("save-settings").addEventListener("click", () => {

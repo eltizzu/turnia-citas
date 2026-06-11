@@ -15,6 +15,7 @@ El producto principal incluye:
 - clientes;
 - bloqueos;
 - reportes;
+- dashboard de metricas de Turnia;
 - exportacion;
 - configuracion;
 - WhatsApp preparado;
@@ -70,6 +71,18 @@ Prioridad: futura.
 - servicio mas rentable.
 
 Prioridad: despues de tener datos reales.
+
+### Cotiza
+
+Modulo futuro para presupuestos/cotizaciones:
+
+- total de presupuestos por periodo;
+- monto presupuestado;
+- aceptados, rechazados y pendientes;
+- clientes con mas volumen;
+- historial conectado con la base de clientes.
+
+Prioridad: futura. Antes de implementarlo hay que definir una tabla real de presupuestos para no mezclar metricas inventadas con datos de Turnia.
 
 ### Pagos online
 

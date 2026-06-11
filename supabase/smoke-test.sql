@@ -53,4 +53,61 @@ exception
 end;
 $$;
 
+-- 5. El rate limit por telefono debe cortar abuso del link publico.
+select public.create_public_appointment(
+  'centro-demo',
+  '33333333-3333-4333-8333-333333333331'::uuid,
+  '22222222-2222-4222-8222-222222222221'::uuid,
+  current_date + 21,
+  '11:00'::time,
+  'Cliente Rate Limit',
+  '+34 700 000 009',
+  'Intento 1 de rate limit'
+) as rate_limit_booking_1;
+
+select public.create_public_appointment(
+  'centro-demo',
+  '33333333-3333-4333-8333-333333333331'::uuid,
+  '22222222-2222-4222-8222-222222222221'::uuid,
+  current_date + 21,
+  '11:45'::time,
+  'Cliente Rate Limit',
+  '+34 700 000 009',
+  'Intento 2 de rate limit'
+) as rate_limit_booking_2;
+
+select public.create_public_appointment(
+  'centro-demo',
+  '33333333-3333-4333-8333-333333333331'::uuid,
+  '22222222-2222-4222-8222-222222222221'::uuid,
+  current_date + 21,
+  '12:30'::time,
+  'Cliente Rate Limit',
+  '+34 700 000 009',
+  'Intento 3 de rate limit'
+) as rate_limit_booking_3;
+
+do $$
+begin
+  perform public.create_public_appointment(
+    'centro-demo',
+    '33333333-3333-4333-8333-333333333331'::uuid,
+    '22222222-2222-4222-8222-222222222221'::uuid,
+    current_date + 21,
+    '13:15'::time,
+    'Cliente Rate Limit',
+    '+34 700 000 009',
+    'Este intento deberia ser rechazado por rate limit'
+  );
+
+  raise exception 'expected_rate_limit_but_booking_was_created';
+exception
+  when others then
+    if sqlerrm <> 'public_booking_rate_limited' then
+      raise;
+    end if;
+    raise notice 'OK: la cuarta reserva del mismo telefono fue rechazada por rate limit.';
+end;
+$$;
+
 rollback;

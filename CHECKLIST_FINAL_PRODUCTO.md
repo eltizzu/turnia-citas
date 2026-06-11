@@ -107,14 +107,23 @@ Estado: documento vivo. Actualizar antes de cada presentacion, piloto o entrega.
 
 - [x] Crear cliente.
 - [x] Editar cliente.
-- [x] Ver historial.
+- [x] Buscador por nombre, telefono o email.
+- [x] Ver historial completo.
+- [x] Ver primer contacto.
+- [x] Ver email.
+- [x] Ver total de citas.
 - [x] Ver notas.
 - [x] Abrir WhatsApp.
 - [x] Evitar eliminar cliente con historial.
+- [ ] QA visual de Clientes en navegador real.
 
 ## Reportes y exportacion
 
 - [x] Ver metricas basicas.
+- [x] Dashboard de Turnia con filtro por periodo.
+- [x] Tarjetas de resumen por periodo.
+- [x] Graficos simples con Chart.js.
+- [x] Cotiza marcado como proximamente sin metricas inventadas.
 - [x] Ingresos estimados.
 - [x] Ticket medio.
 - [x] Servicios destacados.
@@ -124,6 +133,7 @@ Estado: documento vivo. Actualizar antes de cada presentacion, piloto o entrega.
 - [x] Exportar backup JSON.
 - [x] Guardar PDF desde navegador.
 - [ ] Revisar formato PDF final.
+- [ ] QA visual del nuevo dashboard en navegador real.
 - [x] Botones de exportacion Excel/JSON probados sin errores.
 - [x] Exportacion de clientes/citas cambiada a Excel real `.xlsx`.
 - [ ] Confirmar descarga real Excel/JSON en navegador del usuario antes de presentar.
@@ -164,6 +174,10 @@ Estado: documento vivo. Actualizar antes de cada presentacion, piloto o entrega.
 - [x] `config.js` corregido para exponer `window.TURNIA_CONFIG`.
 - [x] Vista cliente preparada para pedir horarios y crear reservas por RPC cuando Supabase esta activo.
 - [x] Smoke test SQL preparado para validar schema, seed, link publico y conflicto de horario.
+- [x] Rate limiting inicial en RPC publica de reservas por telefono, IP disponible y negocio.
+- [x] CSP, HSTS y security headers agregados a Netlify/Vercel.
+- [x] Config runtime separada por variables de entorno.
+- [x] Sentry preparado para frontend cuando exista `TURNIA_SENTRY_DSN`.
 - [x] Handoff Supabase preparado para guiar la creacion del proyecto real.
 - [x] Crear proyecto Supabase real.
 - [x] Ejecutar schema.
@@ -175,6 +189,9 @@ Estado: documento vivo. Actualizar antes de cada presentacion, piloto o entrega.
 - [ ] Publicar staging.
 - [ ] Dominio y HTTPS.
 - [ ] Backups.
+- [ ] Ejecutar schema actualizado de rate limiting en Supabase real.
+- [ ] Configurar variables de entorno en Netlify/Vercel.
+- [ ] Crear proyecto Sentry y cargar `TURNIA_SENTRY_DSN`.
 
 ## Legal y fiscal
 
