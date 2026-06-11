@@ -1,6 +1,7 @@
 {
   "cleanUrls": true,
   "buildCommand": "node scripts/write-config.mjs",
+  "outputDirectory": ".",
   "headers": [
     {
       "source": "/(.*)",
@@ -16,8 +17,4 @@
     {
       "source": "/assets/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
-    }
-  ]
-}
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutab
