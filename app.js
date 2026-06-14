@@ -1006,7 +1006,7 @@ function getAvailableSlots(serviceName, preferredProfessional = "Cualquiera", ig
 }
 
 function getBusinessLink() {
-  return `turnia.app/${state.business.slug}`;
+  return `https://turnia-citas.vercel.app/demo?publico&slug=${state.business.slug}`;
 }
 
 function getRecommendedOpenings() {
