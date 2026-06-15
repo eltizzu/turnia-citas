@@ -252,6 +252,7 @@
       <a href="#reportes">Reportes</a>
       <a href="#configuracion">Configuración</a>
       <a href="#restaurar">Restaurar demo</a>
+      <a href="#limitaciones">Que no hacer todavia</a>
     </div>
   </nav>
 
@@ -261,8 +262,8 @@
       <h1>Manual de Uso — Turnia</h1>
       <p>Guía completa para gestionar tu agenda de citas desde el panel del negocio.</p>
       <div class="doc-meta">
-        <span>📅 Última actualización: 21 de mayo 2026</span>
-        <span>📖 Para personas no técnicas</span>
+        <span>Actualizado: 16 de junio 2026</span>
+        <span>Para personas no tecnicas</span>
       </div>
     </div>
 
@@ -307,13 +308,22 @@
       <p>Desde la pantalla de inicio tienes tres opciones:</p>
       <ul class="section-list" style="list-style:none; padding:0; display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1rem;">
         <li style="background:var(--card); border:1px solid var(--border); border-radius:8px; padding:0.75rem 1rem; font-size:0.9rem;"><strong><code>Entrar como negocio</code></strong> — abre el panel de gestión del negocio</li>
-        <li style="background:var(--card); border:1px solid var(--border); border-radius:8px; padding:0.75rem 1rem; font-size:0.9rem;"><strong><code>Entrar con Google</code></strong> — en demo simula login; en producción usará Google</li>
         <li style="background:var(--card); border:1px solid var(--border); border-radius:8px; padding:0.75rem 1rem; font-size:0.9rem;"><strong><code>Ver link del cliente</code></strong> — muestra la experiencia pública de reserva</li>
       </ul>
       <div class="demo-box">
         <div><strong>Email demo</strong><span>demo@turnia.app</span></div>
         <div><strong>Contraseña demo</strong><span>turnia-demo</span></div>
       </div>
+
+      <h3>Primer recorrido recomendado</h3>
+      <ol class="steps">
+        <li>Entrar como negocio</li>
+        <li>Mirar la agenda</li>
+        <li>Confirmar una cita pendiente</li>
+        <li>Abrir la vista del cliente</li>
+        <li>Crear una reserva ficticia</li>
+        <li>Volver al panel y ver si aparece en agenda</li>
+      </ol>
     </section>
 
     <!-- Agenda -->
@@ -403,7 +413,12 @@
     <!-- Semana -->
     <section class="section" id="semana">
       <h2>Vista semanal</h2>
-      <p>Permite revisar la semana completa de un vistazo.</p>
+      <p>Permite revisar la semana completa de un vistazo. Útil para:</p>
+      <ul>
+        <li>Ver si la semana está cargada</li>
+        <li>Revisar la agenda de un profesional puntual</li>
+        <li>Detectar días tranquilos o huecos libres</li>
+      </ul>
       <ol class="steps">
         <li>Entrar a <code>Semana</code></li>
         <li>Elegir profesional</li>
@@ -414,13 +429,14 @@
     <!-- Clientes -->
     <section class="section" id="clientes">
       <h2>Clientes</h2>
-      <p>La sección Clientes permite ver nombre, teléfono, notas, cantidad de citas, historial, ingresos estimados y contacto por WhatsApp.</p>
+      <p>La sección Clientes permite ver nombre, teléfono, email, notas, cantidad de citas, primer contacto, historial, ingresos estimados y contacto por WhatsApp.</p>
+      <p>Los clientes se crean solos desde las citas: cuando llega una reserva nueva, Turnia agrega ese cliente a la lista automáticamente.</p>
 
       <h3>Crear cliente</h3>
       <ol class="steps">
         <li>Ir a Clientes</li>
         <li>Pulsar <code>Nuevo cliente</code></li>
-        <li>Cargar nombre, teléfono y nota</li>
+        <li>Cargar nombre, teléfono, email y nota</li>
         <li>Guardar</li>
       </ol>
 
@@ -570,6 +586,19 @@
       <h2>Restaurar demo</h2>
       <p>El botón <code>Restaurar demo</code> borra los cambios guardados en el navegador y vuelve a los datos iniciales. Usarlo solo cuando se quiera limpiar la demo para una presentación.</p>
       <div class="info-box">También se puede abrir la URL con <code>?reset-demo=1</code> para limpiar la demo antes de una presentación.</div>
+    </section>
+
+    <!-- Que no hacer todavia -->
+    <section class="section" id="limitaciones">
+      <h2>Que no hacer todavia</h2>
+      <p>En esta etapa conviene evitar:</p>
+      <ul>
+        <li>Cargar datos sensibles reales sin revisar seguridad</li>
+        <li>Usar la demo como sistema definitivo para el negocio</li>
+        <li>Prometer al cliente final funciones que todavia son futuras</li>
+        <li>Tomar los ingresos estimados como contabilidad real</li>
+      </ul>
+      <div class="info-box">Turnia ya está preparada para avanzar a piloto, pero antes de uso real hay que revisar hosting, Supabase, backups, seguridad y legales.</div>
     </section>
 
   </main>
