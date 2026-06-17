@@ -51,6 +51,18 @@ test("schema limita abuso de reservas publicas por telefono, ip y negocio", asyn
   assert.doesNotMatch(availableSlotsBody, /perform public\.assert_public_booking_rate_limit/);
 });
 
+test("schema valida y limpia campos publicos antes de guardar reservas", async () => {
+  const schema = await loadSchema();
+  const createAppointmentStart = schema.indexOf("create or replace function public.create_public_appointment");
+  const createAppointmentBody = schema.slice(createAppointmentStart);
+
+  assert.match(createAppointmentBody, /client_name_too_long/);
+  assert.match(createAppointmentBody, /client_phone_invalid/);
+  assert.match(createAppointmentBody, /client_note_too_long/);
+  assert.match(createAppointmentBody, /html_not_allowed/);
+  assert.match(createAppointmentBody, /regexp_replace/);
+});
+
 test("schema expone RPCs publicas de lectura limitada para el link cliente", async () => {
   const schema = await loadSchema();
 

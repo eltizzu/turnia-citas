@@ -1,4 +1,16 @@
 (function attachPublicBookingApi(global) {
+  const inputValidation = global.TurniaInputValidation;
+  const appointmentSchema = {
+    slug: { type: "text", required: true, max: 100 },
+    serviceId: { type: "text", required: true, max: 80 },
+    professionalId: { type: "text", required: true, max: 80 },
+    date: { type: "date", required: true },
+    startTime: { type: "time", required: true },
+    clientName: { type: "text", required: true, max: 100, label: "Nombre" },
+    clientPhone: { type: "phone", required: true, max: 40, label: "Telefono" },
+    clientNote: { type: "text", max: 500, label: "Nota" },
+  };
+
   function assertClient(client) {
     if (!client || typeof client.rpc !== "function") {
       throw new Error("Supabase no esta conectado para reservas publicas.");
@@ -14,6 +26,19 @@
     }
 
     return data;
+  }
+
+  function validateAppointment(payload) {
+    if (!inputValidation?.validateFields) {
+      return payload;
+    }
+
+    const result = inputValidation.validateFields(payload, appointmentSchema);
+    if (!result.ok) {
+      throw new Error(result.errors.join("\n"));
+    }
+
+    return result.values;
   }
 
   function createPublicBookingApi({ client = null } = {}) {
@@ -35,7 +60,7 @@
         });
       },
 
-      createAppointment({
+      async createAppointment({
         slug,
         serviceId,
         professionalId,
@@ -45,15 +70,26 @@
         clientPhone,
         clientNote = "",
       }) {
+        const values = validateAppointment({
+          slug,
+          serviceId,
+          professionalId,
+          date,
+          startTime,
+          clientName,
+          clientPhone,
+          clientNote,
+        });
+
         return callRpc(client, "create_public_appointment", {
-          p_business_slug: slug,
-          p_service_id: serviceId,
-          p_professional_id: professionalId,
-          p_date: date,
-          p_start_time: startTime,
-          p_client_name: clientName,
-          p_client_phone: clientPhone,
-          p_client_note: clientNote || null,
+          p_business_slug: values.slug,
+          p_service_id: values.serviceId,
+          p_professional_id: values.professionalId,
+          p_date: values.date,
+          p_start_time: values.startTime,
+          p_client_name: values.clientName,
+          p_client_phone: values.clientPhone,
+          p_client_note: values.clientNote || null,
         });
       },
     };

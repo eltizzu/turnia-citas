@@ -31,6 +31,7 @@ test("configs estaticos no incluyen keys reales de Supabase", async () => {
   const configs = [
     await read("config.js"),
     await read("app/config.js"),
+    await read("turnia.config.example.js"),
     await read("public-demo-2026-05-21/config.js"),
   ].join("\n");
 

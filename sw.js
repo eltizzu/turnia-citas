@@ -6,6 +6,7 @@ const APP_SHELL = [
   "./agendaRules.js",
   "./turniaMetrics.js",
   "./turniaClients.js",
+  "./inputValidation.js",
   "./dataAdapter.js",
   "./supabaseClient.js",
   "./dataProviders.js",

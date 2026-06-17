@@ -3,6 +3,9 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
 
+const testSupabaseUrl = process.env.TURNIA_TEST_SUPABASE_URL || "https://example.invalid";
+const testSupabaseAnonKey = process.env.TURNIA_TEST_SUPABASE_ANON_KEY || "test-anon-key";
+
 async function loadSupabaseClient(extraSandbox = {}) {
   const code = await readFile(new URL("../supabaseClient.js", import.meta.url), "utf8");
   const sandbox = { ...extraSandbox };
@@ -26,16 +29,16 @@ test("no crea cliente sin SDK global de Supabase", async () => {
   assert.equal(
     helper.canCreateClient({
       dataMode: "supabase",
-      supabaseUrl: "https://demo.supabase.co",
-      supabaseAnonKey: "anon",
+      supabaseUrl: testSupabaseUrl,
+      supabaseAnonKey: testSupabaseAnonKey,
     }),
     false,
   );
   assert.equal(
     helper.createClient({
       dataMode: "supabase",
-      supabaseUrl: "https://demo.supabase.co",
-      supabaseAnonKey: "anon",
+      supabaseUrl: testSupabaseUrl,
+      supabaseAnonKey: testSupabaseAnonKey,
     }),
     null,
   );
@@ -54,10 +57,10 @@ test("crea cliente si hay config y SDK disponible", async () => {
 
   const client = helper.createClient({
     dataMode: "supabase",
-    supabaseUrl: "https://demo.supabase.co",
-    supabaseAnonKey: "anon",
+    supabaseUrl: testSupabaseUrl,
+    supabaseAnonKey: testSupabaseAnonKey,
   });
 
-  assert.deepEqual(client, { url: "https://demo.supabase.co", key: "anon" });
-  assert.deepEqual(calls, [{ url: "https://demo.supabase.co", key: "anon" }]);
+  assert.deepEqual(client, { url: testSupabaseUrl, key: testSupabaseAnonKey });
+  assert.deepEqual(calls, [{ url: testSupabaseUrl, key: testSupabaseAnonKey }]);
 });

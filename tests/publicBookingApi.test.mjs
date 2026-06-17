@@ -4,9 +4,11 @@ import test from "node:test";
 import vm from "node:vm";
 
 async function loadPublicBookingApi() {
+  const validatorCode = await readFile(new URL("../inputValidation.js", import.meta.url), "utf8");
   const code = await readFile(new URL("../publicBookingApi.js", import.meta.url), "utf8");
   const sandbox = {};
   vm.createContext(sandbox);
+  vm.runInContext(validatorCode, sandbox);
   vm.runInContext(code, sandbox);
   return sandbox.TurniaPublicBookingApi;
 }
@@ -108,6 +110,35 @@ test("public booking api llama la RPC de crear reserva", async () => {
       },
     },
   ]);
+});
+
+test("public booking api rechaza datos inseguros antes de llamar la RPC", async () => {
+  const apiFactory = await loadPublicBookingApi();
+  const calls = [];
+  const api = apiFactory.createPublicBookingApi({
+    client: {
+      async rpc(name, payload) {
+        calls.push({ name, payload });
+        return { data: { appointment_id: "appointment-1" }, error: null };
+      },
+    },
+  });
+
+  await assert.rejects(
+    () =>
+      api.createAppointment({
+        slug: "centro-demo",
+        serviceId: "service-1",
+        professionalId: "professional-1",
+        date: "2026-06-23",
+        startTime: "10:00",
+        clientName: "<script>alert(1)</script>",
+        clientPhone: "+34 600 000 000",
+      }),
+    /HTML ni scripts/,
+  );
+
+  assert.deepEqual(calls, []);
 });
 
 test("public booking api falla claro si Supabase no esta conectado", async () => {

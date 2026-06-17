@@ -1,5 +1,7 @@
 ﻿node_modules/
 .env
+.env.*
+!.env.example
 turnia.config.local.js
 .DS_Store
 dist/

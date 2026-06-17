@@ -2,6 +2,82 @@ const STORAGE_KEY = "turnia-demo-state-v2";
 const demoDate = "2026-05-11";
 const dayNames = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"];
 const initialUrlParams = new URLSearchParams(window.location.search);
+const inputValidation = window.TurniaInputValidation;
+
+const validationSchemas = {
+  login: {
+    email: { type: "email", required: true, max: 160 },
+    password: { type: "text", required: true, max: 200 },
+  },
+  appointment: {
+    client: { type: "text", required: true, max: 100 },
+    phone: { type: "phone", required: true, max: 40 },
+    date: { type: "date", required: true },
+    service: { type: "text", required: true, max: 120 },
+    professional: { type: "text", required: true, max: 100 },
+    time: { type: "time", required: true },
+    status: { type: "text", max: 40 },
+    note: { type: "text", max: 500 },
+  },
+  publicBooking: {
+    date: { type: "date", required: true },
+    service: { type: "text", required: true, max: 120 },
+    professional: { type: "text", max: 100 },
+    client: { type: "text", required: true, max: 100 },
+    phone: { type: "phone", required: true, max: 40 },
+    note: { type: "text", max: 500 },
+  },
+  client: {
+    originalPhone: { type: "phone", max: 40 },
+    name: { type: "text", required: true, max: 100 },
+    phone: { type: "phone", required: true, max: 40 },
+    email: { type: "email", max: 160 },
+    note: { type: "text", max: 500 },
+  },
+  service: {
+    originalName: { type: "text", max: 120 },
+    name: { type: "text", required: true, max: 120 },
+    category: { type: "text", required: true, max: 80 },
+    duration: { type: "number", required: true, min: 5, max: 600 },
+    price: { type: "number", required: true, min: 0, max: 100000 },
+    professionals: { type: "array", required: true, maxItems: 50 },
+  },
+  professional: {
+    originalName: { type: "text", max: 100 },
+    name: { type: "text", required: true, max: 100 },
+    role: { type: "text", required: true, max: 100 },
+    workStart: { type: "time", required: true },
+    workEnd: { type: "time", required: true },
+    services: { type: "array", required: true, maxItems: 100 },
+  },
+  block: {
+    professional: { type: "text", required: true, max: 100 },
+    date: { type: "date", required: true },
+    reason: { type: "text", required: true, max: 160 },
+    start: { type: "time", required: true },
+    end: { type: "time", required: true },
+  },
+  reschedule: {
+    appointmentId: { type: "text", required: true, max: 160 },
+    date: { type: "date", required: true },
+    professional: { type: "text", required: true, max: 100 },
+    time: { type: "time", required: true },
+    note: { type: "text", max: 500 },
+  },
+  settings: {
+    businessName: { type: "text", required: true, max: 120 },
+    slug: { type: "text", required: true, max: 80 },
+    city: { type: "text", max: 80 },
+    businessPhone: { type: "phone", max: 40 },
+    businessType: { type: "text", max: 80 },
+    start: { type: "time", required: true },
+    end: { type: "time", required: true },
+    step: { type: "number", required: true, min: 5, max: 240 },
+    minNotice: { type: "number", required: true, min: 0, max: 720 },
+    confirmTemplate: { type: "text", max: 1000 },
+    cancelTemplate: { type: "text", max: 1000 },
+  },
+};
 
 if (initialUrlParams.has("reset-demo")) {
   localStorage.removeItem(STORAGE_KEY);
@@ -497,6 +573,20 @@ function escapeHtml(value) {
 }
 
 const escapeAttr = escapeHtml;
+
+function validateForm(formData, schema) {
+  if (!inputValidation?.validateFormData) {
+    return { ok: true, values: Object.fromEntries(formData.entries()), errors: [] };
+  }
+  return inputValidation.validateFormData(formData, schema);
+}
+
+function showValidationErrors(result) {
+  if (!result.ok) {
+    alert(result.errors.join("\n"));
+  }
+  return result.ok;
+}
 
 function columnName(index) {
   let name = "";
@@ -1933,16 +2023,19 @@ async function handleBusinessSession(session) {
   enterApp("business");
 }
 
-function addAppointmentFromForm(formData, status, forcedTime, forcedProfessional) {
-  const selectedService = getService(formData.get("service"));
-  const professional = forcedProfessional || formData.get("professional");
-  const time = forcedTime || formData.get("time");
+function addAppointmentFromForm(values, status, forcedTime, forcedProfessional) {
+  const selectedService = getService(values.service);
+  if (!selectedService) {
+    return { ok: false, message: "Selecciona un servicio valido." };
+  }
+  const professional = forcedProfessional || values.professional;
+  const time = forcedTime || values.time;
 
   if (!canProfessionalDoService(professional, selectedService.name)) {
     return { ok: false, message: "Ese profesional no realiza este servicio." };
   }
 
-  const date = formData.get("date") || state.selectedDate;
+  const date = values.date || state.selectedDate;
 
   if (!isSlotFree(professional, time, selectedService.duration, "", date)) {
     return { ok: false, message: "Ese horario ya no esta disponible." };
@@ -1951,20 +2044,20 @@ function addAppointmentFromForm(formData, status, forcedTime, forcedProfessional
   state.appointments.push({
     date,
     time,
-    client: formData.get("client"),
-    phone: formData.get("phone") || "Sin telefono",
+    client: values.client,
+    phone: values.phone || "Sin telefono",
     service: selectedService.name,
     professional,
     duration: selectedService.duration,
     price: selectedService.price,
     status,
-    note: formData.get("note") || "Sin notas.",
+    note: values.note || "Sin notas.",
   });
 
   upsertClientFromAppointment({
-    client: formData.get("client"),
-    phone: formData.get("phone") || "Sin telefono",
-    note: formData.get("note") || "Sin notas.",
+    client: values.client,
+    phone: values.phone || "Sin telefono",
+    note: values.note || "Sin notas.",
   });
 
   return { ok: true };
@@ -2104,11 +2197,12 @@ function bindAppointmentActions() {
 function bindEvents() {
   document.getElementById("login-form").addEventListener("submit", async (event) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+    const validation = validateForm(new FormData(event.currentTarget), validationSchemas.login);
+    if (!showValidationErrors(validation)) return;
     try {
       const session = await authProvider.signInWithEmail({
-        email: formData.get("email"),
-        password: formData.get("password"),
+        email: validation.values.email,
+        password: validation.values.password,
       });
       await handleBusinessSession(session);
     } catch (error) {
@@ -2204,13 +2298,14 @@ function bindEvents() {
 
   document.getElementById("reschedule-form").addEventListener("submit", (event) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const appointment = findAppointmentById(formData.get("appointmentId"));
+    const validation = validateForm(new FormData(event.currentTarget), validationSchemas.reschedule);
+    if (!showValidationErrors(validation)) return;
+    const appointment = findAppointmentById(validation.values.appointmentId);
     if (!appointment) return;
 
-    const newProfessional = formData.get("professional");
-    const newDate = formData.get("date");
-    const newTime = formData.get("time");
+    const newProfessional = validation.values.professional;
+    const newDate = validation.values.date;
+    const newTime = validation.values.time;
     const service = getService(appointment.service);
 
     if (!newTime) {
@@ -2228,9 +2323,9 @@ function bindEvents() {
     appointment.professional = newProfessional;
     appointment.time = newTime;
     appointment.status = "Pendiente";
-    appointment.note = formData.get("note") || appointment.note;
+    appointment.note = validation.values.note || appointment.note;
 
-    prepareRescheduleMessage(appointment, formData.get("note"));
+    prepareRescheduleMessage(appointment, validation.values.note);
     event.currentTarget.reset();
     document.getElementById("reschedule-modal").classList.remove("visible");
     document.getElementById("reschedule-modal").setAttribute("aria-hidden", "true");
@@ -2241,9 +2336,10 @@ function bindEvents() {
 
   document.getElementById("block-form").addEventListener("submit", (event) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const start = formData.get("start");
-    const end = formData.get("end");
+    const validation = validateForm(new FormData(event.currentTarget), validationSchemas.block);
+    if (!showValidationErrors(validation)) return;
+    const start = validation.values.start;
+    const end = validation.values.end;
 
     if (toMinutes(end) <= toMinutes(start)) {
       alert("El fin del bloqueo tiene que ser posterior al inicio.");
@@ -2251,11 +2347,11 @@ function bindEvents() {
     }
 
     state.blocks.push({
-      date: formData.get("date") || state.selectedDate,
-      professional: formData.get("professional"),
+      date: validation.values.date || state.selectedDate,
+      professional: validation.values.professional,
       start,
       end,
-      reason: formData.get("reason").trim() || "Bloqueo",
+      reason: validation.values.reason || "Bloqueo",
     });
 
     event.currentTarget.reset();
@@ -2268,17 +2364,18 @@ function bindEvents() {
 
   document.getElementById("client-form").addEventListener("submit", (event) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const phone = formData.get("phone").trim();
-    const originalPhone = formData.get("originalPhone");
+    const validation = validateForm(new FormData(event.currentTarget), validationSchemas.client);
+    if (!showValidationErrors(validation)) return;
+    const phone = validation.values.phone;
+    const originalPhone = validation.values.originalPhone;
     const existing = getClientByPhone(originalPhone || phone);
 
     if (existing) {
-      existing.name = formData.get("name").trim();
+      existing.name = validation.values.name;
       existing.phone = phone;
-      existing.email = formData.get("email").trim();
+      existing.email = validation.values.email;
       existing.createdAt ||= state.selectedDate || demoDate;
-      existing.note = formData.get("note").trim();
+      existing.note = validation.values.note;
 
       state.appointments.forEach((appointment) => {
         if (normalizePhone(appointment.phone) === normalizePhone(originalPhone)) {
@@ -2288,11 +2385,11 @@ function bindEvents() {
       });
     } else {
       state.clients.push({
-        name: formData.get("name").trim(),
+        name: validation.values.name,
         phone,
-        email: formData.get("email").trim(),
+        email: validation.values.email,
         createdAt: state.selectedDate || demoDate,
-        note: formData.get("note").trim(),
+        note: validation.values.note,
       });
     }
 
@@ -2311,10 +2408,16 @@ function bindEvents() {
 
   document.getElementById("service-form").addEventListener("submit", (event) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const name = formData.get("name").trim();
-    const originalName = formData.get("originalName");
-    const selectedProfessionals = formData.getAll("professionals");
+    const validation = validateForm(new FormData(event.currentTarget), validationSchemas.service);
+    if (!showValidationErrors(validation)) return;
+    const name = validation.values.name;
+    const originalName = validation.values.originalName;
+    const selectedProfessionals = validation.values.professionals;
+
+    if (!selectedProfessionals.length) {
+      alert("Selecciona al menos un profesional para este servicio.");
+      return;
+    }
 
     if (
       services.some(
@@ -2329,11 +2432,11 @@ function bindEvents() {
 
     const payload = {
       name,
-      category: formData.get("category").trim() || "General",
-      duration: Number(formData.get("duration")),
-      price: Number(formData.get("price")),
+      category: validation.values.category || "General",
+      duration: validation.values.duration,
+      price: validation.values.price,
       professionals: selectedProfessionals,
-      online: formData.has("online"),
+      online: new FormData(event.currentTarget).has("online"),
     };
 
     if (originalName) {
@@ -2378,9 +2481,15 @@ function bindEvents() {
 
   document.getElementById("professional-form").addEventListener("submit", (event) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const name = formData.get("name").trim();
-    const originalName = formData.get("originalName");
+    const validation = validateForm(new FormData(event.currentTarget), validationSchemas.professional);
+    if (!showValidationErrors(validation)) return;
+    const name = validation.values.name;
+    const originalName = validation.values.originalName;
+
+    if (toMinutes(validation.values.workEnd) <= toMinutes(validation.values.workStart)) {
+      alert("El horario de fin tiene que ser posterior al inicio.");
+      return;
+    }
 
     if (
       team.some(
@@ -2395,10 +2504,10 @@ function bindEvents() {
 
     const payload = {
       name,
-      role: formData.get("role").trim() || "Profesional",
-      workStart: formData.get("workStart"),
-      workEnd: formData.get("workEnd"),
-      services: formData.getAll("services"),
+      role: validation.values.role || "Profesional",
+      workStart: validation.values.workStart,
+      workEnd: validation.values.workEnd,
+      services: validation.values.services,
     };
 
     if (originalName) {
@@ -2566,9 +2675,12 @@ function bindBookingEvents() {
 
   document.getElementById("booking-form").addEventListener("submit", (event) => {
     event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const validation = validateForm(formData, validationSchemas.appointment);
+    if (!showValidationErrors(validation)) return;
     const result = addAppointmentFromForm(
-      new FormData(event.currentTarget),
-      new FormData(event.currentTarget).get("status"),
+      validation.values,
+      validation.values.status,
     );
 
     if (!result.ok) {
@@ -2613,21 +2725,31 @@ function bindBookingEvents() {
     const professional = selectedSlotButton?.dataset.slotProfessional;
     const professionalId = selectedSlotButton?.dataset.slotProfessionalId;
     const formData = new FormData(event.currentTarget);
+    const validation = validateForm(formData, validationSchemas.publicBooking);
+    if (!showValidationErrors(validation)) return;
 
     if (shouldUsePublicBookingApi()) {
-      const selectedService = getService(formData.get("service"));
+      const selectedService = getService(validation.values.service);
       const selectedProfessional = getTeamMember(professional);
+      if (!selectedService) {
+        alert("Selecciona un servicio valido.");
+        return;
+      }
+      if (!professionalId && !selectedProfessional?.id) {
+        alert("Selecciona un profesional valido.");
+        return;
+      }
 
       publicBookingApi
         .createAppointment({
           slug: state.business.slug,
           serviceId: selectedService.id,
           professionalId: professionalId || selectedProfessional?.id,
-          date: formData.get("date") || state.selectedDate,
+          date: validation.values.date || state.selectedDate,
           startTime: state.selectedClientSlot,
-          clientName: formData.get("client"),
-          clientPhone: formData.get("phone"),
-          clientNote: formData.get("note"),
+          clientName: validation.values.client,
+          clientPhone: validation.values.phone,
+          clientNote: validation.values.note,
         })
         .then(() => {
           alert(
@@ -2649,7 +2771,7 @@ function bindBookingEvents() {
     }
 
     const result = addAppointmentFromForm(
-      formData,
+      validation.values,
       state.business.autoConfirm ? "Confirmada" : "Pendiente",
       state.selectedClientSlot,
       professional,
@@ -2694,26 +2816,31 @@ function bindBookingEvents() {
   document.getElementById("save-settings").addEventListener("click", () => {
     const form = document.getElementById("settings-form");
     const formData = new FormData(form);
+    const validation = validateForm(formData, validationSchemas.settings);
+    if (!showValidationErrors(validation)) return;
 
-    state.business.name = formData.get("businessName").trim() || "Centro Demo";
+    if (toMinutes(validation.values.end) <= toMinutes(validation.values.start)) {
+      alert("El horario de cierre tiene que ser posterior a la apertura.");
+      return;
+    }
+
+    state.business.name = validation.values.businessName || "Centro Demo";
     state.business.slug =
-      formData
-        .get("slug")
-        .trim()
+      validation.values.slug
         .toLowerCase()
         .replace(/[^a-z0-9-]+/g, "-")
         .replace(/^-|-$/g, "") || "centro-demo";
-    state.business.city = formData.get("city").trim() || "Madrid";
-    state.business.phone = formData.get("businessPhone").trim() || "+34 600 000 000";
-    state.business.type = formData.get("businessType") || "Fisioterapia y bienestar";
-    state.business.minNotice = Number(formData.get("minNotice"));
+    state.business.city = validation.values.city || "Madrid";
+    state.business.phone = validation.values.businessPhone || "+34 600 000 000";
+    state.business.type = validation.values.businessType || "Fisioterapia y bienestar";
+    state.business.minNotice = validation.values.minNotice;
     state.business.autoConfirm = formData.has("autoConfirm");
     state.business.allowClientCancel = formData.has("allowClientCancel");
-    state.business.confirmTemplate = formData.get("confirmTemplate");
-    state.business.cancelTemplate = formData.get("cancelTemplate");
-    businessHours.start = formData.get("start");
-    businessHours.end = formData.get("end");
-    businessHours.step = Number(formData.get("step"));
+    state.business.confirmTemplate = validation.values.confirmTemplate;
+    state.business.cancelTemplate = validation.values.cancelTemplate;
+    businessHours.start = validation.values.start;
+    businessHours.end = validation.values.end;
+    businessHours.step = validation.values.step;
 
     saveState();
     renderAll();

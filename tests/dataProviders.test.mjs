@@ -3,6 +3,9 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
 
+const testSupabaseUrl = process.env.TURNIA_TEST_SUPABASE_URL || "https://example.invalid";
+const testSupabaseAnonKey = process.env.TURNIA_TEST_SUPABASE_ANON_KEY || "test-anon-key";
+
 async function loadProviders(extraSandbox = {}) {
   const code = await readFile(new URL("../dataProviders.js", import.meta.url), "utf8");
   const sandbox = { ...extraSandbox };
@@ -75,8 +78,8 @@ test("factory marca Supabase como preview si puede crear cliente", async () => {
   const providers = await loadProviders({
     TURNIA_CONFIG: {
       dataMode: "supabase",
-      supabaseUrl: "https://demo.supabase.co",
-      supabaseAnonKey: "anon",
+      supabaseUrl: testSupabaseUrl,
+      supabaseAnonKey: testSupabaseAnonKey,
     },
     TurniaSupabaseClient: {
       createClient() {

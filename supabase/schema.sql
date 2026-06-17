@@ -769,13 +769,58 @@ declare
   calculated_end_time time;
   reservation_status text;
   min_notice_hours integer;
+  client_name text;
+  client_phone text;
+  client_note text;
 begin
-  if nullif(trim(p_client_name), '') is null then
+  client_name := regexp_replace(
+    regexp_replace(trim(coalesce(p_client_name, '')), '[[:cntrl:]]+', ' ', 'g'),
+    '[[:space:]]+',
+    ' ',
+    'g'
+  );
+  client_phone := regexp_replace(
+    regexp_replace(trim(coalesce(p_client_phone, '')), '[[:cntrl:]]+', ' ', 'g'),
+    '[[:space:]]+',
+    ' ',
+    'g'
+  );
+  client_note := nullif(
+    regexp_replace(
+      regexp_replace(trim(coalesce(p_client_note, '')), '[[:cntrl:]]+', ' ', 'g'),
+      '[[:space:]]+',
+      ' ',
+      'g'
+    ),
+    ''
+  );
+
+  if nullif(client_name, '') is null then
     raise exception 'client_name_required' using errcode = 'P0001';
   end if;
 
-  if nullif(trim(p_client_phone), '') is null then
+  if length(client_name) > 100 then
+    raise exception 'client_name_too_long' using errcode = 'P0001';
+  end if;
+
+  if client_name ~* '(<[^>]*>|</|<|>|javascript:|data:text/html|on[[:alnum:]_]+[[:space:]]*=)' then
+    raise exception 'html_not_allowed' using errcode = 'P0001';
+  end if;
+
+  if nullif(client_phone, '') is null then
     raise exception 'client_phone_required' using errcode = 'P0001';
+  end if;
+
+  if length(client_phone) > 40 or client_phone !~ '^\+?[0-9 .()\-]{6,40}$' then
+    raise exception 'client_phone_invalid' using errcode = 'P0001';
+  end if;
+
+  if client_note is not null and length(client_note) > 500 then
+    raise exception 'client_note_too_long' using errcode = 'P0001';
+  end if;
+
+  if client_note is not null and client_note ~* '(<[^>]*>|</|<|>|javascript:|data:text/html|on[[:alnum:]_]+[[:space:]]*=)' then
+    raise exception 'html_not_allowed' using errcode = 'P0001';
   end if;
 
   select *
@@ -790,7 +835,7 @@ begin
   perform public.assert_public_booking_rate_limit(
     selected_business.id,
     selected_business.slug,
-    p_client_phone
+    client_phone
   );
 
   select *
@@ -851,23 +896,23 @@ begin
   into selected_client
   from public.clients
   where business_id = selected_business.id
-    and phone = trim(p_client_phone)
+    and phone = client_phone
   order by updated_at desc
   limit 1;
 
   if found then
     update public.clients
-    set name = trim(p_client_name),
-        note = nullif(trim(coalesce(p_client_note, selected_client.note, '')), '')
+    set name = client_name,
+        note = coalesce(client_note, selected_client.note)
     where id = selected_client.id
     returning * into selected_client;
   else
     insert into public.clients (business_id, name, phone, note)
     values (
       selected_business.id,
-      trim(p_client_name),
-      trim(p_client_phone),
-      nullif(trim(coalesce(p_client_note, '')), '')
+      client_name,
+      client_phone,
+      client_note
     )
     returning * into selected_client;
   end if;
@@ -898,7 +943,7 @@ begin
     selected_service.price_cents,
     reservation_status,
     'public_link',
-    nullif(trim(coalesce(p_client_note, '')), '')
+    client_note
   )
   returning * into new_appointment;
 
