@@ -41,13 +41,13 @@ Turnia compite por simpleza, cercania y velocidad:
 
 ## Estado actual
 
-> 📍 **El estado real y qué falta esta en [`ROADMAP.md`](ROADMAP.md).** Ese es el unico documento de referencia. Lo que hay en `docs/historico/` describe etapas ya cerradas y puede estar desactualizado.
+> 📍 **El contexto del proyecto esta en [`CLAUDE.md`](CLAUDE.md) y el plan priorizado en [`docs/ROADMAP.md`](docs/ROADMAP.md).** Esos son los documentos de referencia. Lo que hay en `docs/historico/` describe etapas ya cerradas y puede estar desactualizado.
 
 Resumen a 18 de julio de 2026:
 
 - La app **esta publicada** en `https://turnia-citas.vercel.app` (Vercel) y conectada a un Supabase real.
 - El **link publico de reservas funciona de verdad**: el cliente reserva y la cita se guarda en la base.
-- El **panel del negocio lee** datos reales de la base, pero **todavia no escribe**: cualquier cambio que haga el negocio se pierde al recargar. Este es el bloqueante principal y esta detallado en `ROADMAP.md`.
+- El **panel del negocio lee** datos reales de la base, pero **todavia no escribe**: cualquier cambio que haga el negocio se pierde al recargar. Este es el bloqueante principal y esta detallado en `CLAUDE.md` y `docs/ROADMAP.md`.
 - No hay ningun negocio real usando la app.
 
 En modo demo local (`dataMode: "demo"`), la app guarda en el navegador con `localStorage`: citas, clientes, servicios, profesionales, bloqueos y configuracion. El boton "Restaurar demo" borra esos datos locales y vuelve al estado inicial.
