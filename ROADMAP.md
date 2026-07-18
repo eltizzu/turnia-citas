@@ -56,15 +56,28 @@ Cada etapa tiene un punto de freno: se revisa y se aprueba antes de seguir.
 - [x] Arreglar el test desactualizado
 - [x] Actualizar el README para que describa el estado real
 
-### Etapa 1 — Que el panel guarde de verdad 🔴 SIGUIENTE
+### Etapa 1 — Separar demo de app real, y que el panel guarde
 
-La pieza crítica. Se diseña antes de tocar código y se hace por partes, no de una:
+**1a. Separar la vidriera de la app real ✅ HECHO (18/07/2026)**
 
-- [ ] **1a. Citas** — crear, confirmar, cancelar, finalizar, marcar no-asistió, reprogramar
-- [ ] **1b. Clientes** — alta, edición, notas
-- [ ] **1c. Servicios y equipo** — alta, edición, baja
-- [ ] **1d. Bloqueos de agenda**
-- [ ] **1e. Configuración del negocio** — horarios, reglas, plantillas de mensaje
+La demo publicada estaba rota: un prospecto que entraba desde `impulsdigital.es` y probaba el login recibía *"Supabase todavia no esta conectado"* y no podía pasar. La causa era una condición invertida en `demo.html`.
+
+Ahora el modo se decide **por la dirección**, no por `config.js`:
+
+| Dirección | Qué es | Datos | Login |
+|---|---|---|---|
+| `/demo` | Vidriera pública (lo que linkea Impuls) | Ficticios, en el navegador de cada visitante | No, entra directo a la agenda |
+| `/panel` | App real de clientes | Base de datos real | Sí, obligatorio |
+
+Decidirlo por ruta es lo que permite que el panel guarde de verdad sin que un prospecto curioso escriba en la base real.
+
+**Falta que el panel guarde** (`/panel`), por partes:
+
+- [ ] **1b. Citas** — crear, confirmar, cancelar, finalizar, marcar no-asistió, reprogramar
+- [ ] **1c. Clientes** — alta, edición, notas
+- [ ] **1d. Servicios y equipo** — alta, edición, baja
+- [ ] **1e. Bloqueos de agenda**
+- [ ] **1f. Configuración del negocio** — horarios, reglas, plantillas de mensaje
 
 Nota técnica: los permisos por negocio (RLS) ya están puestos y correctos en la base. La app tiene permiso de escribir; simplemente nunca lo hace.
 
