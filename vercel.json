@@ -2,7 +2,7 @@
   "cleanUrls": true,
   "buildCommand": "node scripts/write-config.mjs",
   "outputDirectory": ".",
-  "rewrites": [{ "source": "/panel", "destination": "/demo.html" }],
+  "rewrites": [{ "source": "/panel", "destination": "/demo" }],
   "headers": [
     {
       "source": "/(.*)",
