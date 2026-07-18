@@ -1,111 +1,125 @@
-# Roadmap De Turnia
+# Roadmap de Turnia
 
-Ver tambien `PLAN_PRODUCCION_MVP.md` y `MODELO_DATOS_PRODUCCION.md` para el salto de demo local a produccion.
+**Única fuente de verdad sobre qué falta.** Si otro documento dice algo distinto, gana este.
 
-Etapa actual: demo clara + prueba privada. Antes de construir infraestructura seria, validar con 1 a 3 personas reales usando `GUIA_PRUEBA_PRIVADA.md`.
+Última revisión: 18 de julio de 2026.
 
-## Version 1: Base Vendible
+---
 
-Objetivo: que una peluqueria, barberia o centro pequeno pueda usar Turnia para organizar su dia.
+## Dónde estamos parados hoy
 
-- Agenda diaria
-- Agenda semanal
-- Crear citas
-- Editar citas
-- Cancelar citas
-- Reprogramar citas
-- Profesionales
-- Servicios con duracion y precio
-- Clientes con telefono y notas
-- Estados: pendiente, confirmada, cancelada, finalizada, no asistio
-- Enlace publico de reserva
-- Confirmacion manual por WhatsApp
-- Confirmacion semiautomatica con WhatsApp preparado
-- Reporte mensual basico
-- Guardar o imprimir reporte en PDF desde el navegador
-- Configuracion del negocio: horarios, reglas, link y plantillas
-- Alta manual de servicios desde la app
-- Alta manual de profesionales desde la app
-- Alta manual de clientes desde la app
-- Ficha de cliente con historial, notas y WhatsApp
-- Bloqueos de agenda por profesional y horario
-- Persistencia local en navegador para la demo
-- Boton para restaurar datos iniciales
-- Marcar cita como finalizada o no asistio
-- Reprogramar cita con WhatsApp preparado
-- Exportar clientes, citas y backup
-- Vista semanal basica por profesional
-- Fechas reales en citas, bloqueos, agenda diaria y link cliente
-- Eliminacion segura de datos sin romper historial
-- Edicion de servicios y profesionales
-- Edicion de clientes desde ficha
+Turnia **está publicada y conectada a una base de datos real**, pero todavía **no se puede vender**, por un motivo concreto que se explica abajo.
 
-## Version 1.5: Menos Trabajo Manual
+| Cosa | Estado real |
+|---|---|
+| Web publicada | ✅ `https://turnia-citas.vercel.app` (Vercel) |
+| Base de datos real (Supabase) | ✅ Creada, con tablas, permisos y reglas anti-choque |
+| Link público de reservas | ✅ **Funciona de verdad**: el cliente reserva y queda guardado |
+| Panel del negocio: **leer** | ✅ Carga los datos reales al iniciar sesión |
+| Panel del negocio: **guardar** | ❌ **NO GUARDA NADA** — ver bloqueante |
+| Login real | ⚠️ Preparado, sin verificar en la web publicada |
+| Dominio propio | ❌ No hay |
+| Legal revisado | ❌ Solo plantillas sin revisión profesional |
+| Clientes reales usando la app | ❌ Ninguno (confirmado por Marcos, 18/07/2026) |
 
-Objetivo: reducir mensajes, llamadas y olvidos.
+### Aclaraciones importantes
 
-- Recordatorios automaticos
-- Confirmacion automatica
-- Mensajes de reprogramacion
-- Plantillas de WhatsApp
-- Lista de espera basica
-- Huecos libres destacados
-- Historial basico del cliente
-- Plantilla de mensaje para confirmacion, cancelacion y recordatorio
-- Exportacion simple de clientes y citas
-- Exportacion CSV/JSON de datos cargados
-- Navegacion avanzada por semanas y calendario mensual
+- **El hosting real es Vercel.** El archivo `netlify.toml` es un resto viejo, no se usa.
+- **`demo.turnia.app` no existe.** Varios documentos viejos lo mencionan; ese dominio nunca se compró y no resuelve.
+- El proyecto Supabase real es `zahossmailzxwpmtfksc`.
+- La marca comercial en la landing es **Impuls Digital** (`hola@impulsdigital.es`), con planes Solo / Equipo / Salón.
 
-## Version 2: Control Del Negocio
+---
 
-Objetivo: ayudar al negocio a entender que pasa con su agenda.
+## 🔴 Bloqueante #1: el panel no guarda
 
-- Estadisticas de ocupacion
-- Ingresos estimados por dia, semana y mes
-- Servicios mas vendidos
-- Clientes frecuentes
-- Clientes que no volvieron
-- No-shows por cliente
-- Comparativa mes anterior
-- Reporte para descargar y enviar al negocio
-- Bloqueo de horarios
-- Vacaciones y ausencias de profesionales
-- Roles y permisos
+**Qué pasa:** el negocio entra, ve su agenda correcta cargada desde el servidor. Confirma una cita, crea un cliente, cancela un turno. Refresca la página y **todo eso desapareció**.
 
-## Version 3: Automatizacion Comercial
+**Por qué:** el frontend tiene la parte de *leer* de la base de datos, pero la parte de *escribir* nunca se construyó. La pieza de guardado (`dataProviders.js`, modo supabase) es un placeholder que recibe los datos y no hace nada con ellos. No existe ni una sola instrucción de guardado hacia la base en toda la app.
 
-Objetivo: ayudar a llenar agenda.
+**Por qué es lo más grave:** no es que falle visiblemente. Es que *parece que funciona*. Un negocio trabajaría un día entero encima y perdería todo.
 
-- Reactivacion de clientes inactivos
-- Campanas simples por WhatsApp
-- Solicitud de resenas en Google despues de la cita
-- Promociones para huecos vacios
-- Cumpleanos y clientes VIP
-- Sugerencias de proxima cita
-- Lista de espera inteligente
+**Excepción:** las reservas que hace el cliente final desde el link público **sí se guardan bien**, porque van por una función del servidor que está bien hecha.
 
-## Version 4: IA Y WhatsApp Avanzado
+**Hasta que esto no esté resuelto y verificado, Turnia no se le puede entregar a nadie.**
 
-Objetivo: convertir Turnia en un asistente de agenda.
+---
 
-- Bot que responde disponibilidad
-- Bot que reserva por WhatsApp
-- Bot que reprograma o cancela
-- Respuestas frecuentes configurables
-- Deteccion de intencion
-- Resumen diario automatico
-- Alertas inteligentes de huecos libres
+## Plan por etapas
 
-## Version 5: Operacion Completa
+Cada etapa tiene un punto de freno: se revisa y se aprueba antes de seguir.
 
-Objetivo: ampliar sin perder simpleza.
+### Etapa 0 — Ordenar la casa ✅ HECHO (18/07/2026)
 
-- Pagos o senales
-- Bonos y membresias
-- Caja simple
-- Facturacion
-- Inventario
-- Comisiones por profesional
-- Multi-sede
-- PWA instalable
-- Integraciones con Google Calendar, Instagram y Google Business
+- [x] Mover ~40 documentos sueltos a `docs/` por categoría
+- [x] Crear este roadmap único
+- [x] Arreglar el test desactualizado
+- [x] Actualizar el README para que describa el estado real
+
+### Etapa 1 — Que el panel guarde de verdad 🔴 SIGUIENTE
+
+La pieza crítica. Se diseña antes de tocar código y se hace por partes, no de una:
+
+- [ ] **1a. Citas** — crear, confirmar, cancelar, finalizar, marcar no-asistió, reprogramar
+- [ ] **1b. Clientes** — alta, edición, notas
+- [ ] **1c. Servicios y equipo** — alta, edición, baja
+- [ ] **1d. Bloqueos de agenda**
+- [ ] **1e. Configuración del negocio** — horarios, reglas, plantillas de mensaje
+
+Nota técnica: los permisos por negocio (RLS) ya están puestos y correctos en la base. La app tiene permiso de escribir; simplemente nunca lo hace.
+
+### Etapa 2 — Verificación honesta
+
+- [ ] Entrar a la web publicada, crear una cita, refrescar y confirmar que sigue ahí
+- [ ] Probar desde dos dispositivos que ven la misma agenda
+- [ ] Probar que dos reservas al mismo horario no se pisan
+- [ ] Probar el recorrido completo en móvil
+- [ ] Confirmar que las descargas de Excel/JSON funcionan de verdad
+
+Sin esto, no se declara "listo".
+
+### Etapa 3 — Presentable para vender
+
+- [ ] Comprar y conectar dominio propio
+- [ ] Arreglar los datos de demo (hoy el negocio dice ser "Fisioterapia y bienestar" pero ofrece "Barba + perfilado" y "Color + corte")
+- [ ] Verificar el login real en la web publicada (email y/o Google)
+- [ ] Revisar los textos de venta finales
+- [ ] Activar backups de la base de datos
+
+### Etapa 4 — Legal antes del primer cliente pago
+
+- [ ] Términos y condiciones revisados por profesional
+- [ ] Política de privacidad
+- [ ] Contrato de encargado de tratamiento (obligatorio: Turnia maneja datos de los clientes de sus clientes)
+- [ ] ⚠️ Atención especial: en el nicho de fisioterapia se guardan **notas que pueden ser datos de salud**, categoría especial bajo RGPD. Consultar esto explícitamente.
+- [ ] Definir titular legal y facturación
+
+Material de partida en `docs/legal/`.
+
+### Etapa 5 — Primer piloto
+
+- [ ] Conseguir 1 negocio dispuesto a probar
+- [ ] Alta asistida siguiendo `docs/operacion/CHECKLIST_SETUP_CLIENTE.md`
+- [ ] Acordar canal de soporte
+- [ ] 2-4 semanas de uso real y registro de problemas
+
+---
+
+## Fuera de alcance por ahora
+
+Ideas buenas, pero que no se tocan hasta tener un piloto funcionando: recordatorios automáticos, WhatsApp Business API, lista de espera, pagos y señas, multi-sede, bot de reservas, integraciones con Google Calendar.
+
+El backlog completo por versiones está en `docs/producto/BACKLOG_VERSIONES.md`.
+
+---
+
+## Dónde está cada cosa
+
+| Carpeta | Qué hay |
+|---|---|
+| `docs/producto/` | Idea, modelo de reservas, enfoque multi-nicho, backlog por versiones |
+| `docs/comercial/` | Análisis de mercado, dossier, propuesta, guion de presentación |
+| `docs/tecnico/` | Modelo de datos, plan de producción, guías de Supabase, variables de entorno |
+| `docs/legal/` | Checklist legal, plantillas, resumen fiscal, contenidos legales de la web |
+| `docs/operacion/` | Manual de uso, checklist de alta de cliente, guía de prueba privada |
+| `docs/historico/` | Documentos de etapas ya cerradas. **Contienen información desactualizada; no usar como referencia de estado.** |

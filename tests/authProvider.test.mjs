@@ -21,13 +21,13 @@ test("login demo con email conocido devuelve negocio asignado", async () => {
   assert.equal(provider.getSession().business.role, "admin");
 });
 
-test("login demo con email desconocido queda sin negocio asignado", async () => {
+test("login demo con cualquier email entra al negocio de ejemplo", async () => {
   const auth = await loadAuthProvider();
   const provider = auth.createDemoAuthProvider();
   const session = await provider.signInWithEmail({ email: "nuevo@cliente.com" });
 
   assert.equal(session.user.email, "nuevo@cliente.com");
-  assert.equal(session.business, null);
+  assert.equal(session.business.id, "business_demo_centro");
 });
 
 test("login demo con Google devuelve un usuario asociado al negocio demo", async () => {
