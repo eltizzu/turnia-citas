@@ -373,6 +373,9 @@ function clone(value) {
 }
 
 const appConfig = window.TURNIA_CONFIG || {};
+// La vidriera publica (demo.html) corre en modo demo: datos ficticios, sin login.
+// La app real para clientes corre en modo supabase y si pide credenciales.
+const isDemoMode = appConfig.dataMode !== "supabase";
 const supabaseClient = TurniaSupabaseClient?.createClient(appConfig);
 const publicBookingApi = TurniaPublicBookingApi?.createPublicBookingApi({
   client: supabaseClient,
@@ -2880,6 +2883,13 @@ async function initializeApp() {
 
   if (shouldOpenClientView) {
     enterApp("direct-client");
+    return;
+  }
+
+  // En la vidriera publica entramos directo a la agenda: un prospecto que llega
+  // desde la web no tiene cuenta y cada clic extra lo pierde.
+  if (isDemoMode) {
+    enterApp("business");
     return;
   }
 

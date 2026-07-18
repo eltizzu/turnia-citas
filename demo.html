@@ -718,10 +718,21 @@
     <script src="https://browser.sentry-cdn.com/8.55.0/bundle.min.js" crossorigin="anonymous"></script>
     <script src="./config.js"></script>
     <script>
-      // demo.html siempre usa datos ficticios — nunca conecta a Supabase
-      window.TURNIA_CONFIG ||= { dataMode: "demo", appEnv: "local" };
-      if (window.TURNIA_CONFIG.dataMode !== "supabase") {
+      // Este archivo sirve dos cosas distintas segun la direccion:
+      //
+      //   /demo   vidriera publica. Datos ficticios, sin login, cada visitante
+      //           juega con su propia copia guardada en su navegador. Es lo que
+      //           linkea la web de Impuls. NUNCA toca la base de datos real.
+      //
+      //   /panel  app real de clientes. Base de datos real y login obligatorio.
+      //
+      // El modo NO se decide por config.js: se decide por la direccion. Asi un
+      // prospecto curioso no puede terminar escribiendo en la base real.
+      window.TURNIA_CONFIG ||= { appEnv: "local" };
+      if (location.pathname !== "/panel") {
         window.TURNIA_CONFIG.dataMode = "demo";
+        window.TURNIA_CONFIG.supabaseUrl = "";
+        window.TURNIA_CONFIG.supabaseAnonKey = "";
       }
       if (window.Sentry && window.TURNIA_CONFIG?.sentryDsn) {
         Sentry.init({

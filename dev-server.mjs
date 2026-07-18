@@ -14,7 +14,9 @@ const types = {
 
 createServer(async (request, response) => {
   const url = new URL(request.url, `http://${request.headers.host}`);
-  const pathname = url.pathname === "/" ? "/index.html" : url.pathname;
+  // Mismas reglas que vercel.json, para que probar local sirva de verdad.
+  const rewrites = { "/": "/index.html", "/demo": "/demo.html", "/panel": "/demo.html" };
+  const pathname = rewrites[url.pathname] || url.pathname;
   const filePath = resolve(join(root, decodeURIComponent(pathname)));
 
   if (!filePath.startsWith(root)) {
