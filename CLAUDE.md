@@ -5,6 +5,18 @@ Si algo cambia (deploy, credenciales, decisiones), se actualiza acá.
 
 El plan de trabajo priorizado está en [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
+## Al terminar algo relevante, actualizar tres lugares
+
+1. **Este archivo** — si cambió el contexto técnico (rutas, credenciales, trampas)
+2. **`docs/ROADMAP.md`** — qué se cerró y qué queda
+3. **La memoria central del negocio**, en
+   `C:\Users\titus\AppData\Roaming\Claude\local-agent-mode-sessions\c27be25b-55d0-4f05-889f-06ebd32efb5b\ef59b75d-3ddb-4a35-9e1b-0777c2213e35\spaces\70086b3d-e61d-4c6e-9a72-0486fd0df11d\memory\`
+   — la sección de Turnia en `apps_saas.md` (estado real) y su línea en `pendientes.md` (qué falta de verdad)
+
+Reglas para el punto 3: **ahí va el resumen de negocio, no el detalle técnico** (ese va acá).
+Editar **solo lo de Turnia**, sin reestructurar ni tocar secciones de otras apps, y respetando
+el formato que ya existe.
+
 ---
 
 ## Qué es Turnia
