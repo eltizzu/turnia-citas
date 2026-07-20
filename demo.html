@@ -720,16 +720,20 @@
     <script>
       // Este archivo sirve dos cosas distintas segun la direccion:
       //
-      //   /demo   vidriera publica. Datos ficticios, sin login, cada visitante
-      //           juega con su propia copia guardada en su navegador. Es lo que
-      //           linkea la web de Impuls. NUNCA toca la base de datos real.
+      //   /demo      vidriera publica. Datos ficticios, sin login, cada visitante
+      //              juega con su propia copia guardada en su navegador. Es lo que
+      //              linkea la web de Impuls. NUNCA toca la base de datos real.
       //
-      //   /panel  app real de clientes. Base de datos real y login obligatorio.
+      //   /panel     app real de clientes. Base de datos real y login obligatorio.
+      //
+      //   /reservar  link publico que el negocio comparte con SUS clientes para
+      //              que reserven. Base de datos real, sin login.
       //
       // El modo NO se decide por config.js: se decide por la direccion. Asi un
       // prospecto curioso no puede terminar escribiendo en la base real.
+      const RUTAS_REALES = ["/panel", "/reservar"];
       window.TURNIA_CONFIG ||= { appEnv: "local" };
-      if (location.pathname !== "/panel") {
+      if (!RUTAS_REALES.includes(location.pathname)) {
         window.TURNIA_CONFIG.dataMode = "demo";
         window.TURNIA_CONFIG.supabaseUrl = "";
         window.TURNIA_CONFIG.supabaseAnonKey = "";

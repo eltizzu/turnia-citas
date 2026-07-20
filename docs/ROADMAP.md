@@ -38,7 +38,7 @@ Lo de arriba se hace antes que lo de abajo. Cada etapa tiene punto de freno: se 
 
 Se hace por partes, no de una:
 
-- [x] **1a. Separar vidriera de app real** — hecho 18/07/2026 (commits `85c40cd`, `9983211`)
+- [x] **1a. Separar vidriera de app real** — hecho 18/07/2026 (commits `85c40cd`, `9983211`, `+ /reservar`)
 - [ ] **1b. Citas** — crear, confirmar, cancelar, finalizar, marcar no-asistió, reprogramar
 - [ ] **1c. Clientes** — alta, edición, notas
 - [ ] **1d. Servicios y equipo** — alta, edición, baja
@@ -58,7 +58,28 @@ No se declara "listo" sin esto:
 - [ ] Dos reservas al mismo horario no se pisan
 - [ ] Recorrido completo en móvil
 - [ ] Descargas de Excel/JSON funcionan de verdad
-- [ ] Verificar que los gráficos de Reportes cargan en un navegador real *(pendiente: no se pudo comprobar desde el navegador integrado)*
+- [ ] **Gráficos de Reportes en blanco en producción** — confirmado por Marcos con captura (18/07). No reproducible en local ni con la misma CSP ni con Sentry activo; los archivos publicados son idénticos a los locales y los tres CDN responden 200. Causa aún sin identificar. Ver "Robustecer la carga de scripts" abajo
+- [ ] Probar el link `/reservar` contra la base real desde un navegador de verdad *(el navegador integrado no puede hacer llamadas a servidores externos)*
+
+### 🟠 2.5. Robustecer la carga de scripts (propuesto, sin aprobar)
+
+Turnia depende de tres archivos que se bajan de servidores ajenos en cada visita:
+Chart.js y el SDK de Supabase desde `cdn.jsdelivr.net`, y Sentry desde su propio CDN.
+
+Si cualquiera de esos falla —red del cliente, extensión del navegador, proxy de una
+empresa, caída del CDN— la funcionalidad correspondiente desaparece **sin dar error**:
+`renderChart()` simplemente no dibuja si `window.Chart` no existe.
+
+Con el SDK de Supabase el riesgo es mayor: si no carga, la app real no se conecta a
+nada. Y es un problema justo antes de construir el guardado (1b).
+
+Propuesta:
+
+- [ ] Guardar Chart.js y el SDK de Supabase dentro del repo y servirlos desde el propio sitio
+- [ ] Quitar los CDN externos de la CSP una vez hecho
+- [ ] Que la app avise en pantalla si algo esencial no cargó, en vez de fallar en silencio
+
+Beneficio extra: la PWA pasa a funcionar sin depender de terceros.
 
 ### 🟡 3. Presentable para vender
 

@@ -84,7 +84,10 @@ if (initialUrlParams.has("reset-demo")) {
   window.history.replaceState({}, "", window.location.pathname);
 }
 
+// /reservar es el link que el negocio comparte con sus clientes: siempre abre
+// directo la vista de reserva, sin necesidad de parametros en la direccion.
 const shouldOpenClientView =
+  window.location.pathname === "/reservar" ||
   initialUrlParams.has("reserva") ||
   initialUrlParams.has("cliente") ||
   initialUrlParams.has("publico");
@@ -1099,7 +1102,14 @@ function getAvailableSlots(serviceName, preferredProfessional = "Cualquiera", ig
 }
 
 function getBusinessLink() {
-  return `https://turnia-citas.vercel.app/demo?publico&slug=${state.business.slug}`;
+  const slug = encodeURIComponent(state.business.slug);
+  // En la vidriera el link se queda en la vidriera. En la app real apunta a
+  // /reservar, que si escribe en la base de datos.
+  // location.origin en vez de dominio fijo: sigue andando el dia que haya
+  // dominio propio, sin tocar codigo.
+  return isDemoMode
+    ? `${window.location.origin}/demo?publico&slug=${slug}`
+    : `${window.location.origin}/reservar?slug=${slug}`;
 }
 
 function getRecommendedOpenings() {

@@ -57,13 +57,22 @@ refleja lo que va a pasar publicado.
 
 Desde el 18/07/2026 el modo **se decide por la dirección**, no por `config.js`:
 
-| Dirección | Qué es | Datos | Login |
+| Dirección | Para quién | Datos | Login |
 |---|---|---|---|
-| `/demo` | Vidriera pública, lo que linkea Impuls | Ficticios, en el navegador de cada visitante | No, entra directo a la agenda |
-| `/panel` | App real de clientes | Base de datos real | Sí, obligatorio |
+| `/demo` | Prospectos que curiosean (lo que linkea Impuls) | Ficticios, en el navegador de cada visitante | No, entra directo a la agenda |
+| `/panel` | El negocio, gestionando su agenda | Base de datos real | Sí, obligatorio |
+| `/reservar` | **El cliente final del negocio** | Base de datos real | No |
 
 **Por qué importa:** es lo que permite que el panel guarde de verdad sin que un
 prospecto curioso escriba en la base real. No volver a atar el modo a `config.js`.
+
+`/reservar` es el link que el negocio comparte con sus clientes. Lo genera
+`getBusinessLink()` en `app.js`, que usa `location.origin` en vez de un dominio
+fijo — así sigue andando el día que haya dominio propio, sin tocar código.
+
+⚠️ **Al agregar una ruta nueva hay que tocar tres lugares**: la lista
+`RUTAS_REALES` en `demo.html`, los `rewrites` de `vercel.json` y los de
+`dev-server.mjs`. Si falta alguno, la ruta da 404 o corre en el modo equivocado.
 
 ---
 
