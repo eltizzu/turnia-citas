@@ -58,28 +58,20 @@ No se declara "listo" sin esto:
 - [ ] Dos reservas al mismo horario no se pisan
 - [ ] Recorrido completo en móvil
 - [ ] Descargas de Excel/JSON funcionan de verdad
-- [ ] **Gráficos de Reportes en blanco en producción** — confirmado por Marcos con captura (18/07). No reproducible en local ni con la misma CSP ni con Sentry activo; los archivos publicados son idénticos a los locales y los tres CDN responden 200. Causa aún sin identificar. Ver "Robustecer la carga de scripts" abajo
+- [ ] **Gráficos de Reportes** — estaban en blanco en producción (captura de Marcos, 18/07). El 21/07 se dejaron de pedir a CDN ajenos y ahora se sirven desde el propio sitio, lo que probablemente lo arregla. **Falta que Marcos lo confirme** abriendo `/demo` → Reportes en su navegador. Si siguen en blanco, ahora aparece un aviso rojo abajo en vez de fallar en silencio
 - [ ] Probar el link `/reservar` contra la base real desde un navegador de verdad *(el navegador integrado no puede hacer llamadas a servidores externos)*
 
-### 🟠 2.5. Robustecer la carga de scripts (propuesto, sin aprobar)
+### ✅ 2.5. Librerías servidas desde el propio sitio — HECHO 21/07/2026
 
-Turnia depende de tres archivos que se bajan de servidores ajenos en cada visita:
-Chart.js y el SDK de Supabase desde `cdn.jsdelivr.net`, y Sentry desde su propio CDN.
+Chart.js, el SDK de Supabase y Sentry se bajaban de CDN ajenos en cada visita. Si
+alguno fallaba, la funcionalidad desaparecía **sin dar error**. Ahora viven en
+`vendor/`, la CSP es `script-src 'self'`, el service worker los cachea, y si algo
+esencial no carga aparece un aviso en pantalla.
 
-Si cualquiera de esos falla —red del cliente, extensión del navegador, proxy de una
-empresa, caída del CDN— la funcionalidad correspondiente desaparece **sin dar error**:
-`renderChart()` simplemente no dibuja si `window.Chart` no existe.
+Verificado: 0 scripts externos en la página publicada, 2/2 gráficos dibujados en
+local, y escondiendo Chart.js a propósito aparece el aviso y la app sigue andando.
 
-Con el SDK de Supabase el riesgo es mayor: si no carga, la app real no se conecta a
-nada. Y es un problema justo antes de construir el guardado (1b).
-
-Propuesta:
-
-- [ ] Guardar Chart.js y el SDK de Supabase dentro del repo y servirlos desde el propio sitio
-- [ ] Quitar los CDN externos de la CSP una vez hecho
-- [ ] Que la app avise en pantalla si algo esencial no cargó, en vez de fallar en silencio
-
-Beneficio extra: la PWA pasa a funcionar sin depender de terceros.
+Pendiente relacionado: las tipografías todavía se piden a Google Fonts.
 
 ### 🟡 3. Presentable para vender
 
