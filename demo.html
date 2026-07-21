@@ -713,9 +713,12 @@
       <button class="bottom-item" type="button" data-view="reportes">Reportes</button>
     </nav>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-    <script src="https://browser.sentry-cdn.com/8.55.0/bundle.min.js" crossorigin="anonymous"></script>
+    <!-- Librerias servidas desde el propio sitio, no desde CDN ajenos.
+         Si un CDN falla (red del cliente, bloqueador, proxy de empresa), la app
+         se quedaba sin graficos o sin conexion a la base SIN avisar. Ver vendor/README.md. -->
+    <script src="./vendor/supabase.js"></script>
+    <script src="./vendor/chart.umd.min.js"></script>
+    <script src="./vendor/sentry.min.js"></script>
     <script src="./config.js"></script>
     <script>
       // Este archivo sirve dos cosas distintas segun la direccion:
@@ -746,6 +749,34 @@
           tracesSampleRate: 0,
         });
       }
+
+      // Si algo esencial no cargo, avisarlo en pantalla. Antes fallaba en silencio:
+      // sin Chart.js los graficos quedaban en blanco sin ningun error visible.
+      window.addEventListener("DOMContentLoaded", () => {
+        const faltantes = [];
+        if (typeof window.Chart === "undefined") faltantes.push("los graficos de Reportes");
+        if (
+          RUTAS_REALES.includes(location.pathname) &&
+          typeof window.supabase === "undefined"
+        ) {
+          faltantes.push("la conexion con el servidor");
+        }
+        if (!faltantes.length) return;
+
+        const aviso = document.createElement("div");
+        aviso.setAttribute("role", "alert");
+        aviso.style.cssText =
+          "position:fixed;left:0;right:0;bottom:0;z-index:9999;padding:0.9rem 1rem;" +
+          "background:#7f1d1d;color:#fff;font:500 0.9rem/1.4 system-ui,sans-serif;text-align:center";
+        aviso.textContent =
+          "No se pudo cargar " +
+          faltantes.join(" ni ") +
+          ". Probá recargar la página; si sigue igual, avisanos.";
+        document.body.appendChild(aviso);
+        if (window.Sentry?.captureMessage) {
+          Sentry.captureMessage("Recursos esenciales no cargados: " + faltantes.join(", "));
+        }
+      });
     </script>
     <script src="./agendaRules.js"></script>
     <script src="./turniaMetrics.js"></script>

@@ -108,12 +108,10 @@ Material de partida en `legal/`.
 
 ---
 
-## Limpieza pendiente (decisión de Marcos)
+## Limpieza
 
-Archivos que no usa nadie y pueden confundir. El historial de git los conserva igual:
-
-- [ ] `app/config.js` — copia vieja en modo demo. Trampa: si la app se sirviera bajo `/app/`, forzaría modo demo en la app real sin error visible
-- [ ] `public-demo-2026-05-21/` y `turnia-demo-publica-2026-05-21.zip` — copia congelada de mayo, ya divergida, **con la demo rota adentro**
+- [x] `app/config.js` — borrado 21/07/2026
+- [x] `public-demo-2026-05-21/` y `turnia-demo-publica-2026-05-21.zip` — borrados 21/07/2026. Eran una copia congelada de mayo, ya divergida, **con la demo rota adentro**. Tres guías de `operacion/` mandaban a publicarlos a mano; se corrigieron
 - [ ] `netlify.toml` — resto sin usar, el hosting es Vercel
 
 ---

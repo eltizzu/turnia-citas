@@ -122,13 +122,11 @@ Resolverlo es la Etapa 1b en adelante del roadmap.
 - **`demo.turnia.app` no existe.** Varios documentos viejos lo mencionan; ese dominio
   nunca se compró y no resuelve. La dirección real es `turnia-citas.vercel.app`.
 - **`netlify.toml` no se usa.** Es resto de una evaluación inicial. El hosting es Vercel.
-- **`app/config.js`** es una copia vieja del config, en modo demo, que no usa nadie.
-  Si algún día la app se sirviera bajo `/app/`, se cargaría y forzaría modo demo en
-  la app real sin ningún error visible. Candidato a borrar.
-- **`public-demo-2026-05-21/` y `turnia-demo-publica-2026-05-21.zip`** son una copia
-  congelada de mayo. Ya divergieron del código actual y **no tienen los arreglos de
-  julio** — incluida la demo rota. Si se le manda ese zip a un prospecto, recibe la
-  versión con el bug. Candidatos a borrar.
+- **Las librerías se sirven desde `vendor/`, no desde CDN ajenos.** Ver
+  `vendor/README.md` para actualizarlas. Al hacerlo hay que subir el `CACHE_NAME`
+  de `sw.js`, si no los navegadores siguen usando la versión vieja.
+- **Las tipografías todavía se piden a Google Fonts**, así que cada visitante le
+  manda su IP. Se puede auto-alojar igual que las librerías.
 - **`cleanUrls` en Vercel** elimina el `.html` de las direcciones. Los rewrites tienen
   que apuntar a `/demo`, no a `/demo.html`, o dan 404.
 - **`docs/historico/`** contiene documentos de etapas cerradas con información

@@ -16,8 +16,7 @@ La app ya tiene:
 - exportacion de datos;
 - logo e identidad visual calida;
 - documentacion viva comercial, manual, checklist, legal, web legal y ecosistema;
-- demo publica empaquetada en `public-demo-2026-05-21`;
-- zip actualizado `turnia-demo-publica-2026-05-21.zip`.
+- demo publica ya desplegada en Vercel, en la direccion `/demo`.
 
 La demo todavia guarda datos en el navegador con `localStorage`. Sirve para probar y mostrar, pero no para operar con datos reales de clientes.
 

@@ -10,7 +10,7 @@ No es produccion real todavia. Falta conectar Supabase, login real activo, datos
 
 La interfaz ya incluye avisos de demo para aclarar que los datos son ficticios y se guardan solo en el navegador.
 
-Para compartir online, usar la carpeta limpia `public-demo-2026-05-21` o el archivo `turnia-demo-publica-2026-05-21.zip`.
+Para compartir online, mandar directamente la direccion publica `/demo`. Ya esta publicada y se actualiza sola; no hay que subir nada a mano.
 
 ## Como abrir limpio
 
@@ -59,9 +59,7 @@ Los Excel estan pensados para que el cliente los abra y entienda. El JSON no es 
 - [ ] Probar en tu maquina que `Citas Excel` abre bien.
 - [ ] Probar que `Backup JSON` descarga.
 - [ ] Mirada visual rapida en mobile si vas a mostrar desde celular.
-- [ ] Subir `public-demo-2026-05-21` a Netlify.
-- [ ] Alternativa: subir `turnia-demo-publica-2026-05-21.zip`.
-- [ ] Probar la URL publicada con `/?reset-demo=1`.
+- [ ] Probar la URL publicada `/demo` antes de compartirla.
 - [ ] Decidir si vas a mencionar precio piloto o solo validar interes.
 - [ ] Si se comparte online, incluir el texto de `DEMO_PUBLICA.md` o una aclaracion similar.
 - [ ] Usar `GUIA_PRUEBA_PRIVADA.md` para anotar observaciones.

@@ -1,66 +1,68 @@
-# Publicar Demo Publica
+# Publicar Turnia
 
 Estado: documento vivo. Actualizar si cambia el hosting o el flujo de publicacion.
 
-## Objetivo
+> Reescrito el 21/07/2026. La version anterior mandaba a subir a mano una carpeta
+> `public-demo-2026-05-21` a Netlify. Esa carpeta se borro: era una copia congelada
+> de mayo, ya divergida del codigo real y **con la demo rota adentro**. Hoy no hay
+> subida manual.
 
-Subir Turnia como demo publica controlada para que otras personas puedan probarla sin cuentas reales.
+## Como se publica hoy
 
-## Opcion recomendada
+**Se publica solo.** Vercel esta conectado al repositorio de GitHub
+(`eltizzu/turnia-citas`): todo lo que llega a la rama `main` queda publicado en vivo
+en unos segundos.
 
-Publicar como sitio estatico en Netlify usando la carpeta publica preparada:
+```bash
+git push origin main
+```
 
-`public-demo-2026-05-21`
+⚠️ **Eso es todo, y por eso hay que tener cuidado.** No hay paso intermedio ni
+previsualizacion, e `impulsdigital.es` linkea directo a la app publicada: un push
+cambia lo que ve cualquier persona que entre.
 
-No hace falta backend para esta demo.
+**Regla acordada con Marcos: no se hace push sin su permiso explicito.** Primero se
+prueba en local, se le muestra, y recien despues se sube.
 
-## Archivos preparados
+## Las tres direcciones
 
-- `netlify.toml`: configuracion basica para Netlify.
-- `vercel.json`: configuracion basica para Vercel.
-- `DEMO_PUBLICA.md`: alcance y aviso de uso.
-- `public-demo-2026-05-21`: paquete limpio listo para subir sin documentos internos, tests ni archivos de base de datos. Incluye landing, demo, manual, assets y scripts publicos.
-- `turnia-demo-publica-2026-05-21.zip`: el mismo paquete comprimido.
+| Direccion | Para quien | Datos |
+|---|---|---|
+| `/demo` | Prospectos que curiosean | Ficticios, en su navegador |
+| `/panel` | El negocio, gestionando | Base de datos real |
+| `/reservar` | El cliente final del negocio | Base de datos real |
 
-## Antes de publicar
+La que se comparte para mostrar el producto es **`/demo`**.
 
-- [ ] Abrir `/?reset-demo=1`.
-- [ ] Revisar pantalla inicial.
-- [ ] Revisar aviso de demo.
-- [ ] Entrar como negocio.
-- [ ] Probar link cliente.
-- [ ] Descargar Excel clientes/citas.
-- [ ] Revisar mobile.
+## Probar antes de subir
 
-## Netlify
+```bash
+node dev-server.mjs        # http://127.0.0.1:5180
+node --test tests/*.test.mjs
+```
 
-Pasos:
+`dev-server.mjs` replica las reglas y cabeceras de `vercel.json`, asi que lo que se
+ve en local es lo que va a pasar publicado.
 
-1. Crear cuenta en Netlify.
-2. Ir a Sites.
-3. Elegir Add new site.
-4. Elegir Deploy manually.
-5. Arrastrar la carpeta `public-demo-2026-05-21` o subir `turnia-demo-publica-2026-05-21.zip`.
-6. Publicar.
-7. Abrir la URL publicada con `/?reset-demo=1` para iniciar la demo limpia.
+- [ ] `/demo` entra directo a la agenda, sin login
+- [ ] Aparece el aviso de "Modo demo"
+- [ ] Confirmar una cita, recargar, y que el cambio siga ahi
+- [ ] Reportes muestra los dos graficos
+- [ ] Descargar Excel de clientes/citas
+- [ ] Revisar en pantalla de movil
+- [ ] `/panel` pide login
+- [ ] Todos los tests pasan
 
-## Vercel
+## Despues de subir
 
-Pasos:
-
-1. Crear cuenta en Vercel.
-2. Crear nuevo proyecto.
-3. Importar repositorio.
-4. Framework: Other.
-5. Build command: dejar vacio.
-6. Output directory: `.`
-7. Publicar.
-
-Para Vercel, si se usa el repositorio completo, conviene revisar que no se publiquen documentos internos. Para subir hoy rapido, Netlify con la carpeta `public-demo-2026-05-21` es mas directo.
+- [ ] Abrir la direccion publica y repetir el recorrido de `/demo`
+- [ ] Confirmar que las tres direcciones responden
 
 ## Texto para compartir la demo
 
-> Te comparto una demo funcional de Turnia, una agenda online para negocios que trabajan por turnos. Es para probar el flujo y dar feedback. Los datos quedan solo en tu navegador, no cargues informacion real.
+> Te comparto una demo funcional de Turnia, una agenda online para negocios que
+> trabajan por turnos. Es para probar el flujo y dar feedback. Los datos quedan solo
+> en tu navegador, no cargues informacion real.
 
 ## Despues de recibir feedback
 
@@ -72,3 +74,9 @@ Anotar:
 - que funcion pidio;
 - si pagaria por setup/mensualidad;
 - si quiere piloto real.
+
+## Notas
+
+- `netlify.toml` quedo de una evaluacion inicial y **no se usa**.
+- Las librerias (Chart.js, SDK de Supabase, Sentry) se sirven desde `vendor/`, no
+  desde CDN ajenos. Ver `vendor/README.md`.

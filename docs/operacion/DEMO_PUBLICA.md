@@ -103,7 +103,7 @@ Requisitos:
 - que no se indexe como producto final;
 - que no prometa produccion real;
 - que permita restaurar datos.
-- que se suba desde la carpeta publica `public-demo-2026-05-21` para no exponer documentos internos.
+- que la direccion que se comparta sea `/demo`, que fuerza datos ficticios y nunca toca la base real.
 
 ## Texto corto para compartir
 
