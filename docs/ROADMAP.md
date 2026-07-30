@@ -126,6 +126,22 @@ Ideas buenas que no se tocan hasta tener un piloto funcionando: recordatorios au
 
 Backlog completo por versiones en [`producto/BACKLOG_VERSIONES.md`](producto/BACKLOG_VERSIONES.md).
 
+### Bandeja unificada de mensajes (idea de Marcos, 21/07/2026 — a evaluar con un cliente real)
+
+Que el dueño vea y responda desde Turnia los mensajes de WhatsApp, Instagram y Facebook de su negocio, todo en un solo lugar.
+
+**Por qué no ahora:** es casi un producto aparte, no una función (existen empresas que viven solo de esto: Callbell, B2Chat, Chatwoot). Las conversaciones son de Meta, y Meta pone tres muros reales:
+
+1. **Aprobación de Meta.** Leer los DMs de Instagram/Facebook de alguien exige que Meta **revise y apruebe la app** en un proceso formal (política de privacidad, videos de uso, verificación de negocio). Tarda semanas y **pueden rechazarla**.
+2. **WhatsApp con trampa.** No sirve el WhatsApp del celular: hace falta la API de WhatsApp Business con un **número dedicado solo a eso**, y al conectarlo **ese número deja de funcionar en la app normal**. Para muchos negocios chicos ya es un "no".
+3. **Onboarding por cliente.** Cada negocio tendría que conectar (OAuth) sus propias cuentas de las tres redes, con verificaciones. Obstáculo real para un dueño no técnico.
+
+Además, guardar conversaciones de terceros = más datos personales bajo RGPD.
+
+**Puente barato (si algún cliente lo pide):** una pantalla que junte los **contactos** de todos los clientes con su botón de WhatsApp (`wa.me`) para escribir con un clic. No lee conversaciones, pero da el 80% del valor sin permiso de Meta ni número dedicado. Turnia ya arma esos links.
+
+**Decisión:** validar demanda con el primer negocio real antes de construir nada. No adivinar hoy.
+
 ---
 
 ## Dónde está cada cosa
