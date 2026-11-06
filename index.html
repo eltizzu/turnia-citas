@@ -5,7 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Turnia - Agenda online para negocios de servicios</title>
   <meta name="description" content="Turnia da a negocios de servicios una agenda online simple para que los clientes reserven desde un link y el negocio gestione turnos sin depender del WhatsApp." />
+  <meta name="theme-color" content="#11605F" />
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="alternate icon" href="assets/favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" href="assets/app-icon.svg" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta property="og:image" content="/assets/app-icon.svg" />
+  <meta name="twitter:image" content="/assets/app-icon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
@@ -15,10 +21,10 @@
       --border: #c0ddd5;
       --text: #0f2e24;
       --muted: #4d7a6e;
-      --primary: #2f7d68;
-      --primary-dark: #1f5a4a;
-      --primary-soft: #dff2ec;
-      --secondary: #4fa080;
+      --primary: #11605f;
+      --primary-dark: #11605f;
+      --primary-soft: #e6f1f0;
+      --secondary: #f28865;
       --radius: 16px;
       --shadow: 0 4px 16px rgba(47,125,104,0.12);
     }
@@ -28,7 +34,6 @@
     nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 64px; background: rgba(253,248,244,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
     .nav-brand { display: flex; align-items: center; gap: 10px; font-family: "Outfit", sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--primary-dark); text-decoration: none; }
     .nav-brand img { height: 36px; width: auto; display: block; }
-    .nav-brand span { color: var(--primary); }
     .nav-links { display: flex; align-items: center; gap: 28px; }
     .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; }
     .nav-cta { background: var(--primary) !important; color: #fff !important; padding: 8px 20px; border-radius: 10px; font-size: 0.9rem; font-weight: 600; text-decoration: none; }
@@ -97,7 +102,8 @@
 
     .hero-shot { display: grid; grid-template-columns: 130px minmax(0, 1fr); min-height: 400px; border: 1px solid rgba(47,125,104,0.25); border-radius: 14px; overflow: hidden; box-shadow: 0 8px 32px rgba(47,125,104,0.14); transform: rotate(-1.3deg); text-align: left; font-size: 0.82rem; background: #fff; }
     .hs-sidebar { background: var(--primary); color: #fff; padding: 18px 14px; display: flex; flex-direction: column; gap: 8px; }
-    .hs-logo { width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.2); margin-bottom: 6px; }
+    .hs-logo { display:block; width: 36px; height: 36px; margin-bottom: 6px; }
+    .cta-logo { display:block; width:min(190px,60vw); height:auto; margin:0 auto 24px; }
     .hs-nav { padding: 8px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 500; color: rgba(255,255,255,0.65); }
     .hs-nav.active { background: rgba(255,255,255,0.18); color: #fff; }
     .hs-main { background: var(--bg); padding: 20px; display: grid; align-content: start; gap: 14px; }
@@ -124,7 +130,7 @@
 <body>
 
 <nav>
-  <a class="nav-brand" href="#"><img src="assets/favicon.svg" alt="" /><span>Turnia</span></a>
+  <a class="nav-brand" href="#"><img src="assets/turnia-logo.svg" alt="Turnia" /></a>
   <div class="nav-links">
     <a href="#problema">Qué resuelve</a>
     <a href="#funciones">Funciones</a>
@@ -145,7 +151,7 @@
   </div>
   <div class="hero-shot" aria-hidden="true">
     <div class="hs-sidebar">
-      <div class="hs-logo"></div>
+      <img class="hs-logo" src="assets/app-icon.svg" alt="" />
       <div class="hs-nav active">Hoy</div>
       <div class="hs-nav">Agenda</div>
       <div class="hs-nav">Clientes</div>
@@ -310,6 +316,7 @@
 </section>
 
 <section class="cta-section">
+  <img class="cta-logo" src="assets/turnia-logo-dark.svg" alt="Turnia" />
   <h2>¿Sigues gestionando turnos por WhatsApp?</h2>
   <p>En menos de una semana tu negocio puede tener una agenda online lista para recibir reservas.</p>
   <a href="demo.html">Ver la demo ahora</a>

@@ -2,17 +2,20 @@
 
 Estado: documento vivo. Actualizar cuando cambie el posicionamiento, el precio, los modulos, el publico objetivo o la forma de presentar Turnia.
 
+Ultima actualizacion: 6 de noviembre de 2026. El estado comprobable del producto
+esta en [`../ESTADO_ACTUAL.md`](../ESTADO_ACTUAL.md).
+
 Nota: para enviar o subir como adjunto comercial, usar `DOSSIER_COMERCIAL_TURNIA.md`. Este documento queda como base viva interna de posicionamiento y decisiones comerciales.
 
 ## Que es Turnia
 
-Turnia es una app de agenda y reservas para negocios y profesionales que trabajan con citas por horario: barberias, peluquerias, unas, estetica, fisioterapia, masajes, bienestar, consultorias y servicios similares.
+Turnia es una app de agenda y reservas en desarrollo para peluquerias, barberias y negocios de belleza.
 
 El objetivo es que el negocio pueda organizar su agenda diaria, gestionar clientes y permitir que las personas reserven desde un link publico sin depender todo el dia de WhatsApp, llamadas o una libreta.
 
-Estado actual: demo realista para prueba privada. El foco comercial ahora no es prometer producto terminado, sino validar que la propuesta se entiende y que el flujo resuelve un dolor real.
+Estado actual: demo publica y base tecnica para preparar una prueba privada. No hay piloto, clientes pagos ni validacion con negocios reales documentada. El foco comercial no es prometer un producto terminado.
 
-La identidad visual inicial usa un simbolo de agenda con una T integrada y un check de confirmacion. El archivo principal esta en `assets/logo-turnia.svg` y hay una copia visible en la carpeta raiz como `logo-turnia.svg`. Busca transmitir orden, turnos y reserva confirmada sin sentirse corporativo frio.
+La identidad “Turnia — A Encuentro” esta aprobada e integrada localmente. Todavia no fue publicada.
 
 ## Problema que resuelve
 
@@ -46,10 +49,9 @@ Sectores iniciales:
 - unas;
 - estetica;
 - pestanas/cejas;
-- masajes;
-- fisioterapia;
-- bienestar/wellness;
-- nutricion, coaching o asesorias por cita.
+- otros servicios de belleza.
+
+Otros sectores quedan fuera del primer piloto y requeririan una decision posterior.
 
 ## Modulos actuales
 
@@ -200,7 +202,7 @@ No fijar esto como definitivo hasta hablar con negocios reales.
 
 ## Estado actual
 
-Turnia esta en demo presentable local. Ya tiene base tecnica para avanzar a produccion:
+Turnia tiene una demo publica y una base tecnica parcial:
 
 - reglas de agenda separadas;
 - pruebas automaticas;
@@ -210,4 +212,7 @@ Turnia esta en demo presentable local. Ya tiene base tecnica para avanzar a prod
 - seed demo;
 - documentos legales/comerciales iniciales.
 
-No es produccion real todavia: falta Supabase activo, login real conectado, datos persistentes remotos, dominio, hosting y revision legal/fiscal.
+El enlace publico y la lectura del panel tienen integracion documentada con Supabase,
+pero el panel no guarda todavia todas sus acciones. No es un producto comercial:
+faltan escrituras seguras, pruebas reales de roles/RLS y concurrencia, verificacion
+reciente del login, dominio propio, backups y revision legal/fiscal.

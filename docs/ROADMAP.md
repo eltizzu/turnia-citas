@@ -2,9 +2,9 @@
 
 **Única fuente de verdad sobre qué falta y en qué orden.** Si otro documento dice algo distinto, gana este.
 
-El contexto del proyecto (dónde vive, cómo se publica, trampas conocidas) está en [`../CLAUDE.md`](../CLAUDE.md).
+El estado real consolidado está en [`ESTADO_ACTUAL.md`](ESTADO_ACTUAL.md). El contexto técnico (dónde vive, cómo se publica, trampas conocidas) está en [`../CLAUDE.md`](../CLAUDE.md).
 
-Última revisión: 18 de julio de 2026.
+Última revisión: 6 de noviembre de 2026. Evidencia: 65 pruebas existentes y 4 pruebas de identidad correctas; sin consulta a servicios externos.
 
 ---
 
@@ -32,6 +32,19 @@ Turnia está publicada, la demo funciona y el link público de reservas guarda d
 
 Lo de arriba se hace antes que lo de abajo. Cada etapa tiene punto de freno: se revisa y se aprueba antes de seguir.
 
+### ✅ 0. Base de cambios segura — preparación local
+
+- [x] Documentar que `schema.sql` no demuestra el estado de producción.
+- [x] Separar lineas base de instalaciones nuevas y migraciones incrementales.
+- [x] Agregar barrera local que rechaza el project ref conocido de producción.
+- [x] Agregar pruebas de seguridad de entorno, migraciones y contratos del esquema.
+- [x] Documentar qué se verifica localmente y qué requiere Supabase de desarrollo.
+- [ ] Crear Supabase de desarrollo — autorizado, pero no consta como creado ni verificado.
+- [ ] Comparar el esquema realmente desplegado — fuera de alcance y sin autorización.
+
+No existe todavía ningún archivo SQL de migración y no se aplicó ni marcó ninguna
+migración. Detalle en `tecnico/ESTRATEGIA_MIGRACIONES.md`.
+
 ### 🔴 1. Que el panel guarde (bloqueante)
 
 **Sin esto no hay producto vendible.** El panel lee de la base pero no escribe: todo lo que hace el negocio se pierde al recargar, sin dar error. Detalle técnico en `CLAUDE.md`.
@@ -39,7 +52,7 @@ Lo de arriba se hace antes que lo de abajo. Cada etapa tiene punto de freno: se 
 Se hace por partes, no de una:
 
 - [x] **1a. Separar vidriera de app real** — hecho 18/07/2026 (commits `85c40cd`, `9983211`, `+ /reservar`)
-- [ ] **1b. Citas** — crear, confirmar, cancelar, finalizar, marcar no-asistió, reprogramar
+- [ ] **1b. Citas** — aceptar, rechazar (`rejected` distinto de `cancelled`), crear, finalizar, marcar no-asistió y reprogramar; UUID, eventos atómicos y reversión visual ante errores
 - [ ] **1c. Clientes** — alta, edición, notas
 - [ ] **1d. Servicios y equipo** — alta, edición, baja
 - [ ] **1e. Bloqueos de agenda**
@@ -47,7 +60,7 @@ Se hace por partes, no de una:
 
 Empezar por citas: es el 80% del valor.
 
-Los permisos por negocio (RLS) ya están puestos y correctos en la base. La app **tiene** permiso de escribir; simplemente nunca lo hace.
+El esquema local contiene RLS por pertenencia, pero la separación administrador/personal y el estado remoto deben verificarse en desarrollo. No se debe afirmar que los permisos están “correctos” solo por inspección estática.
 
 ### 🟠 2. Verificación honesta
 
@@ -86,10 +99,19 @@ Pendiente relacionado: las tipografías todavía se piden a Google Fonts.
 - [ ] Términos y condiciones revisados por profesional
 - [ ] Política de privacidad
 - [ ] Contrato de encargado de tratamiento (Turnia maneja datos de los clientes de sus clientes)
-- [ ] ⚠️ **Consultar explícitamente:** en fisioterapia las notas de cliente pueden ser **datos de salud**, categoría especial bajo RGPD
+- [ ] Revisar con profesional la retención operativa y de comunicaciones propuesta para 12 meses
 - [ ] Definir titular legal y facturación
 
 Material de partida en `legal/`.
+
+### ✅ Identidad — aprobada e integrada localmente
+
+- [x] Reconstruir el candidato “A — Encuentro”, corregir el encuentro central y preparar comparación técnica.
+- [x] Obtener aprobación visual definitiva — 6/11/2026.
+- [x] Integrar el logo en acceso, panel, reserva pública, landing, navegación, móvil, favicon, manifest y manual.
+- [ ] Publicar la identidad — requiere autorización explícita; no realizado.
+
+Los recursos maestros viven en `../identity/turnia-encuentro/assets/`. Los recursos anteriores están respaldados en `../assets/legacy/identity-before-encuentro-2026-11-05/`.
 
 ### ⚪ 5. Primer piloto
 

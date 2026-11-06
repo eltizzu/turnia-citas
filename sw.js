@@ -1,6 +1,6 @@
 // v2: se agregan las librerias de vendor/ y los dos modulos de Supabase que
 // faltaban. Al cambiar el nombre, el navegador descarta la cache vieja.
-const CACHE_NAME = "turnia-demo-v2";
+const CACHE_NAME = "turnia-demo-v3";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -21,7 +21,14 @@ const APP_SHELL = [
   "./vendor/sentry.min.js",
   "./manifest.webmanifest",
   "./assets/favicon.svg",
-  "./assets/logo-turnia.svg",
+  "./assets/favicon.ico",
+  "./assets/app-icon.svg",
+  "./assets/turnia-mark.svg",
+  "./assets/turnia-mark-monochrome.svg",
+  "./assets/turnia-logo.svg",
+  "./assets/turnia-logo-dark.svg",
+  "./assets/turnia-mark-512.png",
+  "./assets/turnia-mark-1024.png",
 ];
 
 self.addEventListener("install", (event) => {

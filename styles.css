@@ -2,13 +2,13 @@
   --bg: #fdf8f4;
   --surface: #ffffff;
   --surface-strong: #ffffff;
-  --ink: #2c1a0e;
+  --ink: #2d4049;
   --muted: #8c7b72;
   --line: #e8ddd5;
-  --primary: #b5835a;
-  --primary-strong: #9a6b45;
-  --primary-soft: #f5ede6;
-  --secondary: #7c9e8f;
+  --primary: #11605f;
+  --primary-strong: #11605f;
+  --primary-soft: #e6f1f0;
+  --secondary: #f28865;
   --sun: #f59e0b;
   --rose: #ef4444;
   --lavender: #7c9e8f;
@@ -294,7 +294,6 @@ body.direct-client-mode .main-app {
   border-bottom: 1px solid var(--line);
 }
 
-.brand-logo,
 .brand-mark,
 .avatar {
   display: grid;
@@ -309,8 +308,23 @@ body.direct-client-mode .main-app {
 
 .brand-logo {
   display: block;
+  width: 132px;
+  height: auto;
+  max-height: 48px;
   object-fit: contain;
   background: transparent;
+}
+
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.topbar-mark {
+  display: none;
+  width: 36px;
+  height: 39px;
 }
 
 .brand span,
@@ -881,6 +895,13 @@ h3 {
   max-width: 560px;
 }
 
+.public-brand-logo {
+  display: block;
+  width: 144px;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
 .public-hero > strong {
   padding: 0.75rem 0.9rem;
   border-radius: 14px;
@@ -1363,6 +1384,11 @@ textarea {
     display: none;
   }
 
+  .topbar-mark {
+    display: block;
+    flex: 0 0 auto;
+  }
+
   .bottom-nav {
     display: grid;
   }
@@ -1385,6 +1411,10 @@ textarea {
   .entry-card {
     gap: 1rem;
     padding: 1rem;
+  }
+
+  .brand-logo {
+    width: 118px;
   }
 
   .entry-highlights {

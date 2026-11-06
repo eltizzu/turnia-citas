@@ -2,7 +2,13 @@
 
 Estado: documento vivo. Actualizar cuando cambie una pantalla, accion, estado o flujo.
 
-Ultima actualizacion: 16 de junio de 2026.
+Ultima actualizacion: 5 de noviembre de 2026.
+
+Alcance vigente: este manual describe principalmente la demo. Consultar
+[`../ESTADO_ACTUAL.md`](../ESTADO_ACTUAL.md) antes de operar o presentar Turnia.
+Las acciones del panel publicado todavia no tienen persistencia completa en
+Supabase y pueden perderse al recargar. El primer piloto se limita a peluquerias,
+barberias y belleza.
 
 Este manual esta escrito en lenguaje simple. La idea es que lo pueda entender una persona que no sabe de tecnologia.
 
@@ -20,7 +26,8 @@ Sirve para:
 - compartir un link para que el cliente reserve;
 - ver metricas simples del negocio.
 
-La version actual sirve para demo, prueba privada y piloto controlado. Todavia no se debe usar con datos sensibles sin revisar bien la configuracion real.
+La version actual sirve para demo y preparacion de una prueba privada. Todavia no
+esta lista para operar un piloto real ni para cargar datos sensibles.
 
 ## Quienes Usan La App
 
@@ -227,8 +234,8 @@ Ejemplos:
 - color;
 - manicura;
 - masaje;
-- fisioterapia;
-- consulta.
+- tratamiento de belleza;
+- perfilado.
 
 Cada servicio tiene:
 
@@ -419,4 +426,6 @@ En esta etapa conviene evitar:
 - prometer funciones que todavia son futuras;
 - tomar los ingresos estimados como contabilidad real.
 
-Turnia ya esta preparada para avanzar a piloto, pero antes de uso real hay que revisar hosting, Supabase, backups, seguridad y legales.
+Turnia esta preparada para completar la base tecnica previa al piloto. Antes de
+uso real debe terminar las escrituras del panel y verificar RLS, roles,
+concurrencia, backups, seguridad y legales en un entorno separado.

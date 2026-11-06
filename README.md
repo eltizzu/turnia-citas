@@ -1,10 +1,10 @@
 # Turnia
 
-Turnia es una app de agenda y citas para negocios y profesionales que trabajan con reservas por horario: barberias, peluquerias, unas, fisioterapia, masajes, estetica, bienestar, consultorias y servicios similares.
+Turnia es una app de agenda y citas cuyo primer piloto esta enfocado en peluquerias, barberias y belleza. Fisioterapia, salud y notas sanitarias quedan fuera de esta primera vertical.
 
 La idea no es crear otro panel frio ni un software enorme de gestion. Turnia debe sentirse como una agenda moderna, clara y muy comoda desde el movil.
 
-La marca inicial usa el logo en `assets/logo-turnia.svg`, una copia rapida en `logo-turnia.svg` y favicon en `assets/favicon.svg`.
+La identidad “Turnia — A Encuentro” esta aprobada e integrada localmente. Los recursos maestros viven en `identity/turnia-encuentro/assets/`; la integracion todavia no fue publicada.
 
 ## Promesa
 
@@ -41,12 +41,12 @@ Turnia compite por simpleza, cercania y velocidad:
 
 ## Estado actual
 
-> 📍 **El contexto del proyecto esta en [`CLAUDE.md`](CLAUDE.md) y el plan priorizado en [`docs/ROADMAP.md`](docs/ROADMAP.md).** Esos son los documentos de referencia. Lo que hay en `docs/historico/` describe etapas ya cerradas y puede estar desactualizado.
+> 📍 **El estado real esta en [`docs/ESTADO_ACTUAL.md`](docs/ESTADO_ACTUAL.md), el contexto tecnico en [`CLAUDE.md`](CLAUDE.md) y el plan priorizado en [`docs/ROADMAP.md`](docs/ROADMAP.md).** Lo que hay en `docs/historico/` describe etapas cerradas y puede estar desactualizado.
 
-Resumen a 18 de julio de 2026:
+Resumen documental actualizado el 6 de noviembre de 2026:
 
-- La app **esta publicada** en `https://turnia-citas.vercel.app` (Vercel) y conectada a un Supabase real.
-- El **link publico de reservas funciona de verdad**: el cliente reserva y la cita se guarda en la base.
+- La ultima evidencia documentada indica que la app esta publicada en `https://turnia-citas.vercel.app` (Vercel) y conectada a un Supabase real; no se reinspecciono produccion en la revision del 6 de noviembre.
+- El **link publico de reservas** tiene implementado el flujo real de consulta y creacion mediante RPC, segun esa ultima verificacion.
 - El **panel del negocio lee** datos reales de la base, pero **todavia no escribe**: cualquier cambio que haga el negocio se pierde al recargar. Este es el bloqueante principal y esta detallado en `CLAUDE.md` y `docs/ROADMAP.md`.
 - No hay ningun negocio real usando la app.
 

@@ -1,0 +1,26 @@
+{
+  "name": "Turnia - Agenda de citas",
+  "short_name": "Turnia",
+  "description": "Demo funcional de agenda y reservas para negocios que trabajan por turnos.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f1ea",
+  "theme_color": "#2f7d68",
+  "orientation": "portrait-primary",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "./assets/favicon.svg",
+      "sizes": "64x64",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/logo-turnia.svg",
+      "sizes": "160x160",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

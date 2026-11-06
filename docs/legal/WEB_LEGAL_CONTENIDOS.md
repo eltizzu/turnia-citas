@@ -11,7 +11,7 @@ Este documento define que deberia tener la web publica de Turnia para presentars
 Decidir antes de publicar:
 
 - marca comercial visible: Turnia;
-- logo/marca visual: simbolo en `assets/logo-turnia.svg`;
+- logo/marca visual: identidad “A Encuentro” en `assets/turnia-logo.svg`, con variante oscura y símbolo reducido;
 - titular legal: persona fisica o sociedad que factura;
 - email de contacto;
 - domicilio/datos legales si corresponde;

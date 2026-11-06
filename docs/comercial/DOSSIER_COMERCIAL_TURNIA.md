@@ -24,19 +24,17 @@ Turnia busca ordenar ese proceso sin obligar al negocio a usar un sistema compli
 
 ## Para quien esta pensado
 
-Turnia esta pensado para negocios que trabajan con reservas por horario, especialmente:
+El primer piloto de Turnia esta pensado especialmente para:
 
 - peluquerias;
 - barberias;
 - centros de estetica;
 - manicura y unas;
 - pestanas y cejas;
-- masajes;
-- fisioterapia;
-- bienestar y wellness;
-- nutricion, coaching o asesorias;
-- profesionales independientes;
-- estudios pequenos con varios profesionales.
+- otros negocios de belleza;
+- profesionales independientes y estudios pequenos de estos rubros.
+
+Otros sectores quedan fuera del primer piloto.
 
 Es ideal para negocios que reciben clientes por Instagram, WhatsApp, Google o recomendacion, y quieren ofrecer una forma mas ordenada de reservar.
 
@@ -184,7 +182,8 @@ Para un primer piloto, el proceso recomendado seria:
 
 ## Estado actual del producto
 
-Turnia esta en una demo funcional lista para mostrar y validar con primeros negocios.
+Turnia dispone de una demo funcional para mostrar la propuesta. Todavia no esta
+validado con negocios reales ni listo para operar un piloto.
 
 La demo permite ver el flujo completo:
 
@@ -197,7 +196,10 @@ La demo permite ver el flujo completo:
 - reportes;
 - exportaciones.
 
-Para usarlo en produccion con datos reales, el siguiente paso es conectarlo a una base de datos en la nube, login real, hosting, dominio y revision legal/fiscal.
+El enlace publico y la lectura del panel ya tienen una integracion tecnica con
+Supabase, pero el panel no persiste todas sus acciones. Antes de usar datos reales
+deben completarse y verificarse las escrituras, roles, RLS, concurrencia, backups,
+login y revision legal/fiscal. Estado detallado: `docs/ESTADO_ACTUAL.md`.
 
 ## Modelo comercial inicial posible
 

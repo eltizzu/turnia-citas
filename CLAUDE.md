@@ -3,27 +3,27 @@
 Este archivo es la memoria del proyecto. **Vive en el repo, no en la memoria de una IA.**
 Si algo cambia (deploy, credenciales, decisiones), se actualiza acá.
 
+El estado real consolidado está en [`docs/ESTADO_ACTUAL.md`](docs/ESTADO_ACTUAL.md).
 El plan de trabajo priorizado está en [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
-## Al terminar algo relevante, actualizar tres lugares
+## Al terminar algo relevante, actualizar las fuentes canónicas
 
-1. **Este archivo** — si cambió el contexto técnico (rutas, credenciales, trampas)
-2. **`docs/ROADMAP.md`** — qué se cerró y qué queda
-3. **La memoria central del negocio**, en
-   `C:\Users\titus\AppData\Roaming\Claude\local-agent-mode-sessions\c27be25b-55d0-4f05-889f-06ebd32efb5b\ef59b75d-3ddb-4a35-9e1b-0777c2213e35\spaces\70086b3d-e61d-4c6e-9a72-0486fd0df11d\memory\`
-   — la sección de Turnia en `apps_saas.md` (estado real) y su línea en `pendientes.md` (qué falta de verdad)
+1. **`docs/ESTADO_ACTUAL.md`** — qué existe realmente, fecha y evidencia.
+2. **`docs/ROADMAP.md`** — qué se cerró y qué queda, en orden.
+3. **Este archivo** — si cambió el contexto técnico (rutas, entornos, trampas).
+4. **Manual o material comercial afectado** — sin presentar planes como funciones.
 
-Reglas para el punto 3: **ahí va el resumen de negocio, no el detalle técnico** (ese va acá).
-Editar **solo lo de Turnia**, sin reestructurar ni tocar secciones de otras apps, y respetando
-el formato que ya existe.
+Las memorias externas pueden resumir esta información, pero no reemplazan las
+fuentes versionadas del repositorio.
 
 ---
 
 ## Qué es Turnia
 
-App de agenda y reservas de citas para negocios que trabajan por turno: peluquerías,
-barberías, uñas, fisioterapia, estética, bienestar, consultorías.
-Enfoque multi-nicho a propósito, sin comisiones por cliente ni marketplace obligatorio.
+App de agenda y reservas de citas. El primer piloto aprobado se limita a peluquerías,
+barberías y belleza. Fisioterapia, salud y notas sanitarias quedan fuera de esta etapa.
+La arquitectura puede evolucionar a otros nichos, pero no deben presentarse como
+verticales actuales.
 
 Es la segunda app de Marcos, después de StockFlow.
 
@@ -88,16 +88,38 @@ fijo — así sigue andando el día que haya dominio propio, sin tocar código.
 
 ---
 
-## Estado real (18 de julio de 2026)
+## Estado real
+
+La fuente canónica y fechada es `docs/ESTADO_ACTUAL.md`. Este resumen conserva
+el contexto técnico principal.
+
+- ✅ Identidad “Turnia — A Encuentro” aprobada e integrada localmente el 6/11/2026.
+- ⚠️ La identidad nueva todavía no fue publicada.
 
 - ✅ Web publicada y funcionando
-- ✅ Supabase real con tablas, permisos por negocio (RLS), reglas anti-solapamiento y RPCs públicas
+- ✅ Supabase real documentado con tablas, RLS, reglas anti-solapamiento y RPCs públicas; su estado no fue reinspeccionado en esta revisión
 - ✅ **Link público de reservas funciona de verdad** — el cliente reserva y queda guardado
 - ✅ Demo pública arreglada y verificada en producción
 - ❌ **El panel del negocio no guarda** — ver bloqueante abajo
 - ❌ Sin dominio propio
 - ❌ Legal sin revisión profesional
 - ❌ **Ningún negocio real usando la app** (confirmado por Marcos)
+
+### Etapa 0 local — base de cambios segura (4 de noviembre de 2026)
+
+- Se agregaron controles locales y documentacion para introducir migraciones sin
+  asumir que `supabase/schema.sql` coincide con lo desplegado.
+- `supabase/migrations/` y `supabase/baselines/` existen, pero no contienen SQL:
+  todavia no se creo, aplico ni marco ninguna migracion.
+- `scripts/check-db-target.mjs` rechaza entornos distintos de desarrollo/test, el
+  project ref conocido de produccion y el uso de service role en este flujo.
+- No se conecto Supabase ni se creo un entorno externo durante la Etapa 0 local.
+  La creación del entorno de desarrollo fue autorizada después, pero no consta
+  como completada; RLS, RPC y concurrencia siguen sin prueba remota documentada.
+- Estrategia: `docs/tecnico/ESTRATEGIA_MIGRACIONES.md`.
+- Alcance y matriz de verificacion: `docs/tecnico/ETAPA_0_BASE_SEGURA.md`.
+- Los cambios locales previos en `supabaseDataApi.js` y su prueba se preservaron;
+  no forman parte de la Etapa 0.
 
 ### 🔴 Bloqueante crítico: el panel no escribe
 

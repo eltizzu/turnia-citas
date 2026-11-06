@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title id="title">Icono de aplicación Turnia</title>
+  <rect width="128" height="128" rx="28" fill="#FDF8F4"/>
+  <g transform="translate(17.5 14)">  <path fill="#11605F" d="M17 0H51A17 17 0 0 1 68 17V37H31V68H17A17 17 0 0 1 0 51V17A17 17 0 0 1 17 0Z"/>
+  <path fill="#F28865" d="M62 32H76A17 17 0 0 1 93 49V83A17 17 0 0 1 76 100H48A17 17 0 0 1 31 83V68H62V32Z"/></g>
+</svg>

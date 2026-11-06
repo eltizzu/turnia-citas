@@ -4,10 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Manual de Uso — Turnia</title>
+<meta name="theme-color" content="#11605F">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="alternate icon" href="assets/favicon.ico" sizes="any">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --primary: #2f7d68;
+    --primary: #11605f;
     --primary-light: #3a9980;
     --primary-ultra: #e8f4f1;
     --bg: #f6f1ea;
@@ -35,7 +38,7 @@
     box-shadow: 0 2px 12px rgba(47,125,104,0.3);
   }
   .header-left { display: flex; align-items: center; gap: 1rem; }
-  .header-logo { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1.25rem; }
+  .header-logo { display:block; width:112px; height:auto; }
   .header-subtitle { font-size: 0.875rem; opacity: 0.8; }
   .back-btn {
     background: rgba(255,255,255,0.15);
@@ -229,7 +232,7 @@
 
 <header class="header">
   <div class="header-left">
-    <span class="header-logo">Turnia</span>
+    <img class="header-logo" src="assets/turnia-logo-dark.svg" alt="Turnia">
     <span class="header-subtitle">Manual de uso</span>
   </div>
   <a href="index.html" class="back-btn">← Volver a la landing</a>
